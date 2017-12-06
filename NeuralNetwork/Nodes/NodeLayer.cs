@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Text;
+using NeuralNetwork.Library;
 
 namespace NeuralNetwork.Nodes
 {
-    // Stored as a doubly linked list, so that a layer knows where it is in relation to the model
+    /// <summary>
+    /// The NodeLayers are stored in a Linked List, so it needs to contain a reference to the NodeLayer before it.
+    /// </summary>
     public class NodeLayer
     {
         /// <summary>
@@ -48,12 +51,71 @@ namespace NeuralNetwork.Nodes
             PreviousLayers = previousLayers;
         }
 
+        /// <summary>
+        /// Initialises this NodeLayer with the parameters supplied.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="nodes"></param>
+        /// <param name="previousLayer"></param>
+        public NodeLayer(string name, Node[] nodes, NodeLayer[] previousLayer)
+        {
+            Name = name;
+            Nodes = nodes;
+            PreviousLayers = previousLayer;
+        }
+
+        /// <summary>
+        /// Initialises each Node in Nodes with random weights.
+        /// </summary>
+        /// <param name="rand"></param>
         public void Initialise(Random rand)
         {
             foreach (var node in Nodes)
             {
                 node?.Initialise(rand);
             }
+        }
+
+        /// <summary>
+        /// Returns the result from this nodeLayer, using its previous layers.
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
+        public double[] GetResult(double[] inputs)
+        {
+            if (PreviousLayers == null)
+            {
+                return inputs;
+            }
+            var results = new double[Nodes.Length];
+            for (var i = 0; i < results.Length; i++)
+            {
+                results[i] = 0;
+            }
+            // select a layer feeding into this one
+            for (var i = 0; i < PreviousLayers.Length; i++)
+            {
+                var layerInputs = PreviousLayers[i].GetResult(inputs);
+                // select a node from the previous layer
+                for (var j = 0; j < PreviousLayers[i].Nodes.Length; j++)
+                {
+                    // select a node from this layer
+                    for (var k = 0; k < Nodes.Length; k++)
+                    {
+                        results[k] += layerInputs[j] * Nodes[k].Weights[i][j];
+                    }
+                }
+                // adding the bias
+                for (var j = 0; j < Nodes.Length; j++)
+                {
+                    results[j] += Nodes[j].BiasWeights[i];
+                }
+            }
+            for (var i = 0; i < results.Length; i++)
+            {
+                results[i] = Calculations.LogisticFunction(results[i]);
+            }
+            return results;
         }
 
         public override string ToString()

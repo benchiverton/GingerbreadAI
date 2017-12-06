@@ -44,6 +44,10 @@ namespace NeuralNetwork.Nodes
             BiasWeights = new double[nodeLayerPrev.Length];
         }
 
+        /// <summary>
+        /// Initialises this Node with random weights.
+        /// </summary>
+        /// <param name="rand"></param>
         public void Initialise(Random rand)
         {
             foreach (var weightArr in Weights)

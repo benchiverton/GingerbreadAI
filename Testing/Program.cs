@@ -2,7 +2,7 @@
 using NeuralNetwork.Networks;
 using NeuralNetwork.Nodes;
 
-namespace Testing
+namespace Main
 {
     public class Program
     {
