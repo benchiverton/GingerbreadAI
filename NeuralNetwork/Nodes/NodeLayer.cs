@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace NeuralNetwork.Nodes
 {
     // Stored as a doubly linked list, so that a layer knows where it is in relation to the model
-    class NodeLayer
+    public class NodeLayer
     {
         /// <summary>
         /// The name of the node (purely for helping you design and navagate your network).
@@ -15,16 +14,10 @@ namespace NeuralNetwork.Nodes
         /// An array of the nodes within this layer.
         /// </summary>
         public Node[] Nodes;
-        // needed for backpropogation?
         /// <summary>
         /// An array containing the NodeLayers that feed into this one.
         /// </summary>
         public NodeLayer[] PreviousLayers;
-        // needed for getting the result?
-        /// <summary>
-        /// An array containing the NodeLayers which this one feed into.
-        /// </summary>
-        public NodeLayer[] NextLayers;
 
         /// <summary>
         /// Should be used to set up the input
@@ -36,33 +29,50 @@ namespace NeuralNetwork.Nodes
             Name = name;
             Nodes = new Node[nodeCount];
             PreviousLayers = null;
-            NextLayers = null;
         }
 
-        public void AddPreviousLayer(NodeLayer layer)
+        /// <summary>
+        /// Constructs a NodeLayer, initialising each node with the correct amount of Weights.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="nodeCount"></param>
+        /// <param name="previousLayers"></param>
+        public NodeLayer(string name, int nodeCount, NodeLayer[] previousLayers)
         {
-            if (NextLayers == null)
+            Name = name;
+            Nodes = new Node[nodeCount];
+            for (var i = 0; i < nodeCount; i++)
             {
-                PreviousLayers = new NodeLayer[1];
+                Nodes[i] = new Node(previousLayers);
             }
-            else
-            {
-                Array.Resize(ref PreviousLayers, PreviousLayers.Length + 1);
-            }
-            PreviousLayers[PreviousLayers.Length - 1] = layer;
+            PreviousLayers = previousLayers;
         }
 
-        public void AddNextLayer(NodeLayer layer)
+        public void Initialise(Random rand)
         {
-            if (NextLayers == null)
+            foreach (var node in Nodes)
             {
-                NextLayers = new NodeLayer[1];
+                node?.Initialise(rand);
             }
-            else
+        }
+
+        public override string ToString()
+        {
+            var s = new StringBuilder($"Node Layer: {Name}\n");
+            for(var i=0; i<Nodes.Length; i++)
             {
-                Array.Resize(ref NextLayers, NextLayers.Length + 1);
+                s.Append($"Node {i}:\n{Nodes[i]}");
             }
-            NextLayers[NextLayers.Length - 1] = layer;
+            if (PreviousLayers != null)
+            {
+                s.Append("Previous Layers:\n");
+                foreach (var nodeLayer in PreviousLayers)
+                {
+                    s.Append($"{nodeLayer.Name}\n");
+                }
+            }
+            s.Append("----------\n");
+            return s.ToString();
         }
     }
 }

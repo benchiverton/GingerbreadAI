@@ -1,41 +1,60 @@
-﻿using NeuralNetwork.Exceptions;
+﻿using System;
 using NeuralNetwork.Nodes;
-using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace NeuralNetwork.Networks
 {
-    class NodeNetwork
+    public class NodeNetwork
     {
         public List<NodeLayer> Layers;
 
+
+        /// <summary>
+        /// Base constructor.
+        /// </summary>
+        public NodeNetwork()
+        {
+            Layers = new List<NodeLayer>();
+        }
+
+        /// <summary>
+        /// Initialises the layers in this network to the ones supplied.
+        /// </summary>
+        /// <param name="layers"></param>
         public NodeNetwork(List<NodeLayer> layers)
         {
             Layers = layers;
         }
 
-        public void AddInput(NodeLayer input)
+        /// <summary>
+        /// Adds a NodeLayer to the network.
+        /// </summary>
+        /// <param name="nodeLayer"></param>
+        public void AddNodeLayer(NodeLayer nodeLayer)
         {
-            Layers.Add(input);
+            Layers.Add(nodeLayer);
         }
 
-        public void AddLayer(NodeLayer layer, string[] feedsFrom)
+        // method to initialize the weights (ie - set them to random)
+        public void Initialise(Random rand)
         {
-            foreach (NodeLayer l in Layers)
+            foreach (var layer in Layers)
             {
-                if(l.Name == layer.Name)
-                {
-                    throw new NodeNetworkException($"A layer with the name '{layer.Name}' already exists.");
-                }
+                layer.Initialise(rand);
             }
-
-            //TODO: Add this layer to NextLayers, and initialize PreviousLayers.
         }
-
-        // method to order the list so getting result is rly quick (maybe so backprop will be faster also?)
-        // - is this possible mathematically?
 
         // method to get the result
+
+        public override string ToString()
+        {
+            var s = new StringBuilder("Your Network:\n");
+            foreach (var nodeLayer in Layers)
+            {
+                s.Append($"{nodeLayer}");
+            }
+            return s.ToString();
+        }
     }
 }
