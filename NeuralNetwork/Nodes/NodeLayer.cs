@@ -89,13 +89,14 @@ namespace NeuralNetwork.Nodes
             // select a layer feeding into this one
             PreviousLayers.Each((layer, i) =>
             {
-                // gets the outputs of a previous layer, which are the inputs for this layer
+                // gets the results of the layer selected above (the 'previous layer'), which are the inputs for this layer
                 var layerInputs = layer.GetResult(inputs);
-                // iterate through Nodes in this layer
+
+                // iterate through Nodes in the current layer
                 for (var j = 0; j < Nodes.Length; j++)
                 {
-                    // iterate through the nodes of a previous layer, adding its weighted output to the results
-                    for (var k = 0; k < layer.Nodes.Length; k++)
+                    // iterate through the outputs of the previous layer, adding its weighted result to the results for this layer
+                    for (var k = 0; k < layerInputs.Length; k++)
                         results[j] += layerInputs[k] * Nodes[j].Weights[i][k];
 
                     // add the bias for the previous layer
