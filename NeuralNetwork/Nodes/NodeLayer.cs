@@ -104,10 +104,8 @@ namespace NeuralNetwork.Nodes
             });
 
             // apply the logistic function to each of the results
-            for(var i=0; i<results.Length; i++)
-            {
+            for (var i = 0; i < results.Length; i++)
                 results[i] = Calculations.LogisticFunction(results[i]);
-            }
 
             return results;
         }

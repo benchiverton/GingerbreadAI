@@ -5,7 +5,7 @@ namespace NeuralNetwork.Library
     public class Calculations
     {
         /// <summary>
-        /// Applies the logistic function to an value, returning the result.
+        ///     Applies the logistic function to an value, returning the result.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>

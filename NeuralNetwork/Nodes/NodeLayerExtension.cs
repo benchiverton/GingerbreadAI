@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NeuralNetwork.Nodes
 {
     public static class NodeLayerExtension
     {
         /// <summary>
-        /// Extension method to do a foreach loop with an index
+        ///     Extension method to do a foreach loop with an index
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="ie"></param>
