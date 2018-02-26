@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NeuralNetwork.Nodes
+namespace NeuralNetwork.Data.Extensions
 {
     public static class NodeLayerExtension
     {

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
-namespace NeuralNetwork.Nodes
+namespace NeuralNetwork.Data
 {
     /// <summary>
     ///     A class containing the properties and methods that a single node in a network requires.
@@ -10,14 +9,18 @@ namespace NeuralNetwork.Nodes
     public class Node
     {
         /// <summary>
-        ///     Constructs a node with the supplied weights & bias.
+        ///     The weights associated with a node. These values correspond to the nodeLayer which
+        ///     feed into the nodeLayer containing this node, ie Weights[1][0] => nodeLayerPrev[1].Nodes[0].
         /// </summary>
-        /// <param name="weights"></param>
-        /// <param name="biasWeights"></param>
-        public Node(double[][] weights, double[] biasWeights)
-        {
-            Weights = weights;
-            BiasWeights = biasWeights;
+        public double[][] Weights { get; set; }
+
+        /// <summary>
+        ///     The bias that is passed into this node from the previous layerSSS!!
+        /// </summary>
+        public double[] BiasWeights { get; set; }
+
+        public Node()
+        {            
         }
 
         /// <summary>
@@ -31,30 +34,6 @@ namespace NeuralNetwork.Nodes
             for (var i = 0; i < nodeLayerPrev.Count; i++)
                 Weights[i] = new double[nodeLayerPrev[i].Nodes.Length];
             BiasWeights = new double[nodeLayerPrev.Count];
-        }
-
-        /// <summary>
-        ///     The weights associated with a node. These values correspond to the nodeLayer which
-        ///     feed into the nodeLayer containing this node, ie Weights[1][0] => nodeLayerPrev[1].Nodes[0].
-        /// </summary>
-        public double[][] Weights { get; set; }
-
-        /// <summary>
-        ///     The bias that is passed into this node from the previous layerSSS!!
-        /// </summary>
-        public double[] BiasWeights { get; set; }
-
-        /// <summary>
-        ///     Initialises this Node with random weights.
-        /// </summary>
-        /// <param name="rand"></param>
-        public void Initialise(Random rand)
-        {
-            foreach (var weightArr in Weights)
-                for (var j = 0; j < weightArr.Length; j++)
-                    weightArr[j] = (double) rand.Next(1000000) / 1000000;
-            for (var i = 0; i < BiasWeights.Length; i++)
-                BiasWeights[i] = (double) rand.Next(1000000) / 1000000;
         }
 
         public override string ToString()

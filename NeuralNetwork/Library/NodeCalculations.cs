@@ -1,8 +1,9 @@
 ﻿using System;
+using NeuralNetwork.Data;
 
 namespace NeuralNetwork.Library
 {
-    public class Calculations
+    public class NodeCalculations
     {
         /// <summary>
         ///     Applies the logistic function to an value, returning the result.

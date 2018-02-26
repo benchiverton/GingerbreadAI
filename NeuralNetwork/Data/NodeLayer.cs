@@ -1,8 +1,6 @@
-﻿using System;
-using System.Text;
-using NeuralNetwork.Library;
+﻿using System.Text;
 
-namespace NeuralNetwork.Nodes
+namespace NeuralNetwork.Data
 {
     /// <summary>
     ///     The NodeLayers are stored in a Linked List, so it needs to contain a reference to the NodeLayer before it.
@@ -12,17 +10,17 @@ namespace NeuralNetwork.Nodes
         /// <summary>
         ///     The name of the node (purely for helping you design and navagate your network).
         /// </summary>
-        public string Name;
+        public string Name { get; set; }
 
         /// <summary>
         ///     An array of the nodes within this layer.
         /// </summary>
-        public Node[] Nodes;
+        public Node[] Nodes { get; set; }
 
         /// <summary>
         ///     An array containing the NodeLayers that feed into this one.
         /// </summary>
-        public NodeLayer[] PreviousLayers;
+        public NodeLayer[] PreviousLayers { get; set; }
 
         /// <summary>
         ///     Should be used to set up the input
@@ -62,53 +60,6 @@ namespace NeuralNetwork.Nodes
             Name = name;
             Nodes = nodes;
             PreviousLayers = previousLayer;
-        }
-
-        /// <summary>
-        ///     Initialises each Node in Nodes with random weights.
-        /// </summary>
-        /// <param name="rand"></param>
-        public void Initialise(Random rand)
-        {
-            foreach (var node in Nodes)
-                node?.Initialise(rand);
-        }
-
-        /// <summary>
-        ///     Returns the result from this nodeLayer, using its previous layers.
-        /// </summary>
-        /// <param name="inputs"></param>
-        /// <returns></returns>
-        public double[] GetResult(double[] inputs)
-        {
-            // this should only happen when you reach an input layer
-            if (PreviousLayers == null)
-                return inputs;
-            // we have a result for each node, so I initialise the result array here
-            var results = new double[Nodes.Length];
-            // select a layer feeding into this one
-            PreviousLayers.Each((layer, i) =>
-            {
-                // gets the results of the layer selected above (the 'previous layer'), which are the inputs for this layer
-                var layerInputs = layer.GetResult(inputs);
-
-                // iterate through Nodes in the current layer
-                for (var j = 0; j < Nodes.Length; j++)
-                {
-                    // iterate through the outputs of the previous layer, adding its weighted result to the results for this layer
-                    for (var k = 0; k < layerInputs.Length; k++)
-                        results[j] += layerInputs[k] * Nodes[j].Weights[i][k];
-
-                    // add the bias for the previous layer
-                    results[j] += Nodes[j].BiasWeights[i];
-                }
-            });
-
-            // apply the logistic function to each of the results
-            for (var i = 0; i < results.Length; i++)
-                results[i] = Calculations.LogisticFunction(results[i]);
-
-            return results;
         }
 
         public override string ToString()

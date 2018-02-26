@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork", "NeuralNetwork\NeuralNetwork.csproj", "{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetworkTests", "NeuralNetworkTests\NeuralNetworkTests.csproj", "{58328F22-4344-4A7F-B641-0A4B918E2B46}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{7699DD5A-EBBD-4F11-8681-9BD9823F3021}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backpropogation", "Backpropogation", "{0B3CE8A6-3436-4262-847F-610BDDECD536}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +34,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C} = {7699DD5A-EBBD-4F11-8681-9BD9823F3021}
+		{58328F22-4344-4A7F-B641-0A4B918E2B46} = {7699DD5A-EBBD-4F11-8681-9BD9823F3021}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {316817EF-00A2-4C09-8C9C-7B0ABF43BF05}

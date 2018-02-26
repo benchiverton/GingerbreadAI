@@ -1,6 +1,6 @@
 ﻿using System;
-using NeuralNetwork.Networks;
-using NeuralNetwork.Nodes;
+using NeuralNetwork.Data;
+using NeuralNetwork.Library;
 
 namespace Main
 {
@@ -11,20 +11,28 @@ namespace Main
             var n = new NodeNetwork();
 
             var layer = new NodeLayer("Input", 20);
-            n.AddNodeLayer(layer);
+            NodeNetworkCalculations.AddNodeLayer(layer, n);
 
             var inner1 = new NodeLayer("Inner1", 20, new[] {layer});
-            n.AddNodeLayer(inner1);
+            NodeNetworkCalculations.AddNodeLayer(inner1, n);
 
             var inner2 = new NodeLayer("Inner2", 20, new[] {layer});
-            n.AddNodeLayer(inner2);
+            NodeNetworkCalculations.AddNodeLayer(inner2, n);
 
             var output = new NodeLayer("Output", 20, new[] {inner1, inner2});
-            n.AddNodeLayer(output);
+            NodeNetworkCalculations.AddNodeLayer(output, n);
 
-            n.Initialise(new Random());
+            Initialiser.Initialise(new Random(), n);
 
             Console.WriteLine(n);
+
+            var inputs = new double[20];
+            for (var i = 0; i < inputs.Length; i++)
+            {
+                inputs[i] = -0.001;
+            }
+            var results = NodeNetworkCalculations.GetResult(inputs, n);
+            Console.WriteLine($"Results: {string.Join(", ", results)}");
             Console.ReadLine();
         }
     }
