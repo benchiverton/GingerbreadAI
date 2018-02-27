@@ -7,30 +7,30 @@ namespace NeuralNetwork.Library
     public class NodeNetworkCalculations
     {
         /// <summary>
-        ///     Adds a NodeLayer to the network.
+        ///     Adds a NodeGroup to the network.
         /// </summary>
-        /// <param name="nodeLayer"></param>
+        /// <param name="nodeGroup"></param>
         /// <param name="nodeNetwork"></param>
-        public static void AddNodeLayer(NodeLayer nodeLayer, NodeNetwork nodeNetwork)
+        public static void AddNodeGroup(NodeGroup nodeGroup, NodeNetwork nodeNetwork)
         {
-            if (nodeNetwork.Layers == null)
+            if (nodeNetwork.Groups == null)
             {
-                nodeNetwork.Layers = new NodeLayer[1];
-                nodeNetwork.Layers[0] = nodeLayer;
+                nodeNetwork.Groups = new NodeGroup[1];
+                nodeNetwork.Groups[0] = nodeGroup;
             }
             else
             {
-                Array.Resize(ref nodeNetwork.Layers, nodeNetwork.Layers.Length + 1);
-                nodeNetwork.Layers[nodeNetwork.Layers.Length - 1] = nodeLayer;
+                Array.Resize(ref nodeNetwork.Groups, nodeNetwork.Groups.Length + 1);
+                nodeNetwork.Groups[nodeNetwork.Groups.Length - 1] = nodeGroup;
             }
         }
 
         public static double[] GetResult(double[] inputs, NodeNetwork nodeNetwork)
         {
-            if (inputs.Length != nodeNetwork.Layers[0].Nodes.Length)
+            if (inputs.Length != nodeNetwork.Groups[0].Nodes.Length)
                 throw new NodeNetworkException("Please enter the correct amount of inputs for your network.");
 
-            return NodeLayerCalculations.GetResult(inputs, nodeNetwork.Layers[nodeNetwork.Layers.Length - 1]);
+            return NodeGroupCalculations.GetResult(inputs, nodeNetwork.Groups[nodeNetwork.Groups.Length - 1]);
         }
     }
 }

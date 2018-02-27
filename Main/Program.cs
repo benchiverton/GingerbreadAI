@@ -10,17 +10,17 @@ namespace Main
         {
             var n = new NodeNetwork();
 
-            var layer = new NodeLayer("Input", 20);
-            NodeNetworkCalculations.AddNodeLayer(layer, n);
+            var group = new NodeGroup("Input", 20);
+            NodeNetworkCalculations.AddNodeGroup(group, n);
 
-            var inner1 = new NodeLayer("Inner1", 20, new[] {layer});
-            NodeNetworkCalculations.AddNodeLayer(inner1, n);
+            var inner1 = new NodeGroup("Inner1", 20, new[] {group});
+            NodeNetworkCalculations.AddNodeGroup(inner1, n);
 
-            var inner2 = new NodeLayer("Inner2", 20, new[] {layer});
-            NodeNetworkCalculations.AddNodeLayer(inner2, n);
+            var inner2 = new NodeGroup("Inner2", 20, new[] {group});
+            NodeNetworkCalculations.AddNodeGroup(inner2, n);
 
-            var output = new NodeLayer("Output", 20, new[] {inner1, inner2});
-            NodeNetworkCalculations.AddNodeLayer(output, n);
+            var output = new NodeGroup("Output", 20, new[] {inner1, inner2});
+            NodeNetworkCalculations.AddNodeGroup(output, n);
 
             Initialiser.Initialise(new Random(), n);
 
@@ -29,7 +29,7 @@ namespace Main
             var inputs = new double[20];
             for (var i = 0; i < inputs.Length; i++)
             {
-                inputs[i] = -0.001;
+                inputs[i] = 1;
             }
             var results = NodeNetworkCalculations.GetResult(inputs, n);
             Console.WriteLine($"Results: {string.Join(", ", results)}");

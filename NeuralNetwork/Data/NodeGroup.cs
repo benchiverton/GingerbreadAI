@@ -3,9 +3,9 @@
 namespace NeuralNetwork.Data
 {
     /// <summary>
-    ///     The NodeLayers are stored in a Linked List, so it needs to contain a reference to the NodeLayer before it.
+    ///     The NodeGroups are stored in a Linked List, so it needs to contain a reference to the NodeGroup before it.
     /// </summary>
-    public class NodeLayer
+    public class NodeGroup
     {
         /// <summary>
         ///     The name of the node (purely for helping you design and navagate your network).
@@ -13,65 +13,65 @@ namespace NeuralNetwork.Data
         public string Name { get; set; }
 
         /// <summary>
-        ///     An array of the nodes within this layer.
+        ///     An array of the nodes within this group.
         /// </summary>
         public Node[] Nodes { get; set; }
 
         /// <summary>
-        ///     An array containing the NodeLayers that feed into this one.
+        ///     An array containing the NodeGroups that feed into this one.
         /// </summary>
-        public NodeLayer[] PreviousLayers { get; set; }
+        public NodeGroup[] PreviousGroups { get; set; }
 
         /// <summary>
         ///     Should be used to set up the input
         /// </summary>
         /// <param name="name"></param>
         /// <param name="nodeCount"></param>
-        public NodeLayer(string name, int nodeCount)
+        public NodeGroup(string name, int nodeCount)
         {
             Name = name;
             Nodes = new Node[nodeCount];
-            PreviousLayers = null;
+            PreviousGroups = null;
         }
 
         /// <summary>
-        ///     Constructs a NodeLayer, initialising each node with the correct amount of Weights.
+        ///     Constructs a NodeGroup, initialising each node with the correct amount of Weights.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="nodeCount"></param>
-        /// <param name="previousLayers"></param>
-        public NodeLayer(string name, int nodeCount, NodeLayer[] previousLayers)
+        /// <param name="previousGroups"></param>
+        public NodeGroup(string name, int nodeCount, NodeGroup[] previousGroups)
         {
             Name = name;
             Nodes = new Node[nodeCount];
             for (var i = 0; i < nodeCount; i++)
-                Nodes[i] = new Node(previousLayers);
-            PreviousLayers = previousLayers;
+                Nodes[i] = new Node(previousGroups);
+            PreviousGroups = previousGroups;
         }
 
         /// <summary>
-        ///     Initialises this NodeLayer with the parameters supplied.
+        ///     Initialises this NodeGroup with the parameters supplied.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="nodes"></param>
-        /// <param name="previousLayer"></param>
-        public NodeLayer(string name, Node[] nodes, NodeLayer[] previousLayer)
+        /// <param name="previousGroup"></param>
+        public NodeGroup(string name, Node[] nodes, NodeGroup[] previousGroup)
         {
             Name = name;
             Nodes = nodes;
-            PreviousLayers = previousLayer;
+            PreviousGroups = previousGroup;
         }
 
         public override string ToString()
         {
-            var s = new StringBuilder($"Node Layer: {Name}\n");
+            var s = new StringBuilder($"Node Group: {Name}\n");
             for (var i = 0; i < Nodes.Length; i++)
                 s.Append($"Node {i}:\n{Nodes[i]}");
-            if (PreviousLayers != null)
+            if (PreviousGroups != null)
             {
-                s.Append("Previous Layers:\n");
-                foreach (var nodeLayer in PreviousLayers)
-                    s.Append($"{nodeLayer.Name}\n");
+                s.Append("Previous Groups:\n");
+                foreach (var nodeGroup in PreviousGroups)
+                    s.Append($"{nodeGroup.Name}\n");
             }
             s.Append("----------\n");
             return s.ToString();

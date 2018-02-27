@@ -9,31 +9,34 @@ namespace NeuralNetwork.Data
     public class Node
     {
         /// <summary>
-        ///     The weights associated with a node. These values correspond to the nodeLayer which
-        ///     feed into the nodeLayer containing this node, ie Weights[1][0] => nodeLayerPrev[1].Nodes[0].
+        ///     The weights associated with a node. These values correspond to the nodeGroup which
+        ///     feed into the nodeGroup containing this node, ie Weights[1][0] => nodeGroupPrev[1].Nodes[0].
         /// </summary>
         public double[][] Weights { get; set; }
 
         /// <summary>
-        ///     The bias that is passed into this node from the previous layerSSS!!
+        ///     The bias that is passed into this node from the previous groupSSS!!
         /// </summary>
         public double[] BiasWeights { get; set; }
 
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
         public Node()
-        {            
+        {
         }
 
         /// <summary>
-        ///     Constructs a node with the correct amount of weights, given an array of the NodeLayers which feed into this node.
+        ///     Constructs a node with the correct amount of weights, given an array of the NodeGroups which feed into this node.
         /// </summary>
-        /// <param name="nodeLayerPrev"></param>
-        public Node(IReadOnlyList<NodeLayer> nodeLayerPrev)
+        /// <param name="nodeGroupPrev"></param>
+        public Node(IReadOnlyList<NodeGroup> nodeGroupPrev)
         {
-            Weights = new double[nodeLayerPrev.Count][];
-            // each double[] in weights corresponds to the relevant array of nodes in the previous layer.
-            for (var i = 0; i < nodeLayerPrev.Count; i++)
-                Weights[i] = new double[nodeLayerPrev[i].Nodes.Length];
-            BiasWeights = new double[nodeLayerPrev.Count];
+            Weights = new double[nodeGroupPrev.Count][];
+            // each double[] in weights corresponds to the relevant array of nodes in the previous group.
+            for (var i = 0; i < nodeGroupPrev.Count; i++)
+                Weights[i] = new double[nodeGroupPrev[i].Nodes.Length];
+            BiasWeights = new double[nodeGroupPrev.Count];
         }
 
         public override string ToString()

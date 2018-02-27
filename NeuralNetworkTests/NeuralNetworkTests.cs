@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralNetwork.Data;
 using NeuralNetwork.Exceptions;
@@ -17,12 +18,12 @@ namespace NeuralNetworkTests
         {
             var n = new NodeNetwork();
 
-            // Input layer
-            var inputLayer = new NodeLayer("Input Layer", 10);
-            NodeNetworkCalculations.AddNodeLayer(inputLayer, n);
+            // Input group
+            var inputGroup = new NodeGroup("Input Group", 10);
+            NodeNetworkCalculations.AddNodeGroup(inputGroup, n);
 
-            var outputLayer = new NodeLayer("Output Layer", 10, new[] {inputLayer});
-            NodeNetworkCalculations.AddNodeLayer(outputLayer, n);
+            var outputGroup = new NodeGroup("Output Group", 10, new[] {inputGroup});
+            NodeNetworkCalculations.AddNodeGroup(outputGroup, n);
 
             try
             {
@@ -44,7 +45,7 @@ namespace NeuralNetworkTests
         ///     Tests to see if the GetResult() method produces the correct value with a specific structure.
         ///     Network structure being tested:
         ///     Input: 1 node,
-        ///     Hidden: 1 layer (with 1 node),
+        ///     Hidden: 1 group (with 1 node),
         ///     Output: 1 node.
         /// </summary>
         [TestMethod]
@@ -52,11 +53,11 @@ namespace NeuralNetworkTests
         {
             var n = new NodeNetwork();
 
-            // Input layer
-            var inputLayer = new NodeLayer("Input Layer", 1);
-            NodeNetworkCalculations.AddNodeLayer(inputLayer, n);
+            // Input group
+            var inputGroup = new NodeGroup("Input Group", 1);
+            NodeNetworkCalculations.AddNodeGroup(inputGroup, n);
 
-            // Hidden layer
+            // Hidden group
             var nodesInner = new[]
             {
                 new Node
@@ -65,16 +66,16 @@ namespace NeuralNetworkTests
                     BiasWeights = new[] {0.7}
                 }
             };
-            var inner = new NodeLayer("Inner 1", nodesInner, new[] {inputLayer});
-            NodeNetworkCalculations.AddNodeLayer(inner, n);
+            var inner = new NodeGroup("Inner 1", nodesInner, new[] {inputGroup});
+            NodeNetworkCalculations.AddNodeGroup(inner, n);
 
-            // Output layer
+            // Output group
             var nodesOuter = new[] {new Node {Weights = new[] {new[] {0.9}}, BiasWeights = new[] {0.4}}};
-            var outer = new NodeLayer("Inner 2", nodesOuter, new[] {inner});
-            NodeNetworkCalculations.AddNodeLayer(outer, n);
+            var outer = new NodeGroup("Inner 2", nodesOuter, new[] {inner});
+            NodeNetworkCalculations.AddNodeGroup(outer, n);
 
             // checking that the values calculated in the inner node are correct
-            var innerResult = NodeLayerCalculations.GetResult(new[] {0.5}, inner);
+            var innerResult = NodeGroupCalculations.GetResult(new[] {0.5}, inner);
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult[0], 4));
 
             // checking that the values calculated in the output are correct
@@ -84,38 +85,38 @@ namespace NeuralNetworkTests
 
         // TODO: need to change the weights and calculate what the relevant outputs should be
         /// <summary>
-        ///     Test to verify that if you have more than one layer feeding into another layer, the correct result is calculated.
+        ///     Test to verify that if you have more than one group feeding into another group, the correct result is calculated.
         /// </summary>
         [TestMethod]
-        public void TestMultipleLayer()
+        public void TestMultipleGroup()
         {
             var n = new NodeNetwork();
 
-            // Input layer
-            var inputLayer = new NodeLayer("Input Layer", 1);
-            NodeNetworkCalculations.AddNodeLayer(inputLayer, n);
+            // Input group
+            var inputGroup = new NodeGroup("Input Group", 1);
+            NodeNetworkCalculations.AddNodeGroup(inputGroup, n);
 
-            // Hidden layer 1
+            // Hidden group 1
             var nodesInner1 = new[] {new Node{Weights = new[] {new[] {0.2}}, BiasWeights = new[] {0.7}}};
-            var inner1 = new NodeLayer("Inner 1", nodesInner1, new[] {inputLayer});
-            NodeNetworkCalculations.AddNodeLayer(inner1, n);
+            var inner1 = new NodeGroup("Inner 1", nodesInner1, new[] {inputGroup});
+            NodeNetworkCalculations.AddNodeGroup(inner1, n);
 
-            // Hidden layer 2
+            // Hidden group 2
             var nodesInner2 = new[] {new Node{Weights = new[] {new[] {0.2}}, BiasWeights = new[] {0.7}}};
-            var inner2 = new NodeLayer("Inner 2", nodesInner2, new[] {inputLayer});
-            NodeNetworkCalculations.AddNodeLayer(inner2, n);
+            var inner2 = new NodeGroup("Inner 2", nodesInner2, new[] {inputGroup});
+            NodeNetworkCalculations.AddNodeGroup(inner2, n);
 
-            // Output layer
+            // Output group
             var nodesOut = new[] {new Node{Weights = new[] {new[] {0.9}, new[] {0.9}}, BiasWeights = new[] {0.4, 0.4}}};
-            var output = new NodeLayer("Output", nodesOut, new[] {inner1, inner2});
-            NodeNetworkCalculations.AddNodeLayer(output, n);
+            var output = new NodeGroup("Output", nodesOut, new[] {inner1, inner2});
+            NodeNetworkCalculations.AddNodeGroup(output, n);
 
             // checking that the values calculated in the inner1 node are correct
-            var innerResult1 = NodeLayerCalculations.GetResult(new[] {0.5}, inner1);
+            var innerResult1 = NodeGroupCalculations.GetResult(new[] {0.5}, inner1);
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult1[0], 4));
 
             // checking that the values calculated in the inner2 node are correct
-            var innerResult2 = NodeLayerCalculations.GetResult(new[] {0.5}, inner2);
+            var innerResult2 = NodeGroupCalculations.GetResult(new[] {0.5}, inner2);
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult2[0], 4));
 
             // checking that the values calculated in the output are correct
@@ -123,17 +124,17 @@ namespace NeuralNetworkTests
             Assert.AreEqual(Math.Round(0.8851320938059, 4), Math.Round(result[0], 4));
         }
 
-        // TODO: add a test method which tests ~3 nodes on one layer
+        // TODO: add a test method which tests ~3 nodes on one group
         /// <summary>
-        ///     Test to verify that if we have more than one node on a layer, the correct output is calculated.
+        ///     Test to verify that if we have more than one node on a group, the correct output is calculated.
         /// </summary>
         [TestMethod]
-        public void TestMultiNodeLayer()
+        public void TestMultiNodeGroup()
         {
             throw new NotImplementedException();
         }
 
-        // TODO: add a test method which tests multiple input layers
+        // TODO: add a test method which tests multiple input groups
         /// <summary>
         ///     Test to varify that if we have more than one input later, the correct output is calculated
         /// </summary>
@@ -149,19 +150,20 @@ namespace NeuralNetworkTests
         [TestMethod]
         public void TestGetResultEfficiency()
         {
+            const int calcCount = 5000;
             var n = new NodeNetwork();
 
-            var layer = new NodeLayer("Input", 20);
-            NodeNetworkCalculations.AddNodeLayer(layer, n);
+            var group = new NodeGroup("Input", 20);
+            NodeNetworkCalculations.AddNodeGroup(group, n);
 
-            var inner1 = new NodeLayer("Inner1", 100, new[] {layer});
-            NodeNetworkCalculations.AddNodeLayer(inner1, n);
+            var inner1 = new NodeGroup("Inner1", 100, new[] {group});
+            NodeNetworkCalculations.AddNodeGroup(inner1, n);
 
-            var inner2 = new NodeLayer("Inner2", 100, new[] {layer});
-            NodeNetworkCalculations.AddNodeLayer(inner2, n);
+            var inner2 = new NodeGroup("Inner2", 100, new[] {group});
+            NodeNetworkCalculations.AddNodeGroup(inner2, n);
 
-            var output = new NodeLayer("Output", 20, new[] {inner1, inner2});
-            NodeNetworkCalculations.AddNodeLayer(output, n);
+            var output = new NodeGroup("Output", 20, new[] {inner1, inner2});
+            NodeNetworkCalculations.AddNodeGroup(output, n);
 
             Initialiser.Initialise(new Random(), n);
 
@@ -169,9 +171,15 @@ namespace NeuralNetworkTests
             for (var i = 0; i < inputs.Length; i++)
                 inputs[i] = 0.5;
 
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             // Gets the result every time this loop iterates
-            for (var i = 0; i < 5000; i++)
+            for (var i = 0; i < calcCount; i++)
                 NodeNetworkCalculations.GetResult(inputs, n);
+
+            stopWatch.Stop();
+            Console.WriteLine($"{calcCount} calculations took {stopWatch.ElapsedMilliseconds}ms.");
         }
     }
 }

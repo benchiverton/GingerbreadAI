@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NeuralNetwork.Data.Extensions
 {
-    public static class NodeLayerExtension
+    public static class NodeGroupExtensions
     {
         /// <summary>
         ///     Extension method to do a foreach loop with an index
