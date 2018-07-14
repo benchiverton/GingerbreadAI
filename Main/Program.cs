@@ -21,8 +21,9 @@ namespace Main
             {
                 inputs[i] = 1;
             }
-
-            var results = NodeGroupCalculations.GetResult(output, inputs);
+            Console.WriteLine(output.ToString(true));
+            NodeGroupCalculations.GetResult(output, inputs);
+            var results = output.Outputs;
             Console.WriteLine($"Results: {string.Join(", ", results)}");
             Console.ReadLine();
         }

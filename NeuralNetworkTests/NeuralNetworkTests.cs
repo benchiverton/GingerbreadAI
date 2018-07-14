@@ -24,7 +24,7 @@ namespace NeuralNetworkTests
             try
             {
                 var inputs = new double[5];
-                var x = NodeGroupCalculations.GetResult(outputGroup, inputs);
+                NodeGroupCalculations.GetResult(outputGroup, inputs);
                 Assert.Fail("An exception should have been thrown.");
             }
             catch (NodeNetworkException)
@@ -61,12 +61,14 @@ namespace NeuralNetworkTests
             var nodesOuter = new[] {new Node {Weights = new[] {new[] {0.9}}, BiasWeights = new[] {0.4}}};
             var outer = new NodeGroup("Inner 2", nodesOuter, new[] {inner});
 
+            NodeGroupCalculations.GetResult(outer, new[] { 0.5 });
+
             // checking that the values calculated in the inner node are correct
-            var innerResult = NodeGroupCalculations.GetResult(inner, new[] {0.5});
+            var innerResult = inner.Outputs;
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult[0], 4));
 
             // checking that the values calculated in the output are correct
-            var result = NodeGroupCalculations.GetResult(outer, new[] {0.5});
+            var result = outer.Outputs;
             Assert.AreEqual(Math.Round(0.73516286937, 4), Math.Round(result[0], 4));
         }
 
@@ -91,17 +93,18 @@ namespace NeuralNetworkTests
             // Output group
             var nodesOut = new[] {new Node{Weights = new[] {new[] {0.9}, new[] {0.9}}, BiasWeights = new[] {0.4, 0.4}}};
             var output = new NodeGroup("Output", nodesOut, new[] {inner1, inner2});
+            NodeGroupCalculations.GetResult(output, new[] { 0.5 });
 
             // checking that the values calculated in the inner1 node are correct
-            var innerResult1 = NodeGroupCalculations.GetResult(inner1, new[] {0.5});
+            var innerResult1 = inner1.Outputs;
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult1[0], 4));
 
             // checking that the values calculated in the inner2 node are correct
-            var innerResult2 = NodeGroupCalculations.GetResult(inner2, new[] {0.5});
+            var innerResult2 = inner2.Outputs;
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult2[0], 4));
 
             // checking that the values calculated in the output are correct
-            var result = NodeGroupCalculations.GetResult(output, new[] {0.5});
+            var result = output.Outputs;
             Assert.AreEqual(Math.Round(0.8851320938059, 4), Math.Round(result[0], 4));
         }
 

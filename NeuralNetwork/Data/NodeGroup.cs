@@ -23,6 +23,11 @@ namespace NeuralNetwork.Data
         public NodeGroup[] PreviousGroups { get; set; }
 
         /// <summary>
+        ///     The current output of this layer
+        /// </summary>
+        public double[] Outputs { get; set; }
+
+        /// <summary>
         ///     Should be used to set up the input
         /// </summary>
         /// <param name="name"></param>
@@ -32,6 +37,7 @@ namespace NeuralNetwork.Data
             Name = name;
             Nodes = new Node[nodeCount];
             PreviousGroups = new NodeGroup[0];
+            Outputs = new double[nodeCount];
         }
 
         /// <summary>
@@ -47,6 +53,7 @@ namespace NeuralNetwork.Data
             for (var i = 0; i < nodeCount; i++)
                 Nodes[i] = new Node(previousGroups);
             PreviousGroups = previousGroups;
+            Outputs = new double[nodeCount];
         }
 
         /// <summary>
@@ -60,20 +67,32 @@ namespace NeuralNetwork.Data
             Name = name;
             Nodes = nodes;
             PreviousGroups = previousGroup;
+            Outputs = new double[nodes.Length];
         }
 
-        public override string ToString()
+        public string ToString(bool recurse = false, int layer = 0)
         {
-            var s = new StringBuilder($"Node Group: {Name}\n");
-            for (var i = 0; i < Nodes.Length; i++)
-                s.Append($"Node {i}:\n{Nodes[i]}");
-            if (PreviousGroups != null)
+            string indentation = "";
+            for(int i=0; i<layer; i++)
             {
-                s.Append("Previous Groups:\n");
-                foreach (var nodeGroup in PreviousGroups)
-                    s.Append($"{nodeGroup.Name}\n");
+                indentation += "    ";
             }
-            s.Append("----------\n");
+
+            var s = new StringBuilder($"{indentation}Node Group: {Name}; Node count: {Nodes.Length}\n");
+            s.Append($"{indentation}Previous Groups:\n");
+
+            layer++;
+            foreach (var nodeGroup in PreviousGroups)
+            {
+                if (recurse)
+                {
+                    s.Append(nodeGroup.ToString(true, layer));
+                }
+                else
+                {
+                    s.Append($"{indentation}Node Group: {nodeGroup.Name}; Node count: {nodeGroup.Nodes.Length}\n");
+                }
+            }
             return s.ToString();
         }
     }
