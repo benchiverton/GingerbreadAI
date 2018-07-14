@@ -16,28 +16,20 @@ namespace NeuralNetworkTests
         [TestMethod]
         public void TestGetResultIncorrectInput()
         {
-            var n = new NodeNetwork();
 
             // Input group
             var inputGroup = new NodeGroup("Input Group", 10);
-            NodeNetworkCalculations.AddNodeGroup(inputGroup, n);
-
             var outputGroup = new NodeGroup("Output Group", 10, new[] {inputGroup});
-            NodeNetworkCalculations.AddNodeGroup(outputGroup, n);
 
             try
             {
                 var inputs = new double[5];
-                NodeNetworkCalculations.GetResult(inputs, n);
+                var x = NodeGroupCalculations.GetResult(outputGroup, inputs);
                 Assert.Fail("An exception should have been thrown.");
             }
-            catch (NodeNetworkException ex)
+            catch (NodeNetworkException)
             {
-                Assert.AreEqual("Please enter the correct amount of inputs for your network.", ex.Message);
-            }
-            catch (Exception)
-            {
-                Assert.Fail("The Exception thrown was not of type NodeNetworkException.");
+                // this is meant to be hit, yay!
             }
         }
 
@@ -51,11 +43,8 @@ namespace NeuralNetworkTests
         [TestMethod]
         public void TestBasicNetworkResult()
         {
-            var n = new NodeNetwork();
-
             // Input group
             var inputGroup = new NodeGroup("Input Group", 1);
-            NodeNetworkCalculations.AddNodeGroup(inputGroup, n);
 
             // Hidden group
             var nodesInner = new[]
@@ -67,19 +56,17 @@ namespace NeuralNetworkTests
                 }
             };
             var inner = new NodeGroup("Inner 1", nodesInner, new[] {inputGroup});
-            NodeNetworkCalculations.AddNodeGroup(inner, n);
 
             // Output group
             var nodesOuter = new[] {new Node {Weights = new[] {new[] {0.9}}, BiasWeights = new[] {0.4}}};
             var outer = new NodeGroup("Inner 2", nodesOuter, new[] {inner});
-            NodeNetworkCalculations.AddNodeGroup(outer, n);
 
             // checking that the values calculated in the inner node are correct
-            var innerResult = NodeGroupCalculations.GetResult(new[] {0.5}, inner);
+            var innerResult = NodeGroupCalculations.GetResult(inner, new[] {0.5});
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult[0], 4));
 
             // checking that the values calculated in the output are correct
-            var result = NodeNetworkCalculations.GetResult(new[] {0.5}, n);
+            var result = NodeGroupCalculations.GetResult(outer, new[] {0.5});
             Assert.AreEqual(Math.Round(0.73516286937, 4), Math.Round(result[0], 4));
         }
 
@@ -90,37 +77,31 @@ namespace NeuralNetworkTests
         [TestMethod]
         public void TestMultipleGroup()
         {
-            var n = new NodeNetwork();
-
             // Input group
             var inputGroup = new NodeGroup("Input Group", 1);
-            NodeNetworkCalculations.AddNodeGroup(inputGroup, n);
 
             // Hidden group 1
             var nodesInner1 = new[] {new Node{Weights = new[] {new[] {0.2}}, BiasWeights = new[] {0.7}}};
             var inner1 = new NodeGroup("Inner 1", nodesInner1, new[] {inputGroup});
-            NodeNetworkCalculations.AddNodeGroup(inner1, n);
 
             // Hidden group 2
             var nodesInner2 = new[] {new Node{Weights = new[] {new[] {0.2}}, BiasWeights = new[] {0.7}}};
             var inner2 = new NodeGroup("Inner 2", nodesInner2, new[] {inputGroup});
-            NodeNetworkCalculations.AddNodeGroup(inner2, n);
 
             // Output group
             var nodesOut = new[] {new Node{Weights = new[] {new[] {0.9}, new[] {0.9}}, BiasWeights = new[] {0.4, 0.4}}};
             var output = new NodeGroup("Output", nodesOut, new[] {inner1, inner2});
-            NodeNetworkCalculations.AddNodeGroup(output, n);
 
             // checking that the values calculated in the inner1 node are correct
-            var innerResult1 = NodeGroupCalculations.GetResult(new[] {0.5}, inner1);
+            var innerResult1 = NodeGroupCalculations.GetResult(inner1, new[] {0.5});
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult1[0], 4));
 
             // checking that the values calculated in the inner2 node are correct
-            var innerResult2 = NodeGroupCalculations.GetResult(new[] {0.5}, inner2);
+            var innerResult2 = NodeGroupCalculations.GetResult(inner2, new[] {0.5});
             Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult2[0], 4));
 
             // checking that the values calculated in the output are correct
-            var result = NodeNetworkCalculations.GetResult(new[] {0.5}, n);
+            var result = NodeGroupCalculations.GetResult(output, new[] {0.5});
             Assert.AreEqual(Math.Round(0.8851320938059, 4), Math.Round(result[0], 4));
         }
 
@@ -151,21 +132,13 @@ namespace NeuralNetworkTests
         public void TestGetResultEfficiency()
         {
             const int calcCount = 5000;
-            var n = new NodeNetwork();
 
             var group = new NodeGroup("Input", 20);
-            NodeNetworkCalculations.AddNodeGroup(group, n);
-
             var inner1 = new NodeGroup("Inner1", 100, new[] {group});
-            NodeNetworkCalculations.AddNodeGroup(inner1, n);
-
             var inner2 = new NodeGroup("Inner2", 100, new[] {group});
-            NodeNetworkCalculations.AddNodeGroup(inner2, n);
-
             var output = new NodeGroup("Output", 20, new[] {inner1, inner2});
-            NodeNetworkCalculations.AddNodeGroup(output, n);
 
-            Initialiser.Initialise(new Random(), n);
+            Initialiser.Initialise(new Random(), output);
 
             var inputs = new double[20];
             for (var i = 0; i < inputs.Length; i++)
@@ -176,7 +149,7 @@ namespace NeuralNetworkTests
 
             // Gets the result every time this loop iterates
             for (var i = 0; i < calcCount; i++)
-                NodeNetworkCalculations.GetResult(inputs, n);
+                NodeGroupCalculations.GetResult(output, inputs);
 
             stopWatch.Stop();
             Console.WriteLine($"{calcCount} calculations took {stopWatch.ElapsedMilliseconds}ms.");

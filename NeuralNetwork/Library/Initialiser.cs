@@ -28,18 +28,13 @@ namespace NeuralNetwork.Library
         public static void Initialise(Random rand, NodeGroup nodeGroup)
         {
             foreach (var node in nodeGroup.Nodes)
+            {
                 Initialise(rand, node);
-        }
-
-        /// <summary>
-        ///     Initialises each node within the network with random weights.
-        /// </summary>
-        /// <param name="rand"></param>
-        /// <param name="nodeNetwork"></param>
-        public static void Initialise(Random rand, NodeNetwork nodeNetwork)
-        {
-            foreach (var group in nodeNetwork.Groups)
-                Initialise(rand, group);
+            }
+            foreach (var nodeGroupPrev in nodeGroup.PreviousGroups)
+            {
+                Initialise(rand, nodeGroupPrev);
+            }
         }
     }
 }

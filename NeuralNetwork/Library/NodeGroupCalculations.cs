@@ -1,5 +1,6 @@
 ﻿using NeuralNetwork.Data;
 using NeuralNetwork.Data.Extensions;
+using NeuralNetwork.Exceptions;
 
 namespace NeuralNetwork.Library
 {
@@ -11,8 +12,14 @@ namespace NeuralNetwork.Library
         /// <param name="inputs"></param>
         /// <param name="nodeGroup"></param>
         /// <returns></returns>
-        public static double[] GetResult(double[] inputs, NodeGroup nodeGroup)
+        public static double[] GetResult(NodeGroup nodeGroup, double[] inputs)
         {
+            // this should happen if you have provided the incorrect amount of input for your layer
+            if (nodeGroup.PreviousGroups.Length == 0 
+                && inputs.Length != nodeGroup.Nodes.Length)
+            {
+                throw new NodeNetworkException();
+            }
             // this should only happen when you reach an input group
             if (nodeGroup.PreviousGroups == null)
                 return inputs;
@@ -22,7 +29,7 @@ namespace NeuralNetwork.Library
             nodeGroup.PreviousGroups.Each((group, i) =>
             {
                 // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
-                var groupInputs = GetResult(inputs, group);
+                var groupInputs = GetResult(group, inputs);
 
                 // iterate through Nodes in the current group
                 for (var j = 0; j < nodeGroup.Nodes.Length; j++)

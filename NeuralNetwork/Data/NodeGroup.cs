@@ -31,7 +31,7 @@ namespace NeuralNetwork.Data
         {
             Name = name;
             Nodes = new Node[nodeCount];
-            PreviousGroups = null;
+            PreviousGroups = new NodeGroup[0];
         }
 
         /// <summary>
