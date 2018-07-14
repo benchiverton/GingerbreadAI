@@ -5,10 +5,10 @@ using NeuralNetwork.Data;
 using NeuralNetwork.Exceptions;
 using NeuralNetwork.Library;
 
-namespace NeuralNetworkTests
+namespace NeuralNetworkTests.Library
 {
     [TestClass]
-    public class NeuralNetworkTests
+    public class NodeGroupCalculationsTest
     {
         /// <summary>
         ///     Test to verify that if you enter an input array of an incorrect magnitude, then the correct erro is thrown.
@@ -19,7 +19,7 @@ namespace NeuralNetworkTests
 
             // Input group
             var inputGroup = new NodeGroup("Input Group", 10);
-            var outputGroup = new NodeGroup("Output Group", 10, new[] {inputGroup});
+            var outputGroup = new NodeGroup("Output Group", 10, new[] { inputGroup });
 
             try
             {
@@ -55,11 +55,11 @@ namespace NeuralNetworkTests
                     BiasWeights = new[] {0.7}
                 }
             };
-            var inner = new NodeGroup("Inner 1", nodesInner, new[] {inputGroup});
+            var inner = new NodeGroup("Inner 1", nodesInner, new[] { inputGroup });
 
             // Output group
-            var nodesOuter = new[] {new Node {Weights = new[] {new[] {0.9}}, BiasWeights = new[] {0.4}}};
-            var outer = new NodeGroup("Inner 2", nodesOuter, new[] {inner});
+            var nodesOuter = new[] { new Node { Weights = new[] { new[] { 0.9 } }, BiasWeights = new[] { 0.4 } } };
+            var outer = new NodeGroup("Inner 2", nodesOuter, new[] { inner });
 
             NodeGroupCalculations.GetResult(outer, new[] { 0.5 });
 
@@ -83,16 +83,16 @@ namespace NeuralNetworkTests
             var inputGroup = new NodeGroup("Input Group", 1);
 
             // Hidden group 1
-            var nodesInner1 = new[] {new Node{Weights = new[] {new[] {0.2}}, BiasWeights = new[] {0.7}}};
-            var inner1 = new NodeGroup("Inner 1", nodesInner1, new[] {inputGroup});
+            var nodesInner1 = new[] { new Node { Weights = new[] { new[] { 0.2 } }, BiasWeights = new[] { 0.7 } } };
+            var inner1 = new NodeGroup("Inner 1", nodesInner1, new[] { inputGroup });
 
             // Hidden group 2
-            var nodesInner2 = new[] {new Node{Weights = new[] {new[] {0.2}}, BiasWeights = new[] {0.7}}};
-            var inner2 = new NodeGroup("Inner 2", nodesInner2, new[] {inputGroup});
+            var nodesInner2 = new[] { new Node { Weights = new[] { new[] { 0.2 } }, BiasWeights = new[] { 0.7 } } };
+            var inner2 = new NodeGroup("Inner 2", nodesInner2, new[] { inputGroup });
 
             // Output group
-            var nodesOut = new[] {new Node{Weights = new[] {new[] {0.9}, new[] {0.9}}, BiasWeights = new[] {0.4, 0.4}}};
-            var output = new NodeGroup("Output", nodesOut, new[] {inner1, inner2});
+            var nodesOut = new[] { new Node { Weights = new[] { new[] { 0.9 }, new[] { 0.9 } }, BiasWeights = new[] { 0.4, 0.4 } } };
+            var output = new NodeGroup("Output", nodesOut, new[] { inner1, inner2 });
             NodeGroupCalculations.GetResult(output, new[] { 0.5 });
 
             // checking that the values calculated in the inner1 node are correct
@@ -137,9 +137,9 @@ namespace NeuralNetworkTests
             const int calcCount = 5000;
 
             var group = new NodeGroup("Input", 20);
-            var inner1 = new NodeGroup("Inner1", 100, new[] {group});
-            var inner2 = new NodeGroup("Inner2", 100, new[] {group});
-            var output = new NodeGroup("Output", 20, new[] {inner1, inner2});
+            var inner1 = new NodeGroup("Inner1", 100, new[] { group });
+            var inner2 = new NodeGroup("Inner2", 100, new[] { group });
+            var output = new NodeGroup("Output", 20, new[] { inner1, inner2 });
 
             Initialiser.Initialise(new Random(), output);
 

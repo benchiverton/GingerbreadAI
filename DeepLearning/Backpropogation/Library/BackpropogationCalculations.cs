@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeepLearning
+namespace Backpropogation.Library
 {
     public static class BackpropogationCalculations
     {

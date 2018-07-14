@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork", "NeuralNetwork\NeuralNetwork.csproj", "{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetworkTests", "NeuralNetworkTests\NeuralNetworkTests.csproj", "{58328F22-4344-4A7F-B641-0A4B918E2B46}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{7699DD5A-EBBD-4F11-8681-9BD9823F3021}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Networks", "Networks", "{3489D91B-5D90-4015-B821-B9D9658106F8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Training", "Training", "{9F6E6D3E-D143-4AE7-8DBD-1E7DA46869BA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeepLearning", "DeepLearning", "{D510F750-F9DD-467E-996E-B47FE58EDB09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepLearning", "DeepLearning\DeepLearning.csproj", "{A38807BE-03C6-44BE-A773-A569E21A3AF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backpropogation", "DeepLearning\Backpropogation\Backpropogation.csproj", "{E1C8C1EA-4262-4D51-B638-5631BE19F08E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork", "Networks\NeuralNetwork\NeuralNetwork.csproj", "{D2051806-8B73-4803-9E8D-A2AFE0D24BFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackpropogationTest", "DeepLearning\BackpropogationTest\BackpropogationTest.csproj", "{0180F706-1533-4289-8EFE-EB5D9629D6F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetworkTests", "Networks\NeuralNetworkTests\NeuralNetworkTests.csproj", "{D5DECE49-43E6-48D6-9113-C4A3BC3D15CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,30 +23,35 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58328F22-4344-4A7F-B641-0A4B918E2B46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58328F22-4344-4A7F-B641-0A4B918E2B46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58328F22-4344-4A7F-B641-0A4B918E2B46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58328F22-4344-4A7F-B641-0A4B918E2B46}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A38807BE-03C6-44BE-A773-A569E21A3AF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A38807BE-03C6-44BE-A773-A569E21A3AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A38807BE-03C6-44BE-A773-A569E21A3AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A38807BE-03C6-44BE-A773-A569E21A3AF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1C8C1EA-4262-4D51-B638-5631BE19F08E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1C8C1EA-4262-4D51-B638-5631BE19F08E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1C8C1EA-4262-4D51-B638-5631BE19F08E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1C8C1EA-4262-4D51-B638-5631BE19F08E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2051806-8B73-4803-9E8D-A2AFE0D24BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2051806-8B73-4803-9E8D-A2AFE0D24BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2051806-8B73-4803-9E8D-A2AFE0D24BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2051806-8B73-4803-9E8D-A2AFE0D24BFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0180F706-1533-4289-8EFE-EB5D9629D6F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0180F706-1533-4289-8EFE-EB5D9629D6F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0180F706-1533-4289-8EFE-EB5D9629D6F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0180F706-1533-4289-8EFE-EB5D9629D6F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5DECE49-43E6-48D6-9113-C4A3BC3D15CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5DECE49-43E6-48D6-9113-C4A3BC3D15CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5DECE49-43E6-48D6-9113-C4A3BC3D15CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5DECE49-43E6-48D6-9113-C4A3BC3D15CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{F56F67B0-A054-4E5C-BECC-8AFA1AEF909C} = {7699DD5A-EBBD-4F11-8681-9BD9823F3021}
-		{58328F22-4344-4A7F-B641-0A4B918E2B46} = {7699DD5A-EBBD-4F11-8681-9BD9823F3021}
-		{A38807BE-03C6-44BE-A773-A569E21A3AF7} = {9F6E6D3E-D143-4AE7-8DBD-1E7DA46869BA}
+		{E1C8C1EA-4262-4D51-B638-5631BE19F08E} = {D510F750-F9DD-467E-996E-B47FE58EDB09}
+		{D2051806-8B73-4803-9E8D-A2AFE0D24BFC} = {3489D91B-5D90-4015-B821-B9D9658106F8}
+		{0180F706-1533-4289-8EFE-EB5D9629D6F3} = {D510F750-F9DD-467E-996E-B47FE58EDB09}
+		{D5DECE49-43E6-48D6-9113-C4A3BC3D15CA} = {3489D91B-5D90-4015-B821-B9D9658106F8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {316817EF-00A2-4C09-8C9C-7B0ABF43BF05}

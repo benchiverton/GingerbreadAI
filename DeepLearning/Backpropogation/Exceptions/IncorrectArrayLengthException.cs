@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeepLearning.Exceptions
+namespace Backpropogation.Exceptions
 {
     public class IncorrectArrayLengthException : Exception
     {

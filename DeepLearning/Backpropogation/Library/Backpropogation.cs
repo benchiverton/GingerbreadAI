@@ -1,21 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
-using DeepLearning.Data;
-using DeepLearning.Exceptions;
+using Backpropogation.Data;
+using Backpropogation.Exceptions;
 using NeuralNetwork.Data;
 using NeuralNetwork.Library;
 
-namespace DeepLearning
+namespace Backpropogation.Library
 {
     public class Backpropogation
     {
         public double LearningRate { get; set; }
-
-        public BackpropogationGroupData[] GetBackpropogationGroupsData(NodeGroup nodeGroup)
-        {
-            throw new NotImplementedException();
-        }
 
         public void TeachNetwork(BackpropogationGroupData[] network, double[] inputs, double[] targetOutputs)
         {
@@ -32,19 +28,7 @@ namespace DeepLearning
         // needs to return the sumDeltaWeight
         public static void Backpropogate(BackpropogationGroupData workingGroup)
         {
-            if (workingGroup.FeedingGroups == null)
-            {
-                //workingGroup.SumDeltaWeight = 0;
-                return;
-            }
-
-            foreach (var feedingGroup in workingGroup.FeedingGroups)
-            {
-                //if (feedingGroup.SumDeltaWeight == null)
-                //{
-                    
-                //}
-            }
+            throw new NotImplementedException();
         }
     }
 }

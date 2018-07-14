@@ -15,9 +15,9 @@ namespace NeuralNetwork.Library
             if (node == null) return;
             foreach (var weightArr in node.Weights)
                 for (var j = 0; j < weightArr.Length; j++)
-                    weightArr[j] = (double) rand.Next(2000000) / 1000000 - 1;
+                    weightArr[j] = (double)rand.Next(2000000) / 1000000 - 1;
             for (var i = 0; i < node.BiasWeights.Length; i++)
-                node.BiasWeights[i] = (double) rand.Next(2000000) / 1000000 - 1;
+                node.BiasWeights[i] = (double)rand.Next(2000000) / 1000000 - 1;
         }
 
         /// <summary>

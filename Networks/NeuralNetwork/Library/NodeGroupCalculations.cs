@@ -15,7 +15,7 @@ namespace NeuralNetwork.Library
         public static void GetResult(NodeGroup nodeGroup, double[] inputs)
         {
             // this should happen if you have provided the incorrect amount of input for your layer
-            if (nodeGroup.PreviousGroups.Length == 0 
+            if (nodeGroup.PreviousGroups.Length == 0
                 && inputs.Length != nodeGroup.Nodes.Length)
             {
                 throw new NodeNetworkException();
@@ -28,7 +28,7 @@ namespace NeuralNetwork.Library
 
             //ensure that the output array is clear
             System.Array.Clear(nodeGroup.Outputs, 0, nodeGroup.Outputs.Length);
-            
+
             // select a group feeding into this one
             nodeGroup.PreviousGroups.Each((group, i) =>
             {

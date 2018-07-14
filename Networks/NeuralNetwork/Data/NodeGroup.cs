@@ -51,7 +51,9 @@ namespace NeuralNetwork.Data
             Name = name;
             Nodes = new Node[nodeCount];
             for (var i = 0; i < nodeCount; i++)
+            {
                 Nodes[i] = new Node(previousGroups);
+            }
             PreviousGroups = previousGroups;
             Outputs = new double[nodeCount];
         }
@@ -73,7 +75,7 @@ namespace NeuralNetwork.Data
         public string ToString(bool recurse = false, int layer = 0)
         {
             string indentation = "";
-            for(int i=0; i<layer; i++)
+            for (int i = 0; i < layer; i++)
             {
                 indentation += "    ";
             }

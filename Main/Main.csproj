@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj" />
+    <ProjectReference Include="..\DeepLearning\Backpropogation\Backpropogation.csproj" />
+    <ProjectReference Include="..\Networks\NeuralNetwork\NeuralNetwork.csproj" />
   </ItemGroup>
 
 </Project>
