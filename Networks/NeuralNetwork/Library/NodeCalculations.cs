@@ -3,7 +3,7 @@ using NeuralNetwork.Data;
 
 namespace NeuralNetwork.Library
 {
-    public class NodeCalculations
+    public static class NodeCalculations
     {
         /// <summary>
         ///     Applies the logistic function to an value, returning the result.

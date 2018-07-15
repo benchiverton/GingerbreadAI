@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace NeuralNetwork.Library
 {
-    public class NodeGroupMethods
+    public static class NodeGroupMethods
     {
         public static NodeGroup[] GetAllGroupsInSystem(NodeGroup nodeGroup)
         {

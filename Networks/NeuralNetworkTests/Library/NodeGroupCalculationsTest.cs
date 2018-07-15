@@ -115,17 +115,26 @@ namespace NeuralNetworkTests.Library
         [TestMethod]
         public void TestMultiNodeGroup()
         {
-            throw new NotImplementedException();
-        }
+            var inputGroup = new NodeGroup("Input Group", 2);
+            var nodesInner = new[] {
+                new Node { Weights = new[] { new[] { 0.02, 0.07 }, }, BiasWeights = new[] { (double) 0 } },
+                new Node { Weights = new[] { new[] { 0.03, 0.11 }, }, BiasWeights = new[] { (double) 0 } },
+                new Node { Weights = new[] { new[] { 0.05, 0.13 }, }, BiasWeights = new[] { (double) 0 } },
+            };
+            var inner = new NodeGroup("Inner 1", nodesInner, new[] { inputGroup });
+            var nodesOutput = new[] {
+                new Node { Weights = new[] { new[] { 0.17, 0.23, 0.31 }, }, BiasWeights = new[] { (double) 0 } },
+                new Node { Weights = new[] { new[] { 0.19, 0.29, 0.37 }, }, BiasWeights = new[] { (double) 0 } },
+            };
+            var output = new NodeGroup("Inner 1", nodesOutput, new[] { inner });
 
-        // TODO: add a test method which tests multiple input groups
-        /// <summary>
-        ///     Test to varify that if we have more than one input later, the correct output is calculated
-        /// </summary>
-        [TestMethod]
-        public void TestMultipleInputs()
-        {
-            throw new NotImplementedException();
+            NodeGroupCalculations.GetResult(output, new[] { 41.0, 43.0 });
+
+            Assert.AreEqual(Math.Round(inner.Outputs[0], 8), Math.Round(0.978751677288986, 8));
+            Assert.AreEqual(Math.Round(inner.Outputs[1], 8), Math.Round(0.99742672684619, 8));
+            Assert.AreEqual(Math.Round(inner.Outputs[2], 8), Math.Round(0.99951940263283, 8));
+            Assert.AreEqual(Math.Round(output.Outputs[0], 8), Math.Round(0.669438581764625, 8));
+            Assert.AreEqual(Math.Round(output.Outputs[1], 8), Math.Round(0.699525372246435, 8));
         }
 
         /// <summary>

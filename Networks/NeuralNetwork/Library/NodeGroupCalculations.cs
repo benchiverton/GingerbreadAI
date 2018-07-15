@@ -4,7 +4,7 @@ using NeuralNetwork.Exceptions;
 
 namespace NeuralNetwork.Library
 {
-    public class NodeGroupCalculations
+    public static class NodeGroupCalculations
     {
         /// <summary>
         ///     Returns the result from this nodeGroup, using its previous groups.
@@ -21,8 +21,9 @@ namespace NeuralNetwork.Library
                 throw new NodeNetworkException();
             }
             // this should only happen when you reach an input group
-            if (nodeGroup.PreviousGroups == null)
+            if (nodeGroup.PreviousGroups.Length == 0)
             {
+                nodeGroup.Outputs = inputs;
                 return;
             }
 
