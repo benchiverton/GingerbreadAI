@@ -9,7 +9,7 @@ namespace NeuralNetwork.Library
     public class Initialiser
     {
         /// <summary>
-        ///     Initialises this Node with random weights.
+        ///     Initialises a Node with random weights.
         /// </summary>
         /// <param name="rand"></param>
         /// <param name="node"></param>
@@ -41,12 +41,9 @@ namespace NeuralNetwork.Library
             {
                 Initialise(rand, node);
             }
-            foreach (var nodeGroupPrev in nodeGroup.PreviousGroups)
+            foreach (var nodeGroupPrev in nodeGroup.PreviousLayers)
             {
-                if(nodeGroupPrev.PreviousGroups.Length != 0)
-                {
-                    Initialise(rand, nodeGroupPrev);
-                }
+                Initialise(rand, nodeGroupPrev);
             }
         }
     }

@@ -5,30 +5,28 @@ namespace NeuralNetwork.Data
 {
     using System.Linq;
 
-    /// <summary>
-    ///     A class containing the properties and methods that a single node in a network requires.
-    /// </summary>
     public class Node
     {
         /// <summary>
-        ///     The weights associated with a node. These values correspond to the nodeGroup which
-        ///     feed into the nodeGroup containing this node, ie Weights[1][0] => nodeGroupPrev[1].Nodes[0].
+        ///     The weights, with reference to the layer & node the value id being mapped from
         /// </summary>
         public Dictionary<NodeLayer, Dictionary<Node, double>> Weights { get; set; }
 
         /// <summary>
-        ///     The bias that is passed into this node from the previous groupSSS!!
+        ///     The bias weights, with reference to the layer the value is mapped from
         /// </summary>
         public Dictionary<NodeLayer, double> BiasWeights;
 
+        /// <summary>
+        ///     The output of the node from the last results calculation.
+        /// </summary>
+        public double Output { get; set; }
+
         public Node()
         {
+            // default constructor
         }
 
-        /// <summary>
-        ///     Constructs a node with the correct amount of weights, given an array of the NodeGroups which feed into this node.
-        /// </summary>
-        /// <param name="nodeGroupPrev"></param>
         public Node(IReadOnlyList<NodeLayer> nodeGroupPrev)
         {
             Weights = new Dictionary<NodeLayer, Dictionary<Node, double>>();
@@ -52,7 +50,7 @@ namespace NeuralNetwork.Data
         public override string ToString()
         {
             var s = new StringBuilder();
-            foreach(var layerWeightKey in Weights.Keys.ToList())
+            foreach (var layerWeightKey in Weights.Keys.ToList())
             {
                 s.Append($"Node Layer {layerWeightKey.Name}:\n");
                 foreach (var nodeWeightKey in Weights[layerWeightKey].Keys.ToList())

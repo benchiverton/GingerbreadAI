@@ -10,7 +10,7 @@ namespace Main
     {
         public static void Main()
         {
-            var group = new NodeLayer("Input", 20);
+            var group = new NodeLayer("Input", 20, new NodeLayer[0]);
             var inner1 = new NodeLayer("Inner1", 20, new[] { group });
             var inner2 = new NodeLayer("Inner2", 20, new[] { group });
             var output = new NodeLayer("Output", 20, new[] { inner1, inner2 });
@@ -29,11 +29,10 @@ namespace Main
             {
                 OutputLayer = output
             };
-            nodeLayerLogic.PopulateResults(inputs);
 
-            var results = output.Outputs;
+            var results = nodeLayerLogic.GetResults(inputs);
             Console.WriteLine($"Inputs: {string.Join(", ", inputs.Select(i => Math.Round(i, 3)))}");
-            Console.WriteLine($"Results: {string.Join(", ", results.Select(r => Math.Round(r.Value, 3)))}");
+            Console.WriteLine($"Results: {string.Join(", ", results.Select(r => Math.Round(r, 3)))}");
 
             Console.ReadLine();
         }
