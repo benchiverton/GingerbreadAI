@@ -1,24 +1,24 @@
-using Backpropogation.Library;
+using Backpropagation.Library;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralNetwork.Data;
 using System.Linq;
 
-namespace BackpropogationTest
+namespace BackpropagationTest
 {
     [TestClass]
     public class UnitTest1
     {
         [TestMethod]
-        public void GenerateBackpropogationGroupsDataTest()
+        public void GenerateBackpropagationGroupsDataTest()
         {
-            var inputGroup = new NodeGroup("Input Group", 1);
-            var inner1 = new NodeGroup("Inner 1", 10, new[] { inputGroup });
-            var inner2 = new NodeGroup("Inner 2", 10, new[] { inputGroup });
-            var inner3 = new NodeGroup("Inner 3", 10, new[] { inner1 });
-            var inner4 = new NodeGroup("Inner 4", 10, new[] { inner3 });
-            var output = new NodeGroup("Output", 10, new[] { inner2, inner4 });
+            var inputGroup = new NodeLayer("Input Group", 1);
+            var inner1 = new NodeLayer("Inner 1", 10, new[] { inputGroup });
+            var inner2 = new NodeLayer("Inner 2", 10, new[] { inputGroup });
+            var inner3 = new NodeLayer("Inner 3", 10, new[] { inner1 });
+            var inner4 = new NodeLayer("Inner 4", 10, new[] { inner3 });
+            var output = new NodeLayer("Output", 10, new[] { inner2, inner4 });
 
-            var backPropGroupData = BackpropogationMethods.GenerateBackpropogationGroupsData(output);
+            var backPropGroupData = BackpropagationMethods.GenerateBackpropagationBindingModel(output);
 
             Assert.AreEqual(inputGroup, backPropGroupData.NodeGroup);
             CollectionAssert.Contains(backPropGroupData.FeedingGroups.Select(x => x.NodeGroup).ToArray(), inner1);

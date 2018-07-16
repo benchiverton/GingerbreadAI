@@ -30,7 +30,7 @@ namespace NeuralNetwork.Data
         ///     Constructs a node with the correct amount of weights, given an array of the NodeGroups which feed into this node.
         /// </summary>
         /// <param name="nodeGroupPrev"></param>
-        public Node(IReadOnlyList<NodeGroup> nodeGroupPrev)
+        public Node(IReadOnlyList<NodeLayer> nodeGroupPrev)
         {
             Weights = new double[nodeGroupPrev.Count][];
             // each double[] in weights corresponds to the relevant array of nodes in the previous group.

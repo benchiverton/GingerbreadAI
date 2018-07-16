@@ -1,16 +1,14 @@
 ﻿using NeuralNetwork.Data;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace NeuralNetwork.Library
 {
-    public static class NodeGroupMethods
+    public static class NodeLayerMethods
     {
-        public static NodeGroup[] GetAllGroupsInSystem(NodeGroup nodeGroup)
+        public static NodeLayer[] GetAllGroupsInSystem(NodeLayer nodeGroup)
         {
-            var result = new List<NodeGroup> { nodeGroup };
+            var result = new List<NodeLayer> { nodeGroup };
 
             foreach (var prevNodeGroup in nodeGroup.PreviousGroups)
             {

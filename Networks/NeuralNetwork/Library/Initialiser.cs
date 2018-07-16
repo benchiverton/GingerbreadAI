@@ -25,7 +25,7 @@ namespace NeuralNetwork.Library
         /// </summary>
         /// <param name="rand"></param>
         /// <param name="nodeGroup"></param>
-        public static void Initialise(Random rand, NodeGroup nodeGroup)
+        public static void Initialise(Random rand, NodeLayer nodeGroup)
         {
             foreach (var node in nodeGroup.Nodes)
             {

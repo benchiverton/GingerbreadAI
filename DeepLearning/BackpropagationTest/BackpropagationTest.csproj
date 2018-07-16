@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Networks\NeuralNetwork\NeuralNetwork.csproj" />
-    <ProjectReference Include="..\Backpropogation\Backpropogation.csproj" />
+    <ProjectReference Include="..\Backpropagation\Backpropagation.csproj" />
   </ItemGroup>
 
 </Project>

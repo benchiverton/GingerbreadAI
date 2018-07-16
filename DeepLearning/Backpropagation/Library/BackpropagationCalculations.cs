@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Backpropogation.Library
+﻿namespace Backpropagation.Library
 {
-    public static class BackpropogationCalculations
+    public static class BackpropagationCalculations
     {
         public static double GetDeltaOutput(double actual, double target)
         {

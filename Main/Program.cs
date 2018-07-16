@@ -4,37 +4,36 @@ using NeuralNetwork.Library;
 
 namespace Main
 {
+    using System.Linq;
+
     public class Program
     {
         public static void Main()
         {
+            var group = new NodeLayer("Input", 20);
+            var inner1 = new NodeLayer("Inner1", 20, new[] { group });
+            var inner2 = new NodeLayer("Inner2", 20, new[] { group });
+            var output = new NodeLayer("Output", 20, new[] { inner1, inner2 });
 
-            //var group = new NodeGroup("Input", 20);
-            //var inner1 = new NodeGroup("Inner1", 20, new[] { group });
-            //var inner2 = new NodeGroup("Inner2", 20, new[] { group });
-            //var output = new NodeGroup("Output", 20, new[] { inner1, inner2 });
+            var rand = new Random();
+            Initialiser.Initialise(rand, output);
 
-            //Initialiser.Initialise(new Random(), output);
-
-            //var inputs = new double[20];
-            //for (var i = 0; i < inputs.Length; i++)
-            //{
-            //    inputs[i] = 1;
-            //}
-            //Console.WriteLine(output.ToString(true));
-            //NodeGroupCalculations.GetResult(output, inputs);
-            //var results = output.Outputs;
-            //Console.WriteLine($"Results: {string.Join(", ", results)}");
-
-            var h1 = 0.978751677288986;
-            var h2 = 0.99742672684619;
-            var h3 = 0.99951940263283;
-
-            var x = new[] { 0.02 * 41 + 0.13 * 43 };
-            foreach (var y in x)
+            var inputs = new double[20];
+            for (var i = 0; i < inputs.Length; i++)
             {
-                Console.WriteLine(NodeCalculations.LogisticFunction(y) + "\n");
+                inputs[i] = (double)rand.Next(2000000) / 1000000 - 1;
             }
+            Console.WriteLine(output.ToString(true));
+
+            var nodeLayerLogic = new NodeLayerLogic
+            {
+                OutputLayer = output
+            };
+            nodeLayerLogic.PopulateResults(inputs);
+
+            var results = output.Outputs;
+            Console.WriteLine($"Inputs: {string.Join(", ", inputs.Select(i => Math.Round(i, 3)))}");
+            Console.WriteLine($"Results: {string.Join(", ", results.Select(r => Math.Round(r, 3)))}");
 
             Console.ReadLine();
         }

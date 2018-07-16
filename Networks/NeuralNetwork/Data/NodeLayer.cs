@@ -5,7 +5,7 @@ namespace NeuralNetwork.Data
     /// <summary>
     ///     The NodeGroups are stored in a Linked List, so it needs to contain a reference to the NodeGroup before it.
     /// </summary>
-    public class NodeGroup
+    public class NodeLayer
     {
         /// <summary>
         ///     The name of the node (purely for helping you design and navagate your network).
@@ -20,7 +20,7 @@ namespace NeuralNetwork.Data
         /// <summary>
         ///     An array containing the NodeGroups that feed into this one.
         /// </summary>
-        public NodeGroup[] PreviousGroups { get; set; }
+        public NodeLayer[] PreviousGroups { get; set; }
 
         /// <summary>
         ///     The current output of this layer
@@ -32,11 +32,11 @@ namespace NeuralNetwork.Data
         /// </summary>
         /// <param name="name"></param>
         /// <param name="nodeCount"></param>
-        public NodeGroup(string name, int nodeCount)
+        public NodeLayer(string name, int nodeCount)
         {
             Name = name;
             Nodes = new Node[nodeCount];
-            PreviousGroups = new NodeGroup[0];
+            PreviousGroups = new NodeLayer[0];
             Outputs = new double[nodeCount];
         }
 
@@ -46,7 +46,7 @@ namespace NeuralNetwork.Data
         /// <param name="name"></param>
         /// <param name="nodeCount"></param>
         /// <param name="previousGroups"></param>
-        public NodeGroup(string name, int nodeCount, NodeGroup[] previousGroups)
+        public NodeLayer(string name, int nodeCount, NodeLayer[] previousGroups)
         {
             Name = name;
             Nodes = new Node[nodeCount];
@@ -64,7 +64,7 @@ namespace NeuralNetwork.Data
         /// <param name="name"></param>
         /// <param name="nodes"></param>
         /// <param name="previousGroup"></param>
-        public NodeGroup(string name, Node[] nodes, NodeGroup[] previousGroup)
+        public NodeLayer(string name, Node[] nodes, NodeLayer[] previousGroup)
         {
             Name = name;
             Nodes = nodes;
