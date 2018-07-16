@@ -27,6 +27,21 @@ namespace Backpropagation.Library
         public void Backpropagate(double[] inputs, double[] targetOutputs)
         {
             var output = LayerLogic.GetResults(inputs);
+
+            // logic for backprop
         }
+
+        //// probably needs to return the deltas ??
+        //private void BackPropogate(BackpropagationBindingModel bindingModel)
+        //{
+        //    if (bindingModel.FeedingGroups.Length == 0)
+        //    {
+        //        bindingModel.BoundNodeLayer.PreviousGroups.Each((prevGroup, i) =>
+        //        {
+
+        //        }
+        //        return;
+        //    }
+        //}
     }
 }

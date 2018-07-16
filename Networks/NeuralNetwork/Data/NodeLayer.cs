@@ -2,6 +2,8 @@
 
 namespace NeuralNetwork.Data
 {
+    using System.Collections.Generic;
+
     /// <summary>
     ///     The NodeGroups are stored in a Linked List, so it needs to contain a reference to the NodeGroup before it.
     /// </summary>
@@ -25,7 +27,7 @@ namespace NeuralNetwork.Data
         /// <summary>
         ///     The current output of this layer
         /// </summary>
-        public double[] Outputs { get; set; }
+        public Dictionary<Node, double> Outputs { get; set; }
 
         /// <summary>
         ///     Should be used to set up the input
@@ -35,9 +37,18 @@ namespace NeuralNetwork.Data
         public NodeLayer(string name, int nodeCount)
         {
             Name = name;
-            Nodes = new Node[nodeCount];
+            var nodes = new List<Node>();
+            for (var i = 0; i < nodeCount; i++)
+            {
+                nodes.Add(new Node());
+            }
+            Nodes = nodes.ToArray();
             PreviousGroups = new NodeLayer[0];
-            Outputs = new double[nodeCount];
+            Outputs = new Dictionary<Node, double>();
+            foreach (var node in Nodes)
+            {
+                Outputs.Add(node, 0);
+            }
         }
 
         /// <summary>
@@ -55,27 +66,17 @@ namespace NeuralNetwork.Data
                 Nodes[i] = new Node(previousGroups);
             }
             PreviousGroups = previousGroups;
-            Outputs = new double[nodeCount];
-        }
-
-        /// <summary>
-        ///     Initialises this NodeGroup with the parameters supplied.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="nodes"></param>
-        /// <param name="previousGroup"></param>
-        public NodeLayer(string name, Node[] nodes, NodeLayer[] previousGroup)
-        {
-            Name = name;
-            Nodes = nodes;
-            PreviousGroups = previousGroup;
-            Outputs = new double[nodes.Length];
+            Outputs = new Dictionary<Node, double>();
+            foreach (var node in Nodes)
+            {
+                Outputs.Add(node, 0);
+            }
         }
 
         public string ToString(bool recurse = false, int layer = 0)
         {
-            string indentation = "";
-            for (int i = 0; i < layer; i++)
+            var indentation = "";
+            for (var i = 0; i < layer; i++)
             {
                 indentation += "    ";
             }
@@ -86,14 +87,9 @@ namespace NeuralNetwork.Data
             layer++;
             foreach (var nodeGroup in PreviousGroups)
             {
-                if (recurse)
-                {
-                    s.Append(nodeGroup.ToString(true, layer));
-                }
-                else
-                {
-                    s.Append($"{indentation}Node Group: {nodeGroup.Name}; Node count: {nodeGroup.Nodes.Length}\n");
-                }
+                s.Append(recurse
+                    ? nodeGroup.ToString(true, layer)
+                    : $"{indentation}Node Group: {nodeGroup.Name}; Node count: {nodeGroup.Nodes.Length}\n");
             }
             return s.ToString();
         }

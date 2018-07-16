@@ -3,6 +3,9 @@ using NeuralNetwork.Data;
 
 namespace NeuralNetwork.Library
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class Initialiser
     {
         /// <summary>
@@ -13,11 +16,18 @@ namespace NeuralNetwork.Library
         public static void Initialise(Random rand, Node node)
         {
             if (node == null) return;
-            foreach (var weightArr in node.Weights)
-                for (var j = 0; j < weightArr.Length; j++)
-                    weightArr[j] = (double)rand.Next(2000000) / 1000000 - 1;
-            for (var i = 0; i < node.BiasWeights.Length; i++)
-                node.BiasWeights[i] = (double)rand.Next(2000000) / 1000000 - 1;
+            foreach (var nodeWeightsKey in node.Weights.Keys.ToList())
+            {
+                foreach (var nodeKey in node.Weights[nodeWeightsKey].Keys.ToList())
+                {
+                    node.Weights[nodeWeightsKey][nodeKey] = (double)rand.Next(2000000) / 1000000 - 1;
+                }
+            }
+            var biasWeightKeys = new List<NodeLayer>(node.BiasWeights.Keys.ToList());
+            foreach (var biasWeightKey in biasWeightKeys)
+            {
+                node.BiasWeights[biasWeightKey] = (double)rand.Next(2000000) / 1000000 - 1;
+            }
         }
 
         /// <summary>
@@ -33,7 +43,10 @@ namespace NeuralNetwork.Library
             }
             foreach (var nodeGroupPrev in nodeGroup.PreviousGroups)
             {
-                Initialise(rand, nodeGroupPrev);
+                if(nodeGroupPrev.PreviousGroups.Length != 0)
+                {
+                    Initialise(rand, nodeGroupPrev);
+                }
             }
         }
     }

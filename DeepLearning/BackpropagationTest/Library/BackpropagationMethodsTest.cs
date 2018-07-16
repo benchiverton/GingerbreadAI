@@ -20,13 +20,13 @@ namespace BackpropagationTest
 
             var backPropGroupData = BackpropagationMethods.GenerateBackpropagationBindingModel(output);
 
-            Assert.AreEqual(inputGroup, backPropGroupData.NodeGroup);
-            CollectionAssert.Contains(backPropGroupData.FeedingGroups.Select(x => x.NodeGroup).ToArray(), inner1);
-            CollectionAssert.Contains(backPropGroupData.FeedingGroups.Select(x => x.NodeGroup).ToArray(), inner2);
-            Assert.AreEqual(inner3, backPropGroupData.FeedingGroups.First(fg => fg.NodeGroup.Name == "Inner 1").FeedingGroups[0].NodeGroup);
-            Assert.AreEqual(inner4, backPropGroupData.FeedingGroups.First(fg => fg.NodeGroup.Name == "Inner 1").FeedingGroups[0].FeedingGroups[0].NodeGroup);
-            Assert.AreEqual(output, backPropGroupData.FeedingGroups.First(fg => fg.NodeGroup.Name == "Inner 2").FeedingGroups[0].NodeGroup);
-            Assert.AreEqual(output, backPropGroupData.FeedingGroups.First(fg => fg.NodeGroup.Name == "Inner 1").FeedingGroups[0].FeedingGroups[0].FeedingGroups[0].NodeGroup);
+            Assert.AreEqual(inputGroup, backPropGroupData.BoundNodeLayer);
+            CollectionAssert.Contains(backPropGroupData.FeedingGroups.Select(x => x.BoundNodeLayer).ToArray(), inner1);
+            CollectionAssert.Contains(backPropGroupData.FeedingGroups.Select(x => x.BoundNodeLayer).ToArray(), inner2);
+            Assert.AreEqual(inner3, backPropGroupData.FeedingGroups.First(fg => fg.BoundNodeLayer.Name == "Inner 1").FeedingGroups[0].BoundNodeLayer);
+            Assert.AreEqual(inner4, backPropGroupData.FeedingGroups.First(fg => fg.BoundNodeLayer.Name == "Inner 1").FeedingGroups[0].FeedingGroups[0].BoundNodeLayer);
+            Assert.AreEqual(output, backPropGroupData.FeedingGroups.First(fg => fg.BoundNodeLayer.Name == "Inner 2").FeedingGroups[0].BoundNodeLayer);
+            Assert.AreEqual(output, backPropGroupData.FeedingGroups.First(fg => fg.BoundNodeLayer.Name == "Inner 1").FeedingGroups[0].FeedingGroups[0].FeedingGroups[0].BoundNodeLayer);
         }
     }
 }

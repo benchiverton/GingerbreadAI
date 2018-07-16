@@ -33,7 +33,7 @@ namespace Main
 
             var results = output.Outputs;
             Console.WriteLine($"Inputs: {string.Join(", ", inputs.Select(i => Math.Round(i, 3)))}");
-            Console.WriteLine($"Results: {string.Join(", ", results.Select(r => Math.Round(r, 3)))}");
+            Console.WriteLine($"Results: {string.Join(", ", results.Select(r => Math.Round(r.Value, 3)))}");
 
             Console.ReadLine();
         }

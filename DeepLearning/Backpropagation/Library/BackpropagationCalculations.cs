@@ -4,7 +4,7 @@
     {
         public static double GetDeltaOutput(double actual, double target)
         {
-            return -(target - actual) * actual * (1 - actual) * actual;
+            return -(target - actual) * actual * (1 - actual);
         }
     }
 }

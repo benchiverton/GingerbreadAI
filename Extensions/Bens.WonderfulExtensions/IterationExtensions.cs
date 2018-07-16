@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace NeuralNetwork.Data.Extensions
+﻿namespace Bens.WonderfulExtensions
 {
-    public static class NodeGroupExtensions
+    using System;
+    using System.Collections.Generic;
+
+    public static class IterationExtensions
     {
         /// <summary>
         ///     Extension method to do a foreach loop with an index

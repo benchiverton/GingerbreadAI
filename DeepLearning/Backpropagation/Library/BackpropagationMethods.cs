@@ -21,7 +21,7 @@ namespace Backpropagation.Library
 
         private static void BuildBackpropagationBindingModel(NodeLayer[] nodeGroups, BackpropagationBindingModel inputNodeGroup)
         {
-            foreach (var nodeGroup in nodeGroups.Where(ng => ng.PreviousGroups.Contains(inputNodeGroup.NodeGroup)))
+            foreach (var nodeGroup in nodeGroups.Where(ng => ng.PreviousGroups.Contains(inputNodeGroup.BoundNodeLayer)))
             {
                 var feedingGroups = inputNodeGroup.FeedingGroups;
                 Array.Resize(ref feedingGroups, inputNodeGroup.FeedingGroups.Length + 1);

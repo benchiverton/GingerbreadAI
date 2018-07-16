@@ -1,47 +1,48 @@
 ﻿using NeuralNetwork.Data;
-using NeuralNetwork.Data.Extensions;
 using NeuralNetwork.Exceptions;
 
 namespace NeuralNetwork.Library
 {
+    using System.Linq;
+    using Bens.WonderfulExtensions;
+
     public class NodeLayerLogic
     {
         public NodeLayer OutputLayer { get; set; }
-
-        /// <summary>
-        ///     Returns the result from this nodeGroup, using its previous groups.
-        /// </summary>
-        /// <param name="inputs"></param>
-        /// <returns></returns>
-        public void PopulateResults(double[] inputs)
-        {
-            // this should happen if you have provided the incorrect amount of input for your layer
-            if (OutputLayer.PreviousGroups.Length == 0
-                && inputs.Length != OutputLayer.Nodes.Length)
-            {
-                throw new NodeNetworkException();
-            }
-            
-            PopulateResults(OutputLayer, inputs);
-        }
-
+        
         public double[] GetResults(double[] inputs)
         {
             PopulateResults(inputs);
-            return OutputLayer.Outputs;
+            return OutputLayer.Outputs.Values.ToArray();
         }
 
-        public void PopulateResults(NodeLayer nodeLayer, double[] inputs)
+        public void PopulateResults(double[] inputs)
+        {
+            PopulateResults(OutputLayer, inputs);
+        }
+
+        private static void PopulateResults(NodeLayer nodeLayer, double[] inputs)
         {
             // this should only happen when you reach an input group
             if (nodeLayer.PreviousGroups.Length == 0)
             {
-                nodeLayer.Outputs = inputs;
+                if (nodeLayer.Nodes.Length != inputs.Length)
+                {
+                    throw new NodeNetworkException();
+                }
+                nodeLayer.Nodes.Each((node, i) =>
+                {
+                    nodeLayer.Outputs[node] = inputs[i];
+                });
                 return;
             }
 
             //ensure that the output array is clear
-            System.Array.Clear(nodeLayer.Outputs, 0, nodeLayer.Outputs.Length);
+            var outputKeys = nodeLayer.Outputs.Keys.ToList();
+            foreach (var outputKey in outputKeys)
+            {
+                nodeLayer.Outputs[outputKey] = 0;
+            }
 
             // select a group feeding into this one
             nodeLayer.PreviousGroups.Each((prevGroup, i) =>
@@ -49,24 +50,19 @@ namespace NeuralNetwork.Library
                 // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
                 PopulateResults(prevGroup, inputs);
 
-                // iterate through Nodes in the current group
-                for (var j = 0; j < nodeLayer.Nodes.Length; j++)
+                foreach (var node in nodeLayer.Nodes)
                 {
-                    // iterate through the outputs of the previous group, adding its weighted result to the results for this group
-                    for (var k = 0; k < prevGroup.Outputs.Length; k++)
+                    foreach (var output in prevGroup.Outputs.Keys.ToList())
                     {
-                        nodeLayer.Outputs[j] += prevGroup.Outputs[k] * nodeLayer.Nodes[j].Weights[i][k];
+                        nodeLayer.Outputs[node] += prevGroup.Outputs[output] * node.Weights[prevGroup][output];
                     }
-
-                    // add the bias for the previous group
-                    nodeLayer.Outputs[j] += nodeLayer.Nodes[j].BiasWeights[i];
                 }
             });
 
             // apply the logistic function to each of the results
-            for (var i = 0; i < nodeLayer.Outputs.Length; i++)
+            foreach (var output in nodeLayer.Outputs.Keys.ToList())
             {
-                nodeLayer.Outputs[i] = NodeCalculations.LogisticFunction(nodeLayer.Outputs[i]);
+                nodeLayer.Outputs[output] = NodeCalculations.LogisticFunction(nodeLayer.Outputs[output]);
             }
         }
     }
