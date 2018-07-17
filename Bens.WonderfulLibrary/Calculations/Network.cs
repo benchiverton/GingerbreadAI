@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace NeuralNetwork.Library
+﻿namespace Bens.WonderfulLibrary.Calculations
 {
-    public static class NodeCalculations
+    using System;
+
+    public static class Network
     {
         /// <summary>
         ///     Applies the logistic function to an value, returning the result.

@@ -10,12 +10,12 @@ namespace NeuralNetwork.Data
         /// <summary>
         ///     The weights, with reference to the layer & node the value id being mapped from
         /// </summary>
-        public Dictionary<NodeLayer, Dictionary<Node, double>> Weights { get; set; }
+        public Dictionary<Layer, Dictionary<Node, double>> Weights { get; set; }
 
         /// <summary>
         ///     The bias weights, with reference to the layer the value is mapped from
         /// </summary>
-        public Dictionary<NodeLayer, double> BiasWeights;
+        public Dictionary<Layer, double> BiasWeights;
 
         /// <summary>
         ///     The output of the node from the last results calculation.
@@ -27,9 +27,9 @@ namespace NeuralNetwork.Data
             // default constructor
         }
 
-        public Node(IReadOnlyList<NodeLayer> nodeGroupPrev)
+        public Node(IReadOnlyList<Layer> nodeGroupPrev)
         {
-            Weights = new Dictionary<NodeLayer, Dictionary<Node, double>>();
+            Weights = new Dictionary<Layer, Dictionary<Node, double>>();
             foreach (var prevNodeLayer in nodeGroupPrev)
             {
                 var correspondingNodeWeights = new Dictionary<Node, double>();
@@ -40,7 +40,7 @@ namespace NeuralNetwork.Data
                 Weights.Add(prevNodeLayer, correspondingNodeWeights);
             }
 
-            BiasWeights = new Dictionary<NodeLayer, double>();
+            BiasWeights = new Dictionary<Layer, double>();
             foreach (var prevNodeLayer in nodeGroupPrev)
             {
                 BiasWeights.Add(prevNodeLayer, 0);

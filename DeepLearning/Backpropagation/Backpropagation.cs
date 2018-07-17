@@ -1,17 +1,17 @@
-﻿namespace Backpropagation.Library
+﻿namespace Backpropagation
 {
+    using NeuralNetwork;
     using NeuralNetwork.Data;
-    using NeuralNetwork.Library;
 
     public class Backpropagation
     {
         public double LearningRate { get; set; }
 
-        public NodeLayerLogic LayerLogic { get; set; }
+        public LayerComputor LayerLogic { get; set; }
 
-        public Backpropagation(NodeLayer outputLayer, double learningRate)
+        public Backpropagation(Layer outputLayer, double learningRate)
         {
-            LayerLogic = new NodeLayerLogic
+            LayerLogic = new LayerComputor
             {
                 OutputLayer = outputLayer
             };

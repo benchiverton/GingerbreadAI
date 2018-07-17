@@ -2,9 +2,7 @@
 
 namespace NeuralNetwork.Data
 {
-    using System.Collections.Generic;
-
-    public class NodeLayer
+    public class Layer
     {
         /// <summary>
         ///     The name of the node.
@@ -19,14 +17,14 @@ namespace NeuralNetwork.Data
         /// <summary>
         ///     An array containing the NodeGroups that feed into this one.
         /// </summary>
-        public NodeLayer[] PreviousLayers { get; set; }
+        public Layer[] PreviousLayers { get; set; }
 
-        public NodeLayer()
+        public Layer()
         {
             // default constructor
         }
 
-        public NodeLayer(string name, int nodeCount, NodeLayer[] previousGroups)
+        public Layer(string name, int nodeCount, Layer[] previousGroups)
         {
             Name = name;
             Nodes = new Node[nodeCount];

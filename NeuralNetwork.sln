@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Networks", "Networks", "{3489D91B-5D90-4015-B821-B9D9658106F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeepLearning", "DeepLearning", "{D510F750-F9DD-467E-996E-B47FE58EDB09}"
@@ -17,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork", "Networks\N
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetworkTests", "Networks\NeuralNetworkTests\NeuralNetworkTests.csproj", "{4D1CBFDD-E879-4C13-8296-C057955B068C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{80CADF06-CB0A-48B4-9E7A-A33514E1218A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bens.WonderfulLibrary", "Bens.WonderfulLibrary\Bens.WonderfulLibrary.csproj", "{B4360EFB-4CED-4DAD-A720-8E0AD2E0BA18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bens.WonderfulExtensions", "Extensions\Bens.WonderfulExtensions\Bens.WonderfulExtensions.csproj", "{7C6BC512-0ADA-4C12-A643-D7B57B4EFFE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Network.Console", "Console\Network.Console.csproj", "{B9FB66FF-956F-4A83-B2EF-C9605F282995}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED1DEFAE-DC77-40D9-97DC-F52F32C1284B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5DA2A54-EC74-4AFF-BDBD-A906C3C886C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5DA2A54-EC74-4AFF-BDBD-A906C3C886C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5DA2A54-EC74-4AFF-BDBD-A906C3C886C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,10 +41,14 @@ Global
 		{4D1CBFDD-E879-4C13-8296-C057955B068C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D1CBFDD-E879-4C13-8296-C057955B068C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D1CBFDD-E879-4C13-8296-C057955B068C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C6BC512-0ADA-4C12-A643-D7B57B4EFFE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C6BC512-0ADA-4C12-A643-D7B57B4EFFE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C6BC512-0ADA-4C12-A643-D7B57B4EFFE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C6BC512-0ADA-4C12-A643-D7B57B4EFFE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4360EFB-4CED-4DAD-A720-8E0AD2E0BA18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4360EFB-4CED-4DAD-A720-8E0AD2E0BA18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4360EFB-4CED-4DAD-A720-8E0AD2E0BA18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4360EFB-4CED-4DAD-A720-8E0AD2E0BA18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9FB66FF-956F-4A83-B2EF-C9605F282995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9FB66FF-956F-4A83-B2EF-C9605F282995}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9FB66FF-956F-4A83-B2EF-C9605F282995}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9FB66FF-956F-4A83-B2EF-C9605F282995}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,7 +58,6 @@ Global
 		{C6510A0E-AF19-4B2D-9AB5-068E345BBF5C} = {D510F750-F9DD-467E-996E-B47FE58EDB09}
 		{F0D77462-AE15-4C70-9FE9-52BCDE104D7F} = {3489D91B-5D90-4015-B821-B9D9658106F8}
 		{4D1CBFDD-E879-4C13-8296-C057955B068C} = {3489D91B-5D90-4015-B821-B9D9658106F8}
-		{7C6BC512-0ADA-4C12-A643-D7B57B4EFFE2} = {80CADF06-CB0A-48B4-9E7A-A33514E1218A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {316817EF-00A2-4C09-8C9C-7B0ABF43BF05}

@@ -1,22 +1,21 @@
-﻿using System;
-using NeuralNetwork.Data;
-using NeuralNetwork.Library;
-
-namespace Main
+﻿namespace Network.Console
 {
+    using System;
     using System.Linq;
+    using NeuralNetwork;
+    using NeuralNetwork.Data;
 
     public class Program
     {
         public static void Main()
         {
-            var group = new NodeLayer("Input", 20, new NodeLayer[0]);
-            var inner1 = new NodeLayer("Inner1", 20, new[] { group });
-            var inner2 = new NodeLayer("Inner2", 20, new[] { group });
-            var output = new NodeLayer("Output", 20, new[] { inner1, inner2 });
+            var group = new Layer("Input", 20, new Layer[0]);
+            var inner1 = new Layer("Inner1", 20, new[] { group });
+            var inner2 = new Layer("Inner2", 20, new[] { group });
+            var output = new Layer("Output", 20, new[] { inner1, inner2 });
 
             var rand = new Random();
-            Initialiser.Initialise(rand, output);
+            LayerInitialiser.Initialise(rand, output);
 
             var inputs = new double[20];
             for (var i = 0; i < inputs.Length; i++)
@@ -25,7 +24,7 @@ namespace Main
             }
             Console.WriteLine(output.ToString(true));
 
-            var nodeLayerLogic = new NodeLayerLogic
+            var nodeLayerLogic = new LayerComputor
             {
                 OutputLayer = output
             };

@@ -1,9 +1,9 @@
-﻿namespace Bens.WonderfulExtensions
+﻿namespace Bens.WonderfulLibrary.Extensions
 {
     using System;
     using System.Collections.Generic;
 
-    public static class IterationExtensions
+    public static class EnumerableExtensions
     {
         /// <summary>
         ///     Extension method to do a foreach loop with an index

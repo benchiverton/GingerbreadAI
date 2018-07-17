@@ -3,7 +3,7 @@
 namespace BackpropagationTest
 {
     [TestClass]
-    public class TestClass1
+    public class BackpropagationTest
     {
     }
 }

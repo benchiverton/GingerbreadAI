@@ -1,14 +1,14 @@
-﻿using NeuralNetwork.Data;
-using NeuralNetwork.Exceptions;
-
-namespace NeuralNetwork.Library
+﻿namespace NeuralNetwork
 {
     using System.Linq;
-    using Bens.WonderfulExtensions;
+    using Bens.WonderfulLibrary.Calculations;
+    using Bens.WonderfulLibrary.Extensions;
+    using Data;
+    using Exceptions;
 
-    public class NodeLayerLogic
+    public class LayerComputor
     {
-        public NodeLayer OutputLayer { get; set; }
+        public Layer OutputLayer { get; set; }
 
         public double[] GetResults(double[] inputs)
         {
@@ -21,14 +21,14 @@ namespace NeuralNetwork.Library
             PopulateResults(OutputLayer, inputs);
         }
 
-        private static void PopulateResults(NodeLayer nodeLayer, double[] inputs)
+        private static void PopulateResults(Layer nodeLayer, double[] inputs)
         {
             // this should only happen when you reach an input group
             if (nodeLayer.PreviousLayers.Length == 0)
             {
                 if (nodeLayer.Nodes.Length != inputs.Length)
                 {
-                    throw new NodeNetworkException();
+                    throw new NeuralNetworkException();
                 }
                 nodeLayer.Nodes.Each((node, i) =>
                 {
@@ -63,7 +63,7 @@ namespace NeuralNetwork.Library
             // apply the logistic function to each of the results
             foreach (var node in nodeLayer.Nodes)
             {
-                node.Output = NodeCalculations.LogisticFunction(node.Output);
+                node.Output = Network.LogisticFunction(node.Output);
             }
         }
     }
