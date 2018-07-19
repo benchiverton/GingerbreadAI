@@ -9,10 +9,11 @@
             return GetErrorDifferential(actual, target) * NetworkCalculations.LogisticFunctionDifferential(actual);
         }
 
-        public static double GetDeltaInner()
-        {
-            throw new NotImplementedException();
-        }
+        //public static double GetDeltaInner(Node node, Dictionary<> prevDeltas)
+        //{
+        //    var sumWeightedDelta = 1;
+        //    return sumWeightedDelta * NetworkCalculations.LogisticFunctionDifferential(node.Output);
+        //}
 
         public static double GetError(double actual, double target)
         {
