@@ -1,5 +1,8 @@
 ﻿namespace Backpropagation
 {
+    using System.Linq;
+    using Bens.WonderfulLibrary.Calculations;
+    using Bens.WonderfulLibrary.Extensions;
     using NeuralNetwork;
     using NeuralNetwork.Data;
 
@@ -7,23 +10,49 @@
     {
         public double LearningRate { get; set; }
 
-        public LayerComputor LayerLogic { get; set; }
+        public LayerComputor LayerComputor { get; set; }
 
         public Backpropagation(Layer outputLayer, double learningRate)
         {
-            LayerLogic = new LayerComputor
+            LayerComputor = new LayerComputor
             {
                 OutputLayer = outputLayer
             };
             LearningRate = learningRate;
         }
 
-        // should be recursive over the backprop group data
         public void Backpropagate(double[] inputs, double[] targetOutputs)
         {
-            var output = LayerLogic.GetResults(inputs);
+            var currentLayer = LayerComputor.OutputLayer;
+            var curretOutputs = LayerComputor.GetResults(inputs);
 
-            // logic for backprop
+            // initial calculations for output layer
+            currentLayer.Nodes.Each((node, i) =>
+            {
+                var delta = BackpropagationCalculations.GetDeltaOutput(curretOutputs[i], targetOutputs[i]);
+                foreach (var prevLayerWeights in node.Weights.Values.ToList())
+                {
+                    foreach (var prevNode in prevLayerWeights.Keys.ToList())
+                    {
+                        prevLayerWeights[prevNode] = prevLayerWeights[prevNode] - (LearningRate * delta * prevNode.Output);
+                    }
+                }
+            });
+            //RecurseBackpropagation()
         }
+
+        //private void RecurseBackpropagation(Layer layer)
+        //{
+        //    if (layer.PreviousLayers.Length == 0)
+        //    {
+        //        return;
+        //    }
+
+        //    foreach (var prevLayer in layer.PreviousLayers)
+        //    {
+        //        RecurseBackpropagation(prevLayer);
+        //    }
+
+        //}
     }
 }

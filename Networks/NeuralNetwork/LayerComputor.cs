@@ -63,7 +63,7 @@
             // apply the logistic function to each of the results
             foreach (var node in nodeLayer.Nodes)
             {
-                node.Output = Network.LogisticFunction(node.Output);
+                node.Output = NetworkCalculations.LogisticFunction(node.Output);
             }
         }
     }
