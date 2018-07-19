@@ -227,7 +227,7 @@ namespace NeuralNetworkTests.Library
 
         private Node GenerateWeightedNode(Dictionary<Layer, (double[] layerWeights, double biasWeight)> nodeInformation)
         {
-            var w8s = new Dictionary<Layer, Dictionary<Node, double>>();
+            var w8s = new Dictionary<Node, double>();
             var biasw8s = new Dictionary<Layer, double>();
 
             foreach (var nodeLayer in nodeInformation.Keys)
@@ -239,13 +239,11 @@ namespace NeuralNetworkTests.Library
                     throw new Exception("Incorrect amount of weights supplied");
                 }
 
-                var lyrw8s = new Dictionary<Node, double>();
-                for (int i = 0; i < data.layerWeights.Length; i++)
+                for (var i = 0; i < data.layerWeights.Length; i++)
                 {
-                    lyrw8s.Add(nodeLayer.Nodes[i], data.layerWeights[i]);
+                    w8s.Add(nodeLayer.Nodes[i], data.layerWeights[i]);
                 }
 
-                w8s.Add(nodeLayer, lyrw8s);
                 biasw8s.Add(nodeLayer, data.biasWeight);
             }
 

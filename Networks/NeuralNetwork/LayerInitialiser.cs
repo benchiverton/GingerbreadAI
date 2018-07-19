@@ -32,12 +32,9 @@
         private static void Initialise(Random rand, Node node)
         {
             if (node == null) return;
-            foreach (var nodeWeightsKey in node.Weights.Keys.ToList())
+            foreach (var prevNode in node.Weights.Keys.ToList())
             {
-                foreach (var nodeKey in node.Weights[nodeWeightsKey].Keys.ToList())
-                {
-                    node.Weights[nodeWeightsKey][nodeKey] = (double)rand.Next(2000000) / 1000000 - 1;
-                }
+                node.Weights[prevNode] = (double)rand.Next(2000000) / 1000000 - 1;
             }
             var biasWeightKeys = new List<Layer>(node.BiasWeights.Keys.ToList());
             foreach (var biasWeightKey in biasWeightKeys)

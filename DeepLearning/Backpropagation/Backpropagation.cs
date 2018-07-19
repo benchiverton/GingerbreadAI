@@ -30,12 +30,9 @@
             currentLayer.Nodes.Each((node, i) =>
             {
                 var delta = BackpropagationCalculations.GetDeltaOutput(curretOutputs[i], targetOutputs[i]);
-                foreach (var prevLayerWeights in node.Weights.Values.ToList())
+                foreach (var prevNode in node.Weights.Keys.ToList())
                 {
-                    foreach (var prevNode in prevLayerWeights.Keys.ToList())
-                    {
-                        prevLayerWeights[prevNode] = prevLayerWeights[prevNode] - (LearningRate * delta * prevNode.Output);
-                    }
+                    node.Weights[prevNode] = node.Weights[prevNode] - (LearningRate * delta * prevNode.Output);
                 }
             });
             //RecurseBackpropagation()

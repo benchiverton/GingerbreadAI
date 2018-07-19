@@ -53,7 +53,7 @@
                 {
                     foreach (var prevNode in prevGroup.Nodes)
                     {
-                        node.Output += prevNode.Output * node.Weights[prevGroup][prevNode];
+                        node.Output += prevNode.Output * node.Weights[prevNode];
                     }
 
                     node.Output += node.BiasWeights[prevGroup];
