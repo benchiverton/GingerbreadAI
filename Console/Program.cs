@@ -12,11 +12,9 @@
         public static void Main()
         {
             var group = new Layer("Input", 1, new Layer[0]);
-            var inner1 = new Layer("Inner1", 10, new[] { group });
-            var inner2 = new Layer("Inner2", 20, new[] { inner1 });
-            var inner3 = new Layer("Inner2", 20, new[] { inner2 });
-            var inner4 = new Layer("Inner2", 10, new[] { inner3 });
-            var output = new Layer("Output", 1, new[] { inner4 });
+            var inner1 = new Layer("Inner1", 100, new[] { group });
+            var inner2 = new Layer("Inner2", 100, new[] { inner1 });
+            var output = new Layer("Output", 1, new[] { inner2 });
 
             var rand = new Random();
             LayerInitialiser.Initialise(rand, output);
@@ -41,11 +39,11 @@
             }
 
             // perform backprop
-            var backprop = new Backpropagation(output, 0.3);
-            for (var i = 0; i < 1000000; i++)
+            var backprop = new Backpropagation(output, 0.5);
+            for (var i = 0; i < 100000; i++)
             {
                 var trial = rand.NextDouble();
-                backprop.Backpropagate(new[] { trial }, new[] { Math.Sin(trial * Math.PI) });
+                backprop.Backpropagate(new[] { trial }, new[] { 0.5 * Math.Sin(2 * Math.PI * trial) + 0.5});
             }
 
             // final results

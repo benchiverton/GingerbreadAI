@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 
 namespace NeuralNetwork.Data
 {
-    using System.Linq;
-
     public class Node
     {
         /// <summary>

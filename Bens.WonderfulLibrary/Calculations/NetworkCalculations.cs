@@ -14,6 +14,11 @@
             return value * (1 - value);
         }
 
+        public static double RadomInitialisation(Random rand)
+        {
+            return (2 * rand.NextDouble()) - 1;
+        }
+
         public static double GetWeightedInitialisation(Random rand, int feedingNodes)
         {
             return (2 * rand.NextDouble() / Math.Sqrt(feedingNodes)) - (1 / Math.Sqrt(feedingNodes));

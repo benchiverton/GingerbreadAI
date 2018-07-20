@@ -38,6 +38,11 @@
                 {
                     node.Weights[prevNode] = node.Weights[prevNode] - (LearningRate * delta * prevNode.Output);
                 }
+
+                foreach (var prevLayer in node.BiasWeights.Keys.ToList())
+                {
+                    node.BiasWeights[prevLayer] = node.BiasWeights[prevLayer] - (LearningRate * delta);
+                }
             });
 
             foreach (var prevLayer in currentLayer.PreviousLayers)
@@ -68,6 +73,11 @@
                 foreach (var prevNode in node.Weights.Keys.ToList())
                 {
                     node.Weights[prevNode] = node.Weights[prevNode] - (LearningRate * delta * prevNode.Output);
+                }
+
+                foreach (var prevLayer in node.BiasWeights.Keys.ToList())
+                {
+                    node.BiasWeights[prevLayer] = node.BiasWeights[prevLayer] - (LearningRate * delta);
                 }
             }
 
