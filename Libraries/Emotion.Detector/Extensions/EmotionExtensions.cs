@@ -1,8 +1,8 @@
-﻿namespace Emotion.Detector
+﻿namespace Emotion.Detector.Extensions
 {
     using Data;
 
-    public static class EmotionTransformer
+    public static class EmotionExtensions
     {
         public static void Invert(this Emotion emotion)
         {

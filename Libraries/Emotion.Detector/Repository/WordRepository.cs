@@ -1,5 +1,6 @@
 ﻿namespace Emotion.Detector.Repository
 {
+    using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
@@ -15,10 +16,10 @@
         private readonly WordCache _cache;
         private readonly string _connectionString;
 
-        public WordRepository(string connectionString, WordCache cache)
+        public WordRepository(WordCache cache)
         {
-            _connectionString = connectionString;
             _cache = cache;
+            _connectionString = Environment.GetEnvironmentVariable("wordRepositoryConnectionString");
 
             FluentMapper.Initialize(config =>
             {

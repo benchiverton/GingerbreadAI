@@ -1,4 +1,4 @@
-﻿namespace Emotion.Detector
+﻿namespace Emotion.Detector.Extensions
 {
     using System.Collections.Generic;
 

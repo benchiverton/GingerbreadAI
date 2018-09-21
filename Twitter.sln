@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{78907326-0353-4217-9A63-CB3EAA2011D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector", "C:\Users\benc\Desktop\Projects\NeuralNetwork\Libraries\Emotion.Detector\Emotion.Detector.csproj", "{E275B526-87B6-443A-B3D2-C831A8706BD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector", "Libraries\Emotion.Detector\Emotion.Detector.csproj", "{E275B526-87B6-443A-B3D2-C831A8706BD5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector.Test", "C:\Users\benc\Desktop\Projects\NeuralNetwork\Libraries\Emotion.Detector.Test\Emotion.Detector.Test.csproj", "{AF35CE54-955E-45F0-9B95-E3B71CC3667B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector.Test", "Libraries\Emotion.Detector.Test\Emotion.Detector.Test.csproj", "{AF35CE54-955E-45F0-9B95-E3B71CC3667B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextProcessor.Console", "Applications\TextProcessor.Console\TextProcessor.Console.csproj", "{7A56195F-EF15-4D98-A63C-2AFE0156D1FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{AF35CE54-955E-45F0-9B95-E3B71CC3667B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF35CE54-955E-45F0-9B95-E3B71CC3667B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF35CE54-955E-45F0-9B95-E3B71CC3667B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A56195F-EF15-4D98-A63C-2AFE0156D1FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A56195F-EF15-4D98-A63C-2AFE0156D1FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A56195F-EF15-4D98-A63C-2AFE0156D1FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A56195F-EF15-4D98-A63C-2AFE0156D1FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
