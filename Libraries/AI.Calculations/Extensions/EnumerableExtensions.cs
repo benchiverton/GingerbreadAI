@@ -1,4 +1,4 @@
-﻿namespace Bens.WonderfulLibrary.Extensions
+﻿namespace AI.Calculations.Extensions
 {
     using System;
     using System.Collections.Generic;

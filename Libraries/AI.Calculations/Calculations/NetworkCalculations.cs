@@ -1,4 +1,4 @@
-﻿namespace Bens.WonderfulLibrary.Calculations
+﻿namespace AI.Calculations.Calculations
 {
     using System;
 

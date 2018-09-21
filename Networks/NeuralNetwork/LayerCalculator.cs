@@ -1,12 +1,12 @@
 ﻿namespace NeuralNetwork
 {
     using System.Linq;
-    using Bens.WonderfulLibrary.Calculations;
-    using Bens.WonderfulLibrary.Extensions;
+    using AI.Calculations.Calculations;
+    using AI.Calculations.Extensions;
     using Data;
     using Exceptions;
 
-    public class LayerComputor
+    public class LayerCalculator
     {
         public Layer OutputLayer { get; set; }
 

@@ -2,20 +2,20 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Bens.WonderfulLibrary.Calculations;
-    using Bens.WonderfulLibrary.Extensions;
+    using AI.Calculations.Calculations;
+    using AI.Calculations.Extensions;
     using NeuralNetwork;
     using NeuralNetwork.Data;
 
-    public class Backpropagation
+    public class Backpropagator
     {
         public double LearningRate { get; set; }
 
-        public LayerComputor LayerComputor { get; set; }
+        public LayerCalculator LayerCalculator { get; set; }
 
-        public Backpropagation(Layer outputLayer, double learningRate)
+        public Backpropagator(Layer outputLayer, double learningRate)
         {
-            LayerComputor = new LayerComputor
+            LayerCalculator = new LayerCalculator
             {
                 OutputLayer = outputLayer
             };
@@ -24,15 +24,15 @@
 
         public void Backpropagate(double[] inputs, double[] targetOutputs)
         {
-            var currentLayer = LayerComputor.OutputLayer;
-            var curretOutputs = LayerComputor.GetResults(inputs);
+            var currentLayer = LayerCalculator.OutputLayer;
+            var currentOutputs = LayerCalculator.GetResults(inputs);
 
             var deltas = new Dictionary<Node, double>();
 
             // initial calculations for output layer
             currentLayer.Nodes.Each((node, i) =>
             {
-                var delta = BackpropagationCalculations.GetDeltaOutput(curretOutputs[i], targetOutputs[i]);
+                var delta = BackpropagationCalculations.GetDeltaOutput(currentOutputs[i], targetOutputs[i]);
                 deltas.Add(node, delta);
                 foreach (var prevNode in node.Weights.Keys.ToList())
                 {
@@ -72,12 +72,12 @@
 
                 foreach (var prevNode in node.Weights.Keys.ToList())
                 {
-                    node.Weights[prevNode] = node.Weights[prevNode] - (LearningRate * delta * prevNode.Output);
+                    node.Weights[prevNode] -= (LearningRate * delta * prevNode.Output);
                 }
 
                 foreach (var prevLayer in node.BiasWeights.Keys.ToList())
                 {
-                    node.BiasWeights[prevLayer] = node.BiasWeights[prevLayer] - (LearningRate * delta);
+                    node.BiasWeights[prevLayer] -= (LearningRate * delta);
                 }
             }
 

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bens.WonderfulLibrary\Bens.WonderfulLibrary.csproj" />
+    <ProjectReference Include="..\..\Libraries\AI.Calculations\AI.Calculations.csproj" />
   </ItemGroup>
 
 </Project>

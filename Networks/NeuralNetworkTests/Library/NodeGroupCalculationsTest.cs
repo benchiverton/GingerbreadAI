@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralNetwork.Data;
-using NeuralNetwork.Exceptions;
-
-namespace NeuralNetworkTests.Library
+namespace NeuralNetwork.Test.Library
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using Data;
+    using Exceptions;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using NeuralNetwork;
 
     [TestClass]
@@ -25,7 +24,7 @@ namespace NeuralNetworkTests.Library
             try
             {
                 var inputs = new double[5];
-                var nodeLayerLogic = new LayerComputor
+                var nodeLayerLogic = new LayerCalculator
                 {
                     OutputLayer = outputGroup
                 };
@@ -68,7 +67,7 @@ namespace NeuralNetworkTests.Library
                 PreviousLayers = new[] { innerLayer }
             };
 
-            var nodeLayerLogic = new LayerComputor { OutputLayer = outputLayer };
+            var nodeLayerLogic = new LayerCalculator { OutputLayer = outputLayer };
             nodeLayerLogic.PopulateResults(new[] { 0.5 });
 
             // checking that the values calculated in the inner node are correct
@@ -124,7 +123,7 @@ namespace NeuralNetworkTests.Library
                 PreviousLayers = new[] { innerLayer1, innerLayer2 }
             };
 
-            var nodeLayerLogic = new LayerComputor { OutputLayer = outputLayer };
+            var nodeLayerLogic = new LayerCalculator { OutputLayer = outputLayer };
             nodeLayerLogic.PopulateResults(new[] { 0.5 });
 
             // checking that the values calculated in the inner1 node are correct
@@ -180,7 +179,7 @@ namespace NeuralNetworkTests.Library
                 PreviousLayers = new[] { innerLayer }
             };
 
-            var nodeLayerLogic = new LayerComputor
+            var nodeLayerLogic = new LayerCalculator
             {
                 OutputLayer = output
             };
@@ -195,8 +194,10 @@ namespace NeuralNetworkTests.Library
 
         /// <summary>
         ///     Test to check the efficiency of the GetResult() method (the time taken should be as small as possible).
+        ///     Should only be run during debugging.
         /// </summary>
         [TestMethod]
+        [Ignore]
         public void TestGetResultEfficiency()
         {
             const int calcCount = 5000;
@@ -211,7 +212,7 @@ namespace NeuralNetworkTests.Library
             var stopWatch = new Stopwatch();
 
             stopWatch.Start();
-            var nodeLayerLogic = new LayerComputor
+            var nodeLayerLogic = new LayerCalculator
             {
                 OutputLayer = output
             };

@@ -18,7 +18,7 @@
 
             var rand = new Random();
             LayerInitialiser.Initialise(rand, output);
-            var nodeLayerLogic = new LayerComputor
+            var nodeLayerLogic = new LayerCalculator
             {
                 OutputLayer = output
             };
@@ -39,7 +39,7 @@
             }
 
             // perform backprop
-            var backprop = new Backpropagation(output, 0.5);
+            var backprop = new Backpropagator(output, 0.5);
             for (var i = 0; i < 100000; i++)
             {
                 var trial = rand.NextDouble();

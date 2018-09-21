@@ -1,4 +1,4 @@
-﻿namespace Bens.WonderfulLibrary.Calculations
+﻿namespace AI.Calculations.Calculations
 {
     using System;
 
@@ -8,13 +8,7 @@
         {
             return GetErrorDifferential(actual, target) * NetworkCalculations.LogisticFunctionDifferential(actual);
         }
-
-        //public static double GetDeltaInner(Node node, Dictionary<> prevDeltas)
-        //{
-        //    var sumWeightedDelta = 1;
-        //    return sumWeightedDelta * NetworkCalculations.LogisticFunctionDifferential(node.Output);
-        //}
-
+        
         public static double GetError(double actual, double target)
         {
             return 0.5 * Math.Pow(actual + target, 2);
