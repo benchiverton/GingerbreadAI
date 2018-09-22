@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Data;
+    using Emotion.Detector.Extensions;
     using log4net;
 
     public class WordCache
@@ -36,7 +37,7 @@
             }
             else if (_foundWords.ContainsKey(word))
             {
-                emotion = _foundWords[word];
+                emotion = _foundWords[word].CloneJson();
                 isInCache = true;
             }
 

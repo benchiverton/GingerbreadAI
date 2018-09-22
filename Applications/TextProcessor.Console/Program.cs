@@ -17,7 +17,8 @@ namespace TextProcessor.Console
         public static void Main(string[] args)
         {
             // environment variable as this is planned to be a docker container
-            Environment.SetEnvironmentVariable("wordRepositoryConnectionString", "");
+            Environment.SetEnvironmentVariable("wordRepositoryConnectionString",
+                "data source=localhost;database=TextAnalysis;Integrated Security=SSPI;persist security info=True;");
 
             ConfigureLog4Net();
 
@@ -29,6 +30,10 @@ namespace TextProcessor.Console
                 registry.For<EmotionDetector>().Use<EmotionDetector>();
                 // need something to listen to NSB as TweetSharp doesn't run on .Net Core.
             });
+
+            var emotionDetector = container.GetInstance<EmotionDetector>();
+
+            var emotion4 = emotionDetector.Detect("There seems to be brilliant weather today although I'm not sure that it will remain this way");
         }
 
         private static void ConfigureLog4Net()

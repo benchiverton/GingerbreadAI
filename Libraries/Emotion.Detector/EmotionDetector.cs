@@ -21,18 +21,19 @@
 
         public Emotion Detect(string text)
         {
-            var words = text.Split(' ').ToList();
+            // need to also remove punctuation !!
+            var words = text.Split(' ').Select(w => w.ToLower()).ToList();
             var emotions = _repository.GetEmotions(words);
 
             AmendNegations(emotions);
 
             var foundEmotions = emotions.Where(e => e.emotion != null);
-            _log.Debug($"{foundEmotions.Count()} words found with an emotion. These words are:\n {foundEmotions.Select(e => $"e.word\n")}");
+            _log.Debug($"{foundEmotions.Count()} words found with an emotion in the text '{text}'. These words are:\n {foundEmotions.Select(x => x.word).Aggregate((w1, w2) => $"{w1}\r\n{w2}")}");
             return AggregateEmotions(foundEmotions.Select(e => e.emotion).ToList());
         }
 
         // Don't worry, this will DEFINITELY detect sarcasm.
-        public void AmendNegations(List<(string word, Emotion emotion)> emotions)
+        private void AmendNegations(List<(string word, Emotion emotion)> emotions)
         {
             for (var i = 1; i < emotions.Count; i++)
             {
@@ -46,16 +47,20 @@
             }
         }
 
-        public Emotion AggregateEmotions(List<Emotion> emotions)
+        private Emotion AggregateEmotions(List<Emotion> emotions)
         {
             return new Emotion
             {
                 Anger = emotions.Select(e => e.Anger).Average(),
+                Anticipation = emotions.Select(e => e.Anticipation).Average(),
                 Disgust = emotions.Select(e => e.Disgust).Average(),
                 Fear = emotions.Select(e => e.Fear).Average(),
-                Happiness = emotions.Select(e => e.Happiness).Average(),
+                Joy = emotions.Select(e => e.Joy).Average(),
+                Negative = emotions.Select(e => e.Negative).Average(),
+                Positive = emotions.Select(e => e.Positive).Average(),
                 Sadness = emotions.Select(e => e.Sadness).Average(),
-                Surprise = emotions.Select(e => e.Surprise).Average()
+                Surprise = emotions.Select(e => e.Surprise).Average(),
+                Trust = emotions.Select(e => e.Trust).Average()
             };
         }
     }

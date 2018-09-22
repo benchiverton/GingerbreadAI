@@ -2,11 +2,11 @@
 {
     using System.Collections.Generic;
 
-    public static class NegationDetector
+    public static class NegationExtensions
     {
         private static readonly List<string> Negations;
 
-        static NegationDetector()
+        static NegationExtensions()
         {
             Negations = new List<string>
             {

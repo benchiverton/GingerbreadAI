@@ -34,7 +34,7 @@
             {
                 if (!_cache.TryGetWordFromCache(word, out var emotion))
                 {
-                    if (GetEmotionFromDatabase(word, out emotion))
+                    if (TryGetEmotionFromDatabase(word, out emotion))
                     {
                         _cache.AddFoundWordToCache(word, emotion);
                     }
@@ -51,13 +51,13 @@
             return emotions;
         }
 
-        public bool GetEmotionFromDatabase(string word, out Emotion emotion)
+        public bool TryGetEmotionFromDatabase(string word, out Emotion emotion)
         {
             using (var dbConnection = new SqlConnection(_connectionString))
             {
                 var spParameters = new DynamicParameters();
                 spParameters.Add("@Word", word);
-                var resultList = dbConnection.Query<Emotion>("[do].[Something]", spParameters, commandType: CommandType.StoredProcedure).ToList();
+                var resultList = dbConnection.Query<Emotion>("[dbo].[GetEmotionsFromWord]", spParameters, commandType: CommandType.StoredProcedure).ToList();
 
                 if (resultList.Count != 0)
                 {
