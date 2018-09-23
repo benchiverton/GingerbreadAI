@@ -1,4 +1,4 @@
-﻿namespace Emotion.Detector.Mapper
+﻿namespace Emotion.Detector.Mappers
 {
     using Dapper.FluentMap.Mapping;
     using Data;

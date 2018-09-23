@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector", "Librari
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector.Test", "Libraries\Emotion.Detector.Test\Emotion.Detector.Test.csproj", "{AF35CE54-955E-45F0-9B95-E3B71CC3667B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextProcessor.Console", "Applications\TextProcessor.Console\TextProcessor.Console.csproj", "{7A56195F-EF15-4D98-A63C-2AFE0156D1FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitterProcessor.Console", "Applications\TextProcessor.Console\TwitterProcessor.Console.csproj", "{7A56195F-EF15-4D98-A63C-2AFE0156D1FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿namespace Emotion.Detector.Repository
+﻿namespace Emotion.Detector.Repositories
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@
     using Dapper;
     using Dapper.FluentMap;
     using Data;
-    using Mapper;
+    using Mappers;
 
     public class WordRepository
     {
@@ -19,7 +19,7 @@
         public WordRepository(WordCache cache)
         {
             _cache = cache;
-            _connectionString = Environment.GetEnvironmentVariable("wordRepositoryConnectionString");
+            _connectionString = Environment.GetEnvironmentVariable("wordRepositoryConnectionString", EnvironmentVariableTarget.User);
 
             FluentMapper.Initialize(config =>
             {

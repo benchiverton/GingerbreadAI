@@ -1,4 +1,4 @@
-﻿namespace Emotion.Detector.Repository.Cache
+﻿namespace Emotion.Detector.Repositories.Cache
 {
     using System.Collections.Generic;
     using Data;
