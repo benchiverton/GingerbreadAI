@@ -11,19 +11,24 @@ namespace TwitterProcessor.Console
     public class ProcessEngine
     {
         private readonly TweetListener _tweetListener;
-        private readonly EmotionDetector _emotionDetector;
+        private readonly TweetProcessor _tweetProcessor;
 
-        public ProcessEngine(TweetListener tweetListener, EmotionDetector emotionDetector)
+        public ProcessEngine(TweetListener tweetListener, TweetProcessor tweetProcessor)
         {
             _tweetListener = tweetListener;
-            _emotionDetector = emotionDetector;
+            _tweetProcessor = tweetProcessor;
+        }
+
+        public void Initialise(string topic)
+        {
+            _tweetListener.Initialise(topic, e => _tweetProcessor.ProcessTweet(e));
         }
 
         // Start tweet listener
         // Get Events etc configured
-        public void Start(string topic)
+        public void Start()
         {
-            _tweetListener.Start(topic);
+            _tweetListener.Start();
         }
     }
 }

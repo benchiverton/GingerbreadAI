@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using TwitterProcessor.Console.Data;
 using TwitterProcessor.Console.Observers;
 using TwitterProcessor.Console.TwitterAuthorisers;
 
@@ -29,14 +30,15 @@ namespace TwitterProcessor.Console
                 registry.For<NegationManager>().Use<NegationManager>().Ctor<string>().Is("Resources/Negations.txt");
                 registry.For<EmotionDetector>().Use<EmotionDetector>();
                 registry.For<ITwitterAuthoriser>().Use<TwitterAuthoriserConsole>();
-                registry.For<IObserver<StreamingMessage>>().Use<StreamingMessageObserver>();
+                registry.For<ITweetObserver<StreamingMessage, Tweet>>().Use<TweetObserver>();
                 registry.For<TweetListener>().Use<TweetListener>();
                 registry.For<ProcessEngine>().Use<ProcessEngine>();
             });
 
             var processEngine = container.GetInstance<ProcessEngine>();
 
-            processEngine.Start("tea");
+            processEngine.Initialise("brexit");
+            processEngine.Start();
 
             while (true)
             {

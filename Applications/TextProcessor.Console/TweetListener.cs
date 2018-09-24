@@ -6,6 +6,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using TwitterProcessor.Console.TwitterAuthorisers;
+using TwitterProcessor.Console.Data;
+using TwitterProcessor.Console.Observers;
 
 namespace TwitterProcessor.Console
 {
@@ -18,12 +20,12 @@ namespace TwitterProcessor.Console
         private readonly string _consumerSecret;
         private readonly ILog _log;
         private readonly ITwitterAuthoriser _twitterAuthoriser;
-        private readonly IObserver<StreamingMessage> _observer;
+        private readonly ITweetObserver<StreamingMessage, Tweet> _observer;
 
         private string _topic;
         private Tokens _token;
 
-        public TweetListener(ILog log, ITwitterAuthoriser twitterAuthoriser, IObserver<StreamingMessage> observer)
+        public TweetListener(ILog log, ITwitterAuthoriser twitterAuthoriser, ITweetObserver<StreamingMessage, Tweet> observer)
         {
             _consumerKey = Environment.GetEnvironmentVariable("twitterConsumerKey", EnvironmentVariableTarget.User);
             _consumerSecret = Environment.GetEnvironmentVariable("twitterConsumerSecret", EnvironmentVariableTarget.User);
@@ -33,9 +35,20 @@ namespace TwitterProcessor.Console
             _observer = observer;
         }
 
-        public void Start(string topic)
+        public void Initialise(string topic, Action<Tweet> processTweet)
         {
             _topic = topic;
+            _observer.ProcessTweet += processTweet;
+            _observer.StartNewObserver += StartStreaming;
+        }
+
+        public void Start()
+        {
+            if (_topic == null)
+            {
+                _log.Error("TweetListener could not be started. Please Initialise me before starting me.");
+                return;
+            }
 
             OAuth.OAuthSession session;
             try
@@ -51,14 +64,14 @@ namespace TwitterProcessor.Console
             }
 
             StartStreaming();
-
-            _log.Info("TweetListener started!");
         }
 
         private void StartStreaming()
         {
-            // retreives public status'
             _token.Streaming.FilterAsObservable(track: _topic).Subscribe(_observer);
+
+            _log.Info("Tweet Observer started!");
+            _log.Info($"Observing tweets related to the topic '{_topic}'.");
         }
 
         private void StopStreaming()

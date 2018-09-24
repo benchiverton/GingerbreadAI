@@ -50,7 +50,6 @@
             {
                 _unfoundWords.Add(word);
             }
-            _log.Debug($"Unfound word '{word}' saved to cache.");
         }
 
         public void AddFoundWordToCache(string word, Emotion emotion)
@@ -59,7 +58,6 @@
             {
                 _foundWords.Add(word, emotion);
             }
-            _log.Debug($"Found word '{word}' saved to cache.");
         }
     }
 }

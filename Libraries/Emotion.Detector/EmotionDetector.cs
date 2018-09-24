@@ -29,7 +29,6 @@
             AmendNegations(emotions);
 
             var foundEmotions = emotions.Where(e => e.emotion != null);
-            _log.Debug($"{foundEmotions.Count()} words found with an emotion in the text '{text}'. These words are:\n {foundEmotions.Select(x => x.word).Aggregate((w1, w2) => $"{w1}\r\n{w2}")}");
             return foundEmotions.Select(e => e.emotion).GetOverallEmotion();
         }
 
