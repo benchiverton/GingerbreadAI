@@ -3,7 +3,7 @@
     using Dapper.FluentMap.Mapping;
     using Data;
 
-    public class EmotionMap : EntityMap<Emotion>
+    public class EmotionMap : EntityMap<EmotionData>
     {
         public EmotionMap()
         {

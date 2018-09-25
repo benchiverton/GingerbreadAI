@@ -2,9 +2,6 @@
 using CoreTweet.Streaming;
 using log4net;
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 using TwitterProcessor.Console.TwitterAuthorisers;
 using TwitterProcessor.Console.Data;
 using TwitterProcessor.Console.Observers;

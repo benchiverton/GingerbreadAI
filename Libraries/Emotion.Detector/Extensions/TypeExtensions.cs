@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace Emotion.Detector.Extensions
 {
@@ -7,7 +6,7 @@ namespace Emotion.Detector.Extensions
     {
         public static T CloneJson<T>(this T source)
         {
-            if (Object.ReferenceEquals(source, null))
+            if (ReferenceEquals(source, null))
             {
                 return default(T);
             }

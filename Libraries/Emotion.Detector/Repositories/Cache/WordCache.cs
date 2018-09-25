@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using Data;
-    using Emotion.Detector.Extensions;
+    using Extensions;
     using log4net;
 
     public class WordCache
@@ -10,7 +10,7 @@
         private readonly ILog _log;
 
         private readonly List<string> _unfoundWords;
-        private readonly Dictionary<string, Emotion> _foundWords;
+        private readonly Dictionary<string, EmotionData> _foundWords;
 
         private readonly object _unfoundWordsLock;
         private readonly object _foundWordsLock;
@@ -20,16 +20,16 @@
             _log = log;
 
             _unfoundWords = new List<string>();
-            _foundWords = new Dictionary<string, Emotion>();
+            _foundWords = new Dictionary<string, EmotionData>();
 
             _unfoundWordsLock = new object();
             _foundWordsLock = new object();
         }
 
-        public bool TryGetWordFromCache(string word, out Emotion emotion)
+        public bool TryGetWordFromCache(string word, out EmotionData emotionData)
         {
             var isInCache = false;
-            emotion = null;
+            emotionData = null;
 
             if (_unfoundWords.Contains(word))
             {
@@ -37,7 +37,7 @@
             }
             else if (_foundWords.ContainsKey(word))
             {
-                emotion = _foundWords[word].CloneJson();
+                emotionData = _foundWords[word].CloneJson();
                 isInCache = true;
             }
 
@@ -52,11 +52,11 @@
             }
         }
 
-        public void AddFoundWordToCache(string word, Emotion emotion)
+        public void AddFoundWordToCache(string word, EmotionData emotionData)
         {
             lock (_foundWordsLock)
             {
-                _foundWords.Add(word, emotion);
+                _foundWords.Add(word, emotionData);
             }
         }
     }

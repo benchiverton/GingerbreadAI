@@ -1,9 +1,4 @@
-﻿using Emotion.Detector;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TwitterProcessor.Console
+﻿namespace TwitterProcessor.Console
 {
     // This should: 
     // - manage the TweetListener

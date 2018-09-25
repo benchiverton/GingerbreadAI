@@ -3,10 +3,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using Data;
-    using Emotion.Detector.Extensions;
+    using Extensions;
     using log4net;
     using Repositories;
-    using Repositories.Cache;
 
     public class EmotionDetector
     {
@@ -21,7 +20,7 @@
             _negationManager = negationManager;
         }
 
-        public Emotion Detect(string text)
+        public EmotionData Detect(string text)
         {
             var words = text.GetWordsFromText();
             var emotions = _repository.GetEmotions(words);
@@ -33,7 +32,7 @@
         }
 
         // Don't worry, this will DEFINITELY detect sarcasm.
-        private void AmendNegations(List<(string word, Emotion emotion)> emotions)
+        private void AmendNegations(IReadOnlyList<(string word, EmotionData emotion)> emotions)
         {
             for (var i = 1; i < emotions.Count; i++)
             {
@@ -41,7 +40,7 @@
 
                 if (_negationManager.IsNegation(emotions[i - 1].word))
                 {
-                    _log.Debug($"Negation detected ('{emotions[i - 1].word}'). Emotion for {emotions[i].word} is being inverted.");
+                    _log.Debug($"Negation detected ('{emotions[i - 1].word}'). EmotionData for {emotions[i].word} is being inverted.");
                     emotions[i].emotion.Invert();
                 }
             }

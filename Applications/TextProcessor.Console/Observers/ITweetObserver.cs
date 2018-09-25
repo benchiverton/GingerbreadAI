@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TwitterProcessor.Console.Observers
 {
-    public interface ITweetObserver<TObservable, TOut> : IObserver<TObservable>
+    public interface ITweetObserver<in TObservable, out TOut> : IObserver<TObservable>
     {
         event Action<TOut> ProcessTweet;
         event Action StartNewObserver;

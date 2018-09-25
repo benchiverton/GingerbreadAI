@@ -1,6 +1,6 @@
 ﻿namespace Emotion.Detector.Data
 {
-    public class Emotion
+    public class EmotionData
     {
         public float Anger { get; set; }
         public float Anticipation { get; set; }

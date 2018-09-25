@@ -1,13 +1,12 @@
 ﻿using Emotion.Detector;
 using log4net;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TwitterProcessor.Console.Data;
 
 namespace TwitterProcessor.Console
 {
+    using Emotion.Detector.Data;
+
     // process emotion
     // persist tweet
     public class TweetProcessor
@@ -19,30 +18,30 @@ namespace TwitterProcessor.Console
         {
             _log = log;
             _emotionDetector = emotionDetector;
-            overallEmotion = new Emotion.Detector.Data.Emotion();
-            foreach (var prop in typeof(Emotion.Detector.Data.Emotion).GetProperties())
+            _overallEmotionData = new EmotionData();
+            foreach (var prop in typeof(EmotionData).GetProperties())
             {
-                prop.SetValue(overallEmotion, 0);
+                prop.SetValue(_overallEmotionData, 0);
             }
         }
 
-        private Emotion.Detector.Data.Emotion overallEmotion;
+        private EmotionData _overallEmotionData;
 
         public void ProcessTweet(Tweet tweet)
         {
-            if (tweet.Retweet) return;
+            if (tweet.ReTweet) return;
 
             var associatedEmotion = _emotionDetector.Detect(tweet.StatusMessage);
 
             //_log.Info($"Processing Tweet: {tweet.StatusMessage}");
 
-            var properties = typeof(Emotion.Detector.Data.Emotion).GetProperties();
+            var properties = typeof(EmotionData).GetProperties();
             foreach (var prop in properties)
             {
-                prop.SetValue(overallEmotion, (float)prop.GetValue(overallEmotion) + (float)prop.GetValue(associatedEmotion));
+                prop.SetValue(_overallEmotionData, (float)prop.GetValue(_overallEmotionData) + (float)prop.GetValue(associatedEmotion));
             }
 
-            _log.Info($"Overall Emotion: {string.Join(',', properties.Select(p => $"{p.Name}: {p.GetValue(overallEmotion)}").ToList())}");
+            _log.Info($"Overall EmotionData: {string.Join(',', properties.Select(p => $"{p.Name}: {p.GetValue(_overallEmotionData)}").ToList())}");
         }
     }
 }

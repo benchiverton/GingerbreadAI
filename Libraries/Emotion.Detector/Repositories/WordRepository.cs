@@ -27,9 +27,9 @@
             });
         }
 
-        public List<(string word, Emotion emotion)> GetEmotions(List<string> words)
+        public List<(string word, EmotionData emotion)> GetEmotions(List<string> words)
         {
-            var emotions = new List<(string, Emotion)>();
+            var emotions = new List<(string, EmotionData)>();
             foreach (var word in words)
             {
                 if (!_cache.TryGetWordFromCache(word, out var emotion))
@@ -47,26 +47,26 @@
                 emotions.Add((word, emotion));
             }
 
-            // emotion is null if it is not found in cache or database.
+            // emotionData is null if it is not found in cache or database.
             return emotions;
         }
 
-        public bool TryGetEmotionFromDatabase(string word, out Emotion emotion)
+        public bool TryGetEmotionFromDatabase(string word, out EmotionData emotionData)
         {
             using (var dbConnection = new SqlConnection(_connectionString))
             {
                 var spParameters = new DynamicParameters();
                 spParameters.Add("@Word", word);
-                var resultList = dbConnection.Query<Emotion>("[dbo].[GetEmotionsFromWord]", spParameters, commandType: CommandType.StoredProcedure).ToList();
+                var resultList = dbConnection.Query<EmotionData>("[dbo].[GetEmotionsFromWord]", spParameters, commandType: CommandType.StoredProcedure).ToList();
 
                 if (resultList.Count != 0)
                 {
-                    emotion = resultList.FirstOrDefault();
+                    emotionData = resultList.FirstOrDefault();
                     return true;
                 }
                 else
                 {
-                    emotion = null;
+                    emotionData = null;
                     return false;
                 }
             }
