@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TweetListener.ServiceConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "Yorkshire"
+    }
+  }
+}

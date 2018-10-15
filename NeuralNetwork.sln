@@ -7,13 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Networks", "Networks", "{34
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeepLearning", "DeepLearning", "{D510F750-F9DD-467E-996E-B47FE58EDB09}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backpropagation.Test", "DeepLearning\BackpropagationTest\Backpropagation.Test.csproj", "{C5DA2A54-EC74-4AFF-BDBD-A906C3C886C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backpropagation.Test", "DeepLearning\Backpropagation.Test\Backpropagation.Test.csproj", "{C5DA2A54-EC74-4AFF-BDBD-A906C3C886C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backpropagation", "DeepLearning\Backpropagation\Backpropagation.csproj", "{C6510A0E-AF19-4B2D-9AB5-068E345BBF5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork", "Networks\NeuralNetwork\NeuralNetwork.csproj", "{F0D77462-AE15-4C70-9FE9-52BCDE104D7F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Test", "Networks\NeuralNetworkTests\NeuralNetwork.Test.csproj", "{4D1CBFDD-E879-4C13-8296-C057955B068C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Test", "Networks\NeuralNetwork.Test\NeuralNetwork.Test.csproj", "{4D1CBFDD-E879-4C13-8296-C057955B068C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Network.Console", "Applications\Network.Console\Network.Console.csproj", "{B9FB66FF-956F-4A83-B2EF-C9605F282995}"
 EndProject
