@@ -1,5 +1,6 @@
 ﻿namespace Emotion.Detector.Repositories.Cache
 {
+    using System;
     using System.Collections.Generic;
     using Data;
     using Extensions;
@@ -48,7 +49,14 @@
         {
             lock (_unfoundWordsLock)
             {
-                _unfoundWords.Add(word);
+                try
+                {
+                    _unfoundWords.Add(word);
+                }
+                catch (Exception)
+                {
+                    // do nothing
+                }
             }
         }
 
@@ -56,7 +64,7 @@
         {
             lock (_foundWordsLock)
             {
-                _foundWords.Add(word, emotionData);
+                _foundWords.TryAdd(word, emotionData);
             }
         }
     }

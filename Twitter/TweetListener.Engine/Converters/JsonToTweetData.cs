@@ -12,8 +12,13 @@ namespace TweetListener.Engine.Converters
 
         public static TweetData Convert(JObject tweetJson)
         {
+            if (tweetJson.TryGetValue("limit", out _))
+            {
+                return null; // we have made too many requests for twitter
+            }
             var tweet = new TweetData
             {
+                TweetId = tweetJson.GetValue("id").Value<long>(),
                 TweetedTime = epoch.AddMilliseconds(tweetJson.GetValue("timestamp_ms").Value<long>()),
                 ReTweet = tweetJson.TryGetValue("retweeted_status", out _)
             };

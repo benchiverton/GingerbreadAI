@@ -34,6 +34,7 @@ namespace TweetListener.ServiceConsole
                 registry.For<ITweetObserver>().Use<TweetObserver>();
                 registry.For<ITweetPersister>().Use<TweetPersister>();
                 registry.For<IEndpointInstance>().Use(ConfigureNServiceBus(topic));
+                registry.For<HistoricTweetCache>().Use<HistoricTweetCache>().Singleton();
                 registry.For<TweetProcessor>().Use<TweetProcessor>();
                 registry.For<TweetStreamer>().Use<TweetStreamer>();
                 registry.For<ProcessEngine>().Use<ProcessEngine>();
@@ -71,7 +72,7 @@ namespace TweetListener.ServiceConsole
 
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport.ConnectionString(Environment.GetEnvironmentVariable("serviceBusConnectionString"));
-            transport.TopicName($"TweetListener.{topic.Replace(" ", string.Empty)}");
+            transport.TopicName($"SentimentAnalyser.Twitter.{topic.Replace(" ", string.Empty)}");
 
             return Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
         }

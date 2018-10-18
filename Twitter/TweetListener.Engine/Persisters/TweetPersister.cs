@@ -30,12 +30,13 @@ namespace TweetListener.Engine.Persisters
             using (var dbConnection = new SqlConnection(_connectionString))
             {                
                 var spParameters = new DynamicParameters();
+                spParameters.Add("@TweetId", tweetData.TweetId);
                 spParameters.Add("@Topic", topic);
-                spParameters.Add("@TweetId", tweetData.OriginalTweetId);
                 spParameters.Add("@Content", tweetData.OriginalContent);
                 spParameters.Add("@TweetedTime", tweetData.TweetedTime);
                 if (tweetData.ReTweet)
                 {
+                    spParameters.Add("@OriginalTweetId", tweetData.OriginalTweetId);
                     dbConnection.Execute("[dbo].[PersistReTweet]", spParameters, commandType: CommandType.StoredProcedure);
                 }
                 else

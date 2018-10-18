@@ -16,7 +16,7 @@
                 words[i] = string.Concat(words[i].Where(c => !char.IsPunctuation(c)));
             }
 
-            words.ForEach(w => w.ToLower());
+            words.ForEach(w => w = w.ToLower());
 
             return words;
         }

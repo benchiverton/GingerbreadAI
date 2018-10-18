@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "TweetListener.ServiceConsole": {
+    "TwitterAnalyser.ServiceConsole": {
       "commandName": "Project",
       "commandLineArgs": "Trump"
     }

@@ -41,7 +41,6 @@
 
                 if (_negationManager.IsNegation(emotions[i - 1].word))
                 {
-                    _log.Debug($"Negation detected ('{emotions[i - 1].word}'). EmotionData for {emotions[i].word} is being inverted.");
                     emotions[i].emotion.Invert();
                 }
             }
