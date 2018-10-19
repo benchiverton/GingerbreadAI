@@ -19,7 +19,7 @@ namespace TwitterAnalyser.ServiceConsole.Caches
             _processedTweets = new List<long>();
             _processedTweetsLock = new object();
 
-            var connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString", EnvironmentVariableTarget.User);
+            var connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString");
             using (var dbConnection = new SqlConnection(connectionString))
             {
                 dbConnection.Open();

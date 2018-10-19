@@ -21,8 +21,8 @@ namespace TweetListener.Engine
 
         public TweetStreamer(ILog log, ITweetObserver observer, Tokens token)
         {
-            _consumerKey = Environment.GetEnvironmentVariable("twitterConsumerKey", EnvironmentVariableTarget.User);
-            _consumerSecret = Environment.GetEnvironmentVariable("twitterConsumerSecret", EnvironmentVariableTarget.User);
+            _consumerKey = Environment.GetEnvironmentVariable("twitterConsumerKey");
+            _consumerSecret = Environment.GetEnvironmentVariable("twitterConsumerSecret");
 
             _log = log;
             _token = token;

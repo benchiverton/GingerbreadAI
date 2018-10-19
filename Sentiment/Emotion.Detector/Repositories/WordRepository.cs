@@ -19,7 +19,7 @@
         public WordRepository(WordCache cache)
         {
             _cache = cache;
-            _connectionString = Environment.GetEnvironmentVariable("wordRepositoryConnectionString", EnvironmentVariableTarget.User);
+            _connectionString = Environment.GetEnvironmentVariable("wordRepositoryConnectionString");
 
             FluentMapper.Initialize(config =>
             {

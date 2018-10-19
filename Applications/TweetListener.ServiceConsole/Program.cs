@@ -84,8 +84,8 @@ namespace TweetListener.ServiceConsole
             OAuth.OAuthSession session;
             try
             {
-                var consumerKey = Environment.GetEnvironmentVariable("twitterConsumerKey", EnvironmentVariableTarget.User);
-                var consumerSecret = Environment.GetEnvironmentVariable("twitterConsumerSecret", EnvironmentVariableTarget.User);
+                var consumerKey = Environment.GetEnvironmentVariable("twitterConsumerKey");
+                var consumerSecret = Environment.GetEnvironmentVariable("twitterConsumerSecret");
                 var twitterAuthoriser = new TwitterAuthoriserConsole();
 
                 session = OAuth.AuthorizeAsync(consumerKey, consumerSecret).GetAwaiter().GetResult();
