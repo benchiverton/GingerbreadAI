@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TweetListener.ServiceConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "the,and,that,have,for,not,with,you,this,but,from,they"
+    }
+  }
+}
