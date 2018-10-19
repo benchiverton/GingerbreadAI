@@ -14,8 +14,9 @@ namespace TweetListener.Engine.Converters
         {
             if (tweetJson.TryGetValue("limit", out _))
             {
-                return null; // we have made too many requests for twitter
+                return null; // you have made too many requests for twitter, you naughty dog
             }
+
             var tweet = new TweetData
             {
                 TweetId = tweetJson.GetValue("id").Value<long>(),

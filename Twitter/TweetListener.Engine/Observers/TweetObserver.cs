@@ -4,16 +4,19 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace TweetListener.Engine.Observers
 {
     public class TweetObserver : ITweetObserver
     {
         private readonly ILog _log;
+        private readonly int _interval;
 
-        public TweetObserver(ILog log)
+        public TweetObserver(ILog log, int interval)
         {
             _log = log;
+            _interval = interval;
         }
 
         public event Action<JObject> TweetReceived;
@@ -35,6 +38,9 @@ namespace TweetListener.Engine.Observers
             var tweetJson = JObject.Parse(value.Json);
 
             TweetReceived.Invoke(tweetJson);
+
+            // to avoid streaming too much data (try streaming tweets related to Trump lol)
+            Thread.Sleep(_interval);
         }
     }
 }

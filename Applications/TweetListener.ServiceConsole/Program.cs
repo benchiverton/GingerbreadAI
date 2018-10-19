@@ -6,6 +6,7 @@ using StructureMap;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 using TweetListener.Engine;
 using TweetListener.Engine.Observers;
@@ -31,7 +32,7 @@ namespace TweetListener.ServiceConsole
             {
                 registry.For<ILog>().Use(Logger).Singleton();
                 registry.For<Tokens>().Use(GetTwitterTokens()).Singleton();
-                registry.For<ITweetObserver>().Use<TweetObserver>();
+                registry.For<ITweetObserver>().Use<TweetObserver>().Ctor<int>().Is(1000);
                 registry.For<ITweetPersister>().Use<TweetPersister>();
                 registry.For<IEndpointInstance>().Use(ConfigureNServiceBus(topic));
                 registry.For<HistoricTweetCache>().Use<HistoricTweetCache>().Singleton();
@@ -72,7 +73,7 @@ namespace TweetListener.ServiceConsole
 
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport.ConnectionString(Environment.GetEnvironmentVariable("serviceBusConnectionString"));
-            transport.TopicName($"SentimentAnalyser.Twitter.{topic.Replace(" ", string.Empty)}");
+            transport.TopicName($"SentimentAnalyser.Twitter.{new Regex("[^a-zA-Z0-9]").Replace(topic, "")}");
 
             return Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
         }
