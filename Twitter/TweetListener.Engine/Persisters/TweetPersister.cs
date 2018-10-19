@@ -15,7 +15,7 @@ namespace TweetListener.Engine.Persisters
 
         public TweetPersister()
         {
-            _connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString", EnvironmentVariableTarget.User);
+            _connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString");
         }
 
         public Task PersistTweet(string topic, TweetData tweetData)

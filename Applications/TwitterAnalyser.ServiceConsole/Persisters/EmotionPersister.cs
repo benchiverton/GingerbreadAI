@@ -14,7 +14,7 @@ namespace TwitterAnalyser.ServiceConsole.Persisters
 
         public EmotionPersister()
         {
-            _connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString", EnvironmentVariableTarget.User);
+            _connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString");
         }
 
         public void PersistTweetEmotion(long tweetId, EmotionData tweetEmotion)
