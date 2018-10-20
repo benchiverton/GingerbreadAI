@@ -10,6 +10,7 @@ using StructureMap;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 using TweetListener.Events;
 using TwitterAnalyser.ServiceConsole.Caches;
