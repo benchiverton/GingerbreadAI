@@ -57,7 +57,7 @@
             {
                 var spParameters = new DynamicParameters();
                 spParameters.Add("@Word", word);
-                var resultList = dbConnection.Query<EmotionData>("[dbo].[GetEmotionsFromWord]", spParameters, commandType: CommandType.StoredProcedure).ToList();
+                var resultList = dbConnection.Query<EmotionData>("[dbo].[GetSentimentFromWord]", spParameters, commandType: CommandType.StoredProcedure).ToList();
 
                 if (resultList.Count != 0)
                 {

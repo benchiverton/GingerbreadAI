@@ -11,8 +11,6 @@ namespace TweetListener.Engine
 {
     public class TweetStreamer
     {
-        private readonly string _consumerKey;
-        private readonly string _consumerSecret;
         private readonly ILog _log;
         private readonly ITweetObserver _observer;
         private readonly Tokens _token;
@@ -20,10 +18,7 @@ namespace TweetListener.Engine
         private string _topic;
 
         public TweetStreamer(ILog log, ITweetObserver observer, Tokens token)
-        {
-            _consumerKey = Environment.GetEnvironmentVariable("twitterConsumerKey");
-            _consumerSecret = Environment.GetEnvironmentVariable("twitterConsumerSecret");
-
+        { 
             _log = log;
             _token = token;
             _observer = observer;
