@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Emotion.Detector.Data;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,10 +11,12 @@ namespace TwitterAnalyser.ServiceConsole.Persisters
 {
     public class EmotionPersister
     {
+        private readonly ILog _log;
         private readonly string _connectionString;
 
-        public EmotionPersister()
+        public EmotionPersister(ILog log)
         {
+            _log = log;
             _connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString");
         }
 
@@ -34,7 +37,14 @@ namespace TwitterAnalyser.ServiceConsole.Persisters
                 spParameters.Add("@Surprise", tweetEmotion.Surprise);
                 spParameters.Add("@Trust", tweetEmotion.Trust);
 
-                dbConnection.Execute("[dbo].[PersistTweetSentiment]", spParameters, commandType: CommandType.StoredProcedure);
+                try
+                {
+                    dbConnection.Execute("[dbo].[PersistTweetSentiment]", spParameters, commandType: CommandType.StoredProcedure);
+                }
+                catch (SqlException e) when (e.Number == 2627)
+                {
+                    _log.Warn($"Tweet with Id: {tweetId} has already been analysed & processed.");
+                }
             }
         }
     }
