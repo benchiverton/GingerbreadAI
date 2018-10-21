@@ -22,15 +22,9 @@ namespace TwitterAnalyser.ServiceConsole
     class Program
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
-        private static string _topic;
 
         static void Main(string[] args)
         {
-            if (args.Length != 1)
-                throw new ArgumentException("Please supply an argument specifying which topic you wish to stream tweets from.");
-
-            _topic = args[0];
-
             ConfigureLog4Net();
 
             var container = new Container(registry =>
@@ -56,7 +50,7 @@ namespace TwitterAnalyser.ServiceConsole
 
         private static void ConfigureLog4Net()
         {
-            GlobalContext.Properties["LogName"] = $"{typeof(Program).Assembly.GetName().Name}.{new Regex("[^a-zA-Z0-9]").Replace(_topic, "")}";
+            GlobalContext.Properties["LogName"] = typeof(Program).Assembly.GetName().Name;
 
             var log4NetConfig = new XmlDocument();
 #if DEBUG
