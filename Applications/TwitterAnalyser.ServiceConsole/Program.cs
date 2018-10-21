@@ -25,11 +25,6 @@ namespace TwitterAnalyser.ServiceConsole
 
         static void Main(string[] args)
         {
-            if (args.Length != 1)
-                throw new ArgumentException("Please supply an argument specifying which topic you wish to stream tweets from.");
-
-            var topic = args[0];
-
             ConfigureLog4Net();
 
             var container = new Container(registry =>
@@ -44,7 +39,7 @@ namespace TwitterAnalyser.ServiceConsole
                 registry.For<TweetReceivedHandler>().Use<TweetReceivedHandler>(); // contains cache
             });
 
-            ConfigureAndStartEndpoint(container, args[0]);
+            ConfigureAndStartEndpoint(container);
 
             Logger.Info("Tweet Analyser v1 started!");
             while (true)
@@ -58,13 +53,16 @@ namespace TwitterAnalyser.ServiceConsole
             GlobalContext.Properties["LogName"] = typeof(Program).Assembly.GetName().Name;
 
             var log4NetConfig = new XmlDocument();
+#if DEBUG
+            log4NetConfig.Load(File.OpenRead("log4net_debug.config"));
+#else
             log4NetConfig.Load(File.OpenRead("log4net.config"));
-            var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(),
-                       typeof(log4net.Repository.Hierarchy.Hierarchy));
+#endif
+            var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
             log4net.Config.XmlConfigurator.Configure(repo, log4NetConfig["log4net"]);
         }
 
-        private static void ConfigureAndStartEndpoint(Container container, string topic)
+        private static void ConfigureAndStartEndpoint(Container container)
         {
             var endpointConfiguration = new EndpointConfiguration(Assembly.GetExecutingAssembly().GetName().Name);
             endpointConfiguration.SendFailedMessagesTo("error");
@@ -80,7 +78,6 @@ namespace TwitterAnalyser.ServiceConsole
 
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport.ConnectionString(Environment.GetEnvironmentVariable("serviceBusConnectionString"));
-            transport.TopicName($"SentimentAnalyser.Twitter.{new Regex("[^a-zA-Z0-9]").Replace(topic, "")}");
 
             var endPoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
             endPoint.Subscribe<TweetReceived>().GetAwaiter().GetResult();
