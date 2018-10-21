@@ -43,7 +43,7 @@ namespace TwitterAnalyser.ServiceConsole.Persisters
                 }
                 catch (SqlException e) when (e.Number == 2627)
                 {
-                    _log.Warn($"Tweet with Id: {tweetId} has already been analysed & processed.");
+                    _log.Warn($"Tweet with Id: {tweetId} has already been analysed & persisted.");
                 }
             }
         }
