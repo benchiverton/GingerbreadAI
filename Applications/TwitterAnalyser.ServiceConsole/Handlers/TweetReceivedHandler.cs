@@ -37,9 +37,7 @@ namespace TwitterAnalyser.ServiceConsole.Handlers
                 return Task.CompletedTask;
             }
 
-            var handle = new Task(() => HandleTweet(message));
-            handle.Start();
-            return handle;
+            return Task.Run(() => HandleTweet(message));
         }
 
         private void HandleTweet(TweetReceived message)

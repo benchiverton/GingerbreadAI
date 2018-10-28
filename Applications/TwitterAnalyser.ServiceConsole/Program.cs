@@ -78,6 +78,7 @@ namespace TwitterAnalyser.ServiceConsole
 
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport.ConnectionString(Environment.GetEnvironmentVariable("serviceBusConnectionString"));
+            transport.Transactions(TransportTransactionMode.ReceiveOnly);
 
             var endPoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
             endPoint.Subscribe<TweetReceived>().GetAwaiter().GetResult();

@@ -32,9 +32,7 @@ namespace TweetListener.Engine
 
         public Task ProcessTweet(JObject tweetJson)
         {
-            var process = new Task(() => Process(tweetJson));
-            process.Start();
-            return process;
+            return Task.Run(() => Process(tweetJson));
         }
 
         private void Process(JObject tweetJson)

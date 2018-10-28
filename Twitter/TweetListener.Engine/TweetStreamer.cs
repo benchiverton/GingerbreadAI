@@ -5,6 +5,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using TweetListener.Engine.Observers;
 
 namespace TweetListener.Engine
@@ -16,6 +18,7 @@ namespace TweetListener.Engine
         private readonly Tokens _token;
 
         private string _topic;
+        private IDisposable _streamingApi;
 
         public TweetStreamer(ILog log, ITweetObserver observer, Tokens token)
         { 
@@ -44,7 +47,7 @@ namespace TweetListener.Engine
 
         private void StartStreaming()
         {
-            _token.Streaming.FilterAsObservable(track: _topic).Subscribe(_observer);
+            _streamingApi = _token.Streaming.FilterAsObservable(track: _topic).Subscribe(_observer);            
 
             _log.Info("Tweet Observer started!");
             _log.Info($"Observing tweets related to the topic '{_topic}'.");
@@ -52,6 +55,7 @@ namespace TweetListener.Engine
 
         private void StopStreaming()
         {
+            _streamingApi.Dispose();
             _observer.OnCompleted();
         }
     }
