@@ -23,7 +23,7 @@ namespace TwitterAnalyser.ServiceConsole.Caches
             using (var dbConnection = new SqlConnection(connectionString))
             {
                 dbConnection.Open();
-                SqlCommand command = new SqlCommand("[dbo].[GetProcessedTweetsV1]", dbConnection);
+                SqlCommand command = new SqlCommand("[v1].[GetProcessedTweets]", dbConnection);
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())

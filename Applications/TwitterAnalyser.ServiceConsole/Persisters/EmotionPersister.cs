@@ -39,7 +39,7 @@ namespace TwitterAnalyser.ServiceConsole.Persisters
 
                 try
                 {
-                    dbConnection.Execute("[dbo].[PersistTweetSentiment]", spParameters, commandType: CommandType.StoredProcedure);
+                    dbConnection.Execute("[v1].[PersistTweetSentiment]", spParameters, commandType: CommandType.StoredProcedure);
                 }
                 catch (SqlException e) when (e.Number == 2627)
                 {
