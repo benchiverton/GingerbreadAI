@@ -54,8 +54,8 @@ namespace TweetListener.Engine
                 return;
             }
 
-            _tweetPersister.PersistTweet(_topic, tweetData).GetAwaiter().GetResult();
-            _log.Debug($"Successfully persisted tweet with Id: {tweetData.TweetId}");
+            //_tweetPersister.PersistTweet(_topic, tweetData).GetAwaiter().GetResult();
+            //_log.Debug($"Successfully persisted tweet with Id: {tweetData.TweetId}");
 
             _endpointInstance.Publish(new TweetReceived(tweetData.OriginalTweetId, tweetData.OriginalContent)).ConfigureAwait(false);
             _log.Debug($"Successfully published 'TweetReceived' event for tweet with Id: {tweetData.TweetId}");
