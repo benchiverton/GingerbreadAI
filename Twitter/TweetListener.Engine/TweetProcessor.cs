@@ -45,14 +45,14 @@ namespace TweetListener.Engine
                 return; // we have reached twitters streaming cap
             }
 
+            _log.Info($"Tweet received. Id: {tweetData.TweetId}");
+            _log.Debug($"Tweet content: {tweetData.OriginalContent}");
+
             if (_tweetCache.QueryContainsAndUpdateCache(tweetData.TweetId))
             {
                 _log.Warn($"Tweet with Id: {tweetData.TweetId} has already been processed.");
                 return;
             }
-
-            _log.Info($"Tweet received. Id: {tweetData.TweetId}");
-            _log.Debug($"Tweet content: {tweetData.OriginalContent}");
 
             _tweetPersister.PersistTweet(_topic, tweetData).GetAwaiter().GetResult();
             _log.Debug($"Successfully persisted tweet with Id: {tweetData.TweetId}");

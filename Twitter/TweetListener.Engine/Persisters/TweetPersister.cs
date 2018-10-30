@@ -48,7 +48,7 @@ namespace TweetListener.Engine.Persisters
                     if (tweetData.ReTweet)
                     {
                         spParameters.Add("@OriginalTweetId", tweetData.OriginalTweetId);
-                        dbConnection.Execute("[dbo].[PersistReTweet]", spParameters, commandType: CommandType.StoredProcedure);
+                        dbConnection.Execute("[dbo].[PersistReTweet]", spParameters ,commandTimeout:30, commandType: CommandType.StoredProcedure);
                     }
                     else
                     {
