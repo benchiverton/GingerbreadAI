@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,10 +13,12 @@ namespace TweetListener.Engine.Persisters
 {
     public class TweetPersister : ITweetPersister
     {
+        private readonly ILog _log;
         private readonly string _connectionString;
 
-        public TweetPersister()
+        public TweetPersister(ILog log)
         {
+            _log = log;
             _connectionString = Environment.GetEnvironmentVariable("twitterRepositoryConnectionString");
         }
 
@@ -26,40 +29,22 @@ namespace TweetListener.Engine.Persisters
 
         private void Persist(string topic, TweetData tweetData)
         {
-            var wasSuccessful = false;
-            while (!wasSuccessful)
+            using (var dbConnection = new SqlConnection(_connectionString))
             {
-                wasSuccessful = TryPersist(topic, tweetData);
-                Thread.Sleep(5000);
-            }
-        }
-
-        private bool TryPersist(string topic, TweetData tweetData)
-        {
-            try
-            {
-                using (var dbConnection = new SqlConnection(_connectionString))
+                var spParameters = new DynamicParameters();
+                spParameters.Add("@TweetId", tweetData.TweetId);
+                spParameters.Add("@Topic", topic);
+                spParameters.Add("@Content", tweetData.OriginalContent);
+                spParameters.Add("@TweetedTime", tweetData.TweetedTime);
+                if (tweetData.ReTweet)
                 {
-                    var spParameters = new DynamicParameters();
-                    spParameters.Add("@TweetId", tweetData.TweetId);
-                    spParameters.Add("@Topic", topic);
-                    spParameters.Add("@Content", tweetData.OriginalContent);
-                    spParameters.Add("@TweetedTime", tweetData.TweetedTime);
-                    if (tweetData.ReTweet)
-                    {
-                        spParameters.Add("@OriginalTweetId", tweetData.OriginalTweetId);
-                        dbConnection.Execute("[dbo].[PersistReTweet]", spParameters ,commandTimeout:30, commandType: CommandType.StoredProcedure);
-                    }
-                    else
-                    {
-                        dbConnection.Execute("[dbo].[PersistTweet]", spParameters, commandType: CommandType.StoredProcedure);
-                    }
+                    spParameters.Add("@OriginalTweetId", tweetData.OriginalTweetId);
+                    dbConnection.Execute("[dbo].[PersistReTweet]", spParameters, commandTimeout: 30, commandType: CommandType.StoredProcedure);
                 }
-                return true;
-            }
-            catch(Exception)
-            {
-                return false;
+                else
+                {
+                    dbConnection.Execute("[dbo].[PersistTweet]", spParameters, commandType: CommandType.StoredProcedure);
+                }
             }
         }
     }
