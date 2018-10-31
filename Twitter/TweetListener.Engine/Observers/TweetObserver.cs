@@ -19,8 +19,8 @@ namespace TweetListener.Engine.Observers
             _interval = interval;
         }
 
-        public event Action<JObject> TweetReceived;
-        public event Action StartNewObserver;
+        public event Action<string> TweetReceived;
+        public event Action<ITweetObserver> ReSubscribe;
 
         public void OnCompleted() => _log.Info("Tweet Listener has stopped.");
 
@@ -29,15 +29,13 @@ namespace TweetListener.Engine.Observers
             _log.Error("Your TweetObserver has crashed due to an uncaught error. Details:");
             _log.Error($"Message:\r\n{error.Message}\r\nStack trace:\r\n{error.StackTrace}");
 
-            _log.Info("Trying to start a new Tweet Observer...");
-            StartNewObserver?.Invoke();
+            _log.Info("Trying to resubscribe...");
+            ReSubscribe?.Invoke(this);
         }
 
         public void OnNext(StreamingMessage value)
         {
-            var tweetJson = JObject.Parse(value.Json);
-
-            TweetReceived.Invoke(tweetJson);
+            TweetReceived.Invoke(value.Json);
 
             // to avoid streaming too much data (try streaming tweets related to Trump lol)
             Thread.Sleep(_interval);

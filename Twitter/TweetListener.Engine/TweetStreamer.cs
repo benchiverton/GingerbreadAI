@@ -18,7 +18,8 @@ namespace TweetListener.Engine
         private readonly Tokens _token;
 
         private string _topic;
-        private IDisposable _streamingApi;
+        private IObservable<StreamingMessage> _stream;
+        private IDisposable _subscription;
 
         public TweetStreamer(ILog log, ITweetObserver observer, Tokens token)
         { 
@@ -27,11 +28,11 @@ namespace TweetListener.Engine
             _observer = observer;
         }
 
-        public void Initialise(string topic, Action<JObject> processTweet)
+        public void Initialise(string topic, Action<string> processTweet)
         {
             _topic = topic;
             _observer.TweetReceived += processTweet;
-            _observer.StartNewObserver += StartStreaming;
+            _observer.ReSubscribe += SubScribe;
         }
 
         public void Start()
@@ -42,20 +43,24 @@ namespace TweetListener.Engine
                 return;
             }
 
-            StartStreaming();
+            SubScribe(_observer);
         }
 
-        private void StartStreaming()
+        private void SubScribe(ITweetObserver observer)
         {
-            _streamingApi = _token.Streaming.FilterAsObservable(track: _topic).Subscribe(_observer);            
-
+            if(_subscription != null)
+            {
+                _subscription.Dispose();
+            }
+            _subscription = _token.Streaming.FilterAsObservable(track: _topic).Subscribe(observer);
+            
             _log.Info("Tweet Observer started!");
             _log.Info($"Observing tweets related to the topic '{_topic}'.");
         }
 
         private void StopStreaming()
         {
-            _streamingApi.Dispose();
+            _subscription.Dispose();
             _observer.OnCompleted();
         }
     }

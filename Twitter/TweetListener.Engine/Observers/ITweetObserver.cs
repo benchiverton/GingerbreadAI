@@ -8,7 +8,7 @@ namespace TweetListener.Engine.Observers
 {
     public interface ITweetObserver : IObserver<StreamingMessage>
     {
-        event Action<JObject> TweetReceived;
-        event Action StartNewObserver;
+        event Action<string> TweetReceived;
+        event Action<ITweetObserver> ReSubscribe;
     }
 }

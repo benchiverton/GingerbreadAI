@@ -30,14 +30,14 @@ namespace TweetListener.Engine
 
         public string Topic { set => _topic = value; }
 
-        public Task ProcessTweet(JObject tweetJson)
+        public Task ProcessTweet(string tweetJson)
         {
             return Task.Run(() => Process(tweetJson));
         }
 
-        private void Process(JObject tweetJson)
+        private void Process(string tweetJson)
         {
-            var tweetData = JsonToTweetData.Convert(tweetJson);
+            var tweetData = JsonToTweetData.Convert(JObject.Parse(tweetJson));
 
             if (tweetData == null)
             {
@@ -54,8 +54,8 @@ namespace TweetListener.Engine
                 return;
             }
 
-            //_tweetPersister.PersistTweet(_topic, tweetData).GetAwaiter().GetResult();
-            //_log.Debug($"Successfully persisted tweet with Id: {tweetData.TweetId}");
+            _tweetPersister.PersistTweet(_topic, tweetData).GetAwaiter().GetResult();
+            _log.Debug($"Successfully persisted tweet with Id: {tweetData.TweetId}");
 
             _endpointInstance.Publish(new TweetReceived(tweetData.OriginalTweetId, tweetData.OriginalContent)).ConfigureAwait(false);
             _log.Debug($"Successfully published 'TweetReceived' event for tweet with Id: {tweetData.TweetId}");
