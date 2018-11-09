@@ -76,7 +76,7 @@ namespace TweetListener.ServiceConsole
 
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport.ConnectionString(Environment.GetEnvironmentVariable("serviceBusConnectionString"));
-            transport.TopicName($"SentimentAnalyser.Twitter.{new Regex("[^a-zA-Z0-9]").Replace(_topic, "")}");
+            transport.TopicName("Twitter.SentimentAnalyser");
 
             return Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
         }

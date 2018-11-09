@@ -77,6 +77,7 @@ namespace TweetAnalyserV1.ServiceConsole
 
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport.ConnectionString(Environment.GetEnvironmentVariable("serviceBusConnectionString"));
+            transport.TopicName("Twitter.SentimentAnalyser");
             transport.Transactions(TransportTransactionMode.ReceiveOnly);
 
             var endPoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();

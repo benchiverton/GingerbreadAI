@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sentiment", "Sentiment", "{DD5C6B20-1B6B-44CB-AED7-E6AB3BFC2808}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Twitter", "Twitter", "{EF4C17C6-CB1E-441D-94E9-5B72034E0A9A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{EF4C17C6-CB1E-441D-94E9-5B72034E0A9A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector.Lexicons", "..\..\AI\Sentiment\Emotion.Detector.Lexicons\Emotion.Detector.Lexicons.csproj", "{2068388A-F287-443B-9FEA-93182F316469}"
 EndProject
