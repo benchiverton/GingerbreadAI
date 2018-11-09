@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sentiment", "Sentiment", "{DD5C6B20-1B6B-44CB-AED7-E6AB3BFC2808}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Twitter", "Twitter", "{EF4C17C6-CB1E-441D-94E9-5B72034E0A9A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector.Lexicons", "..\..\AI\Sentiment\Emotion.Detector.Lexicons\Emotion.Detector.Lexicons.csproj", "{2068388A-F287-443B-9FEA-93182F316469}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emotion.Detector.Lexicons.Test", "..\..\AI\Sentiment\Emotion.Detector.Lexicons.Test\Emotion.Detector.Lexicons.Test.csproj", "{0342A29B-38C1-4BA4-9259-A9F965B79BB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TweetListener.Events", "..\TweetListener\TweetListener.Events\TweetListener.Events.csproj", "{670F7FCC-D057-444C-978D-D8E24E5E93BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TweetAnalyserV1.ServiceConsole", "..\TweetAnalyserV1\TweetAnalyserV1.ServiceConsole\TweetAnalyserV1.ServiceConsole.csproj", "{AC6E45B7-EF2D-4B51-BA0C-516528E23EFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2068388A-F287-443B-9FEA-93182F316469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2068388A-F287-443B-9FEA-93182F316469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2068388A-F287-443B-9FEA-93182F316469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2068388A-F287-443B-9FEA-93182F316469}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0342A29B-38C1-4BA4-9259-A9F965B79BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0342A29B-38C1-4BA4-9259-A9F965B79BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0342A29B-38C1-4BA4-9259-A9F965B79BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0342A29B-38C1-4BA4-9259-A9F965B79BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{670F7FCC-D057-444C-978D-D8E24E5E93BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{670F7FCC-D057-444C-978D-D8E24E5E93BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{670F7FCC-D057-444C-978D-D8E24E5E93BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{670F7FCC-D057-444C-978D-D8E24E5E93BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC6E45B7-EF2D-4B51-BA0C-516528E23EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC6E45B7-EF2D-4B51-BA0C-516528E23EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6E45B7-EF2D-4B51-BA0C-516528E23EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6E45B7-EF2D-4B51-BA0C-516528E23EFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2068388A-F287-443B-9FEA-93182F316469} = {DD5C6B20-1B6B-44CB-AED7-E6AB3BFC2808}
+		{0342A29B-38C1-4BA4-9259-A9F965B79BB6} = {DD5C6B20-1B6B-44CB-AED7-E6AB3BFC2808}
+		{670F7FCC-D057-444C-978D-D8E24E5E93BC} = {EF4C17C6-CB1E-441D-94E9-5B72034E0A9A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {316817EF-00A2-4C09-8C9C-7B0ABF43BF05}
+	EndGlobalSection
+EndGlobal
