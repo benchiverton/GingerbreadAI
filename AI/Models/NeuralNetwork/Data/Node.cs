@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NeuralNetwork.Data
 {
+    [Serializable]
     public class Node
     {
         /// <summary>

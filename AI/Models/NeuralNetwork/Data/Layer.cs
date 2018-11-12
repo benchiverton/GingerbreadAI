@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace NeuralNetwork.Data
 {
+    [Serializable]
     public class Layer
     {
         /// <summary>
