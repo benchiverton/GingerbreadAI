@@ -1,13 +1,11 @@
-﻿using NeuralNetwork.Extensions;
-
-namespace Backpropagation
+﻿namespace Backpropagation
 {
     using System.Collections.Generic;
     using System.Linq;
     using AI.Calculations.Calculations;
-    using AI.Calculations.Extensions;
     using NeuralNetwork;
     using NeuralNetwork.Data;
+    using NeuralNetwork.Library.Extensions;
 
     public class Backpropagator
     {
@@ -28,7 +26,7 @@ namespace Backpropagation
             LearningRate = learningRate;
 
             Momentum = momentum;
-            _momentumDeltaHolder = outputLayer.SetAllWeightsToZero();
+            _momentumDeltaHolder = outputLayer.GetCopyWithReferences();
         }
 
         public void Backpropagate(double[] inputs, double[] targetOutputs)

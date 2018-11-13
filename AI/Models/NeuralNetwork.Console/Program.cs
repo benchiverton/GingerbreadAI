@@ -1,6 +1,4 @@
-﻿using NeuralNetwork.Extensions;
-
-namespace Network.Console
+﻿namespace Network.Console
 {
     using System;
     using System.IO;
@@ -8,6 +6,8 @@ namespace Network.Console
     using Backpropagation;
     using NeuralNetwork;
     using NeuralNetwork.Data;
+    using NeuralNetwork.Library;
+    using NeuralNetwork.Library.Extensions;
 
     public class Program
     {
@@ -16,14 +16,13 @@ namespace Network.Console
             var group = new Layer("Input", 1, new Layer[0]);
             var inner1 = new Layer("Inner1", 6, new[] { group });
             var inner2 = new Layer("Inner1", 25, new[] { inner1 });
-            var inner3 = new Layer("Inner2", 125, new[] { inner1 });
+            var inner3 = new Layer("Inner2", 125, new[] { inner2 });
             //var inner3 = new Layer("Inner2", 125, new[] { inner2 });
-            var output = new Layer("Output", 1, new[] { inner1 });
+            var output = new Layer("Output", 1, new[] { inner3 });
 
             var rand = new Random();
             LayerInitialiser.Initialise(rand, output);
-            var copy = output.DeepCopy().SetAllWeightsToZero();
-
+            
             var nodeLayerLogic = new LayerCalculator
             {
                 OutputLayer = output

@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NeuralNetwork.Data;
 
-namespace NeuralNetwork.Extensions
+namespace NeuralNetwork.Library.Extensions
 {
     public static class LayerExtensions
     {
@@ -18,7 +18,7 @@ namespace NeuralNetwork.Extensions
             }
         }
 
-        public static Layer SetAllWeightsToZero(this Layer layer)
+        public static Layer GetCopyWithReferences(this Layer layer)
         {
             return RecurseSettingWeightsToZero(layer);
         }
@@ -59,6 +59,19 @@ namespace NeuralNetwork.Extensions
             }
 
             return newLayer;
+        }
+
+        public static void Save(this Layer layer, string location)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, layer);
+                using (var fileStream = File.Create(location))
+                {
+                    ms.WriteTo(fileStream);
+                }
+            }
         }
     }
 }
