@@ -53,22 +53,24 @@ namespace Emotion.Detector.Lexicons.Repositories
 
         public bool TryGetEmotionFromDatabase(string word, out EmotionData emotionData)
         {
+            List<EmotionData> resultList;
+
             using (var dbConnection = new SqlConnection(_connectionString))
             {
                 var spParameters = new DynamicParameters();
                 spParameters.Add("@Word", word);
-                var resultList = dbConnection.Query<EmotionData>("[dbo].[GetSentimentFromWord]", spParameters, commandType: CommandType.StoredProcedure).ToList();
+                resultList = dbConnection.Query<EmotionData>("[dbo].[GetSentimentFromWord]", spParameters, commandType: CommandType.StoredProcedure).ToList();
+            }
 
-                if (resultList.Count != 0)
-                {
-                    emotionData = resultList.FirstOrDefault();
-                    return true;
-                }
-                else
-                {
-                    emotionData = null;
-                    return false;
-                }
+            if (resultList.Count != 0)
+            {
+                emotionData = resultList.FirstOrDefault();
+                return true;
+            }
+            else
+            {
+                emotionData = null;
+                return false;
             }
         }
     }
