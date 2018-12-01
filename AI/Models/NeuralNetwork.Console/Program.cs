@@ -3,7 +3,7 @@
     using System;
     using System.IO;
     using System.Linq;
-    using Backpropagation;
+    using BackPropagation;
     using NeuralNetwork;
     using NeuralNetwork.Data;
     using NeuralNetwork.Library;
@@ -44,11 +44,11 @@
 
             
             // perform backpropagation
-            var backpropagator = new Backpropagator(output, 1, LearningRateModifier, 0.9);
+            var backpropagator = new BackPropagator(output, 1, LearningRateModifier, 0.9);
             for (var i = 0; i < 1000000; i++)
             {
                 var trial = rand.NextDouble();
-                backpropagator.Backpropagate(new[] { trial }, new[] { Calculation(trial) });
+                backpropagator.BackPropagate(new[] { trial }, new[] { Calculation(trial) });
             }
 
             // final results
@@ -63,7 +63,7 @@
                 extrapolation[i] = nodeLayerLogic.GetResults(new[] { inputs[i] + 1 })[0];
             }
 
-            using (var file = new System.IO.StreamWriter($@"{Directory.GetCurrentDirectory()}\networkResults.csv", false))
+            using (var file = new System.IO.StreamWriter($@"{Directory.GetCurrentDirectory()}/networkResults.csv", false))
             {
                 file.WriteLine(string.Join(",", inputs.ToArray()));
                 file.WriteLine(string.Join(",", inputs.Select(Calculation)));
