@@ -1,5 +1,6 @@
 ﻿namespace Backpropagation
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using AI.Calculations.Calculations;
@@ -9,54 +10,39 @@
 
     public class Backpropagator
     {
+        private readonly LayerCalculator _layerCalculator;
+        private readonly Func<double, double> _learningRateModifier;
+        private readonly double _momentumFactor;
         private readonly Layer _momentumDeltaHolder;
 
-        public LayerCalculator LayerCalculator { get; set; }
+        private double _learningRate;
 
-        public double LearningRate { get; set; }
-
-        public double Momentum { get; set; }
-
-        public Backpropagator(Layer outputLayer, double learningRate, double momentum = 0)
+        public Backpropagator(Layer outputLayer, double learningRate, Func<double, double> learningAction = null, double momentum = 0)
         {
-            LayerCalculator = new LayerCalculator
+            _layerCalculator = new LayerCalculator
             {
                 OutputLayer = outputLayer
             };
-            LearningRate = learningRate;
+            _learningRate = learningRate;
+            _learningRateModifier = learningAction;
 
-            Momentum = momentum;
+            _momentumFactor = momentum;
             _momentumDeltaHolder = outputLayer.GetCopyWithReferences();
         }
 
         public void Backpropagate(double[] inputs, double[] targetOutputs)
         {
-            var currentLayer = LayerCalculator.OutputLayer;
-            var currentOutputs = LayerCalculator.GetResults(inputs);
+            var currentLayer = _layerCalculator.OutputLayer;
+            var currentOutputs = _layerCalculator.GetResults(inputs);
 
-            var deltas = new Dictionary<Node, double>();
-
-            // initial calculations for output layer
-            for (var i = 0; i < currentLayer.Nodes.Length; i++)
-            {
-                var node = currentLayer.Nodes[i];
-                var delta = BackpropagationCalculations.GetDeltaOutput(currentOutputs[i], targetOutputs[i]);
-                deltas.Add(node, delta);
-                foreach (var prevNode in node.Weights.Keys.ToList())
-                {
-                    UpdateNodeWeight(node, prevNode, delta, _momentumDeltaHolder.Nodes[i]);
-                }
-
-                foreach (var prevLayer in node.BiasWeights.Keys.ToList())
-                {
-                    UpdateBiasNodeWeight(node, prevLayer, delta, _momentumDeltaHolder.Nodes[i]);
-                }
-            }
+            var backwardsPassDeltas = UpdateOutputLayer(currentLayer, currentOutputs, targetOutputs);
 
             for (var i = 0; i < currentLayer.PreviousLayers.Length; i++)
             {
-                RecurseBackpropagation(currentLayer.PreviousLayers[i], deltas, _momentumDeltaHolder.PreviousLayers[i]);
+                RecurseBackpropagation(currentLayer.PreviousLayers[i], backwardsPassDeltas, _momentumDeltaHolder.PreviousLayers[i]);
             }
+
+            _learningRate = _learningRateModifier(_learningRate);
         }
 
         private void RecurseBackpropagation(Layer layer, Dictionary<Node, double> backwardsPassDeltas, Layer momentumLayer)
@@ -96,24 +82,47 @@
             }
         }
 
+        private Dictionary<Node, double> UpdateOutputLayer(Layer outputLayer, double[] currentOutputs, double[] targetOutputs)
+        {
+            var deltas = new Dictionary<Node, double>();
+
+            for (var i = 0; i < outputLayer.Nodes.Length; i++)
+            {
+                var node = outputLayer.Nodes[i];
+                var delta = BackpropagationCalculations.GetDeltaOutput(currentOutputs[i], targetOutputs[i]);
+                deltas.Add(node, delta);
+                foreach (var prevNode in node.Weights.Keys.ToList())
+                {
+                    UpdateNodeWeight(node, prevNode, delta, _momentumDeltaHolder.Nodes[i]);
+                }
+
+                foreach (var prevLayer in node.BiasWeights.Keys.ToList())
+                {
+                    UpdateBiasNodeWeight(node, prevLayer, delta, _momentumDeltaHolder.Nodes[i]);
+                }
+            }
+
+            return deltas;
+        }
+
         private void UpdateNodeWeight(Node node, Node prevNode, double delta, Node momentumNode)
         {
-            var change = -(LearningRate * delta * prevNode.Output);
+            var change = - (_learningRate * delta * prevNode.Output);
             node.Weights[prevNode] += change;
 
             // apply momentum
-            node.Weights[prevNode] += Momentum * momentumNode.Weights[prevNode];
-            momentumNode.Weights[prevNode] = change + Momentum * momentumNode.Weights[prevNode];
+            node.Weights[prevNode] += _momentumFactor * momentumNode.Weights[prevNode];
+            momentumNode.Weights[prevNode] = change + _momentumFactor * momentumNode.Weights[prevNode];
         }
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta, Node momentumNode)
         {
-            var change = -(LearningRate * delta);
+            var change = - (_learningRate * delta);
             node.BiasWeights[prevLayer] += change;
 
             // apply momentum
-            node.BiasWeights[prevLayer] += Momentum * momentumNode.BiasWeights[prevLayer];
-            momentumNode.BiasWeights[prevLayer] = change + Momentum * momentumNode.BiasWeights[prevLayer];
+            node.BiasWeights[prevLayer] += _momentumFactor * momentumNode.BiasWeights[prevLayer];
+            momentumNode.BiasWeights[prevLayer] = change + _momentumFactor * momentumNode.BiasWeights[prevLayer];
         }
     }
 }

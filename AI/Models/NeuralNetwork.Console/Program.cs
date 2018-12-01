@@ -15,10 +15,8 @@
         {
             var group = new Layer("Input", 1, new Layer[0]);
             var inner1 = new Layer("Inner1", 6, new[] { group });
-            var inner2 = new Layer("Inner1", 25, new[] { inner1 });
-            var inner3 = new Layer("Inner2", 125, new[] { inner2 });
-            //var inner3 = new Layer("Inner2", 125, new[] { inner2 });
-            var output = new Layer("Output", 1, new[] { inner3 });
+            //var inner2 = new Layer("Inner2", 25, new[] { inner1 });
+            var output = new Layer("Output", 1, new[] { inner1 });
 
             var rand = new Random();
             LayerInitialiser.Initialise(rand, output);
@@ -44,8 +42,9 @@
                 initialResults[i] = nodeLayerLogic.GetResults(new[] { inputs[i] })[0];
             }
 
+            
             // perform backpropagation
-            var backpropagator = new Backpropagator(output, 0.1, 0.9);
+            var backpropagator = new Backpropagator(output, 1, LearningRateModifier, 0.9);
             for (var i = 0; i < 1000000; i++)
             {
                 var trial = rand.NextDouble();
@@ -74,9 +73,12 @@
             }
         }
 
+        private static double LearningRateModifier(double rate)
+            => rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
+
         private static double Calculation(double input)
         {
-            return 0.5 * Math.Sin(6 * Math.PI * input) + 0.5;
+            return 0.5 * Math.Sin(3 * Math.PI * input) + 0.5;
         }
     }
 }

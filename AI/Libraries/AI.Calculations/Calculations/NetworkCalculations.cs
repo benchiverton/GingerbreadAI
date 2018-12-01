@@ -14,7 +14,7 @@
             return value * (1 - value);
         }
 
-        public static double RadomInitialisation(Random rand)
+        public static double RandomInitialisation(Random rand)
         {
             return (2 * rand.NextDouble()) - 1;
         }
