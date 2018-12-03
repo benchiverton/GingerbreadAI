@@ -1,11 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Emotion.Detector.Lexicons.Test
 {
-    [TestClass]
     public class UnitTest1
     {
-        [TestMethod]
+        [Fact]
         public void TestMethod1()
         {
         }

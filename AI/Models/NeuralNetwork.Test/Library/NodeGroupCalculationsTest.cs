@@ -5,16 +5,12 @@ namespace NeuralNetwork.Test.Library
     using System.Diagnostics;
     using Data;
     using Exceptions;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using NeuralNetwork;
+    using Xunit;
 
-    [TestClass]
     public class NodeGroupCalculationsTest
     {
-        /// <summary>
-        ///     Test to verify that if you enter an input array of an incorrect magnitude, then the correct erro is thrown.
-        /// </summary>
-        [TestMethod]
+        [Fact]
         public void TestGetResultIncorrectInput()
         {
             // Input group
@@ -29,7 +25,7 @@ namespace NeuralNetwork.Test.Library
                     OutputLayer = outputGroup
                 };
                 nodeLayerLogic.PopulateResults(inputs);
-                Assert.Fail("An exception should have been thrown.");
+                Assert.True(false, "An exception should have been thrown.");
             }
             catch (NeuralNetworkException)
             {
@@ -37,7 +33,7 @@ namespace NeuralNetwork.Test.Library
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void TestBasicNetworkResult()
         {
             // Input group
@@ -72,13 +68,13 @@ namespace NeuralNetwork.Test.Library
 
             // checking that the values calculated in the inner node are correct
             var innerResult = innerLayer.Nodes[0].Output;
-            Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult, 4));
+            Assert.Equal(Math.Round(0.68997448112, 4), Math.Round(innerResult, 4));
             // checking that the values calculated in the output are correct
             var result = outputLayer.Nodes[0].Output;
-            Assert.AreEqual(Math.Round(0.73516286937, 4), Math.Round(result, 4));
+            Assert.Equal(Math.Round(0.73516286937, 4), Math.Round(result, 4));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestMultipleGroup()
         {
             // Input group
@@ -128,16 +124,16 @@ namespace NeuralNetwork.Test.Library
 
             // checking that the values calculated in the inner1 node are correct
             var innerResult1 = innerLayer1.Nodes[0].Output;
-            Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult1, 4));
+            Assert.Equal(Math.Round(0.68997448112, 4), Math.Round(innerResult1, 4));
             // checking that the values calculated in the inner2 node are correct
             var innerResult2 = innerLayer2.Nodes[0].Output;
-            Assert.AreEqual(Math.Round(0.68997448112, 4), Math.Round(innerResult2, 4));
+            Assert.Equal(Math.Round(0.68997448112, 4), Math.Round(innerResult2, 4));
             // checking that the values calculated in the output are correct
             var result = outputLayer.Nodes[0].Output;
-            Assert.AreEqual(Math.Round(0.8851320938059, 4), Math.Round(result, 4));
+            Assert.Equal(Math.Round(0.8851320938059, 4), Math.Round(result, 4));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestMultiNodeGroup()
         {
             var inputLayer = new Layer("Input Group", 2, new Layer[0]);
@@ -185,19 +181,18 @@ namespace NeuralNetwork.Test.Library
             };
             nodeLayerLogic.PopulateResults(new[] { 41.0, 43.0 });
 
-            Assert.AreEqual(Math.Round(innerLayer.Nodes[0].Output, 8), Math.Round(0.978751677288986, 8));
-            Assert.AreEqual(Math.Round(innerLayer.Nodes[1].Output, 8), Math.Round(0.99742672684619, 8));
-            Assert.AreEqual(Math.Round(innerLayer.Nodes[2].Output, 8), Math.Round(0.99951940263283, 8));
-            Assert.AreEqual(Math.Round(output.Nodes[0].Output, 8), Math.Round(0.669438581764625, 8));
-            Assert.AreEqual(Math.Round(output.Nodes[1].Output, 8), Math.Round(0.699525372246435, 8));
+            Assert.Equal(Math.Round(innerLayer.Nodes[0].Output, 8), Math.Round(0.978751677288986, 8));
+            Assert.Equal(Math.Round(innerLayer.Nodes[1].Output, 8), Math.Round(0.99742672684619, 8));
+            Assert.Equal(Math.Round(innerLayer.Nodes[2].Output, 8), Math.Round(0.99951940263283, 8));
+            Assert.Equal(Math.Round(output.Nodes[0].Output, 8), Math.Round(0.669438581764625, 8));
+            Assert.Equal(Math.Round(output.Nodes[1].Output, 8), Math.Round(0.699525372246435, 8));
         }
 
         /// <summary>
         ///     Test to check the efficiency of the GetResult() method (the time taken should be as small as possible).
         ///     Should only be run during debugging.
         /// </summary>
-        [TestMethod]
-        [Ignore]
+        [Fact(Skip = "Debug only")]
         public void TestGetResultEfficiency()
         {
             const int calcCount = 5000;
