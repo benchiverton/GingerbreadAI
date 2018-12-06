@@ -1,5 +1,5 @@
 using BackPropagation;
-using XUnit;
+using Xunit;
 
 namespace BackPropagation.Test
 {

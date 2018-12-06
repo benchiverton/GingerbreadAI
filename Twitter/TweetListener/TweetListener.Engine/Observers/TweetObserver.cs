@@ -19,7 +19,11 @@ namespace TweetListener.Engine.Observers
         public event Action<string> TweetReceived;
         public event Action ReSubscribe;
 
-        public void OnCompleted() => _log.Info("Tweet Listener has stopped.");
+        public void OnCompleted()
+        {
+            _log.Info("Tweet Observer has stopped. Attempting to resubscribe...");
+            ReSubscribe?.Invoke();
+        }
 
         public void OnError(Exception error)
         {

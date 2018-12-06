@@ -51,7 +51,6 @@ namespace TweetListener.Engine
         private void StopStreaming()
         {
             _subscription?.Dispose();
-            _observer.OnCompleted();
         }
     }
 }

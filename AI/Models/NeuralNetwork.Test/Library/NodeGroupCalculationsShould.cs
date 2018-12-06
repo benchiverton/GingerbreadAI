@@ -8,10 +8,10 @@ namespace NeuralNetwork.Test.Library
     using NeuralNetwork;
     using Xunit;
 
-    public class NodeGroupCalculationsTest
+    public class NodeGroupCalculationsShould
     {
         [Fact]
-        public void TestGetResultIncorrectInput()
+        public void ThrowAnExceptionWhenInputIsInvalid()
         {
             // Input group
             var inputGroup = new Layer("Input Group", 10, new Layer[0]);
@@ -34,7 +34,7 @@ namespace NeuralNetwork.Test.Library
         }
 
         [Fact]
-        public void TestBasicNetworkResult()
+        public void CalculateBasicResultCorrectly()
         {
             // Input group
             var inputLayer = new Layer("Input Layer", 1, new Layer[0]);
@@ -75,7 +75,7 @@ namespace NeuralNetwork.Test.Library
         }
 
         [Fact]
-        public void TestMultipleGroup()
+        public void CalculateMultipleGroupsResultCorrectly()
         {
             // Input group
             var inputLayer = new Layer("Input Layer", 1, new Layer[0]);
@@ -134,7 +134,7 @@ namespace NeuralNetwork.Test.Library
         }
 
         [Fact]
-        public void TestMultiNodeGroup()
+        public void CalculateMultipleNodesResultCorrectly()
         {
             var inputLayer = new Layer("Input Group", 2, new Layer[0]);
             var innerNode1Info = new Dictionary<Layer, (double[], double)>
@@ -193,7 +193,7 @@ namespace NeuralNetwork.Test.Library
         ///     Should only be run during debugging.
         /// </summary>
         [Fact(Skip = "Debug only")]
-        public void TestGetResultEfficiency()
+        public void CalculateResultsEfficiently()
         {
             const int calcCount = 5000;
             var group = new Layer("Input", 20, new Layer[0]);

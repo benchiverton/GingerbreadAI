@@ -1,4 +1,4 @@
-﻿namespace AI.Calculations.Calculations
+﻿namespace AI.Calculations
 {
     using System;
 

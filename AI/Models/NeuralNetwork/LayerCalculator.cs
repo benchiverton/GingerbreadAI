@@ -1,7 +1,7 @@
 ﻿namespace NeuralNetwork
 {
     using System.Linq;
-    using AI.Calculations.Calculations;
+    using AI.Calculations;
     using Data;
     using Exceptions;
 
