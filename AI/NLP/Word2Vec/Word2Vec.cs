@@ -24,7 +24,6 @@ namespace Word2Vec
         private readonly int _negative;
         private readonly int _numberOfThreads = 4;
         private readonly string _outputFile;
-        private readonly string _readVocabFile;
         private readonly float _thresholdForOccurrenceOfWords = 1e-3f;
         private readonly string _saveVocabFile;
         private readonly WordCollection _wordCollection = new WordCollection();
@@ -103,7 +102,6 @@ namespace Word2Vec
             {
                 MaxDegreeOfParallelism = _numberOfThreads
             };
-            _wordCollection.InitWordPositions();
             var result = Parallel.For(0, _numberOfThreads, parallelOptions, TrainModelThreadStart);
             if (!result.IsCompleted)
                 throw new InvalidOperationException();
