@@ -12,6 +12,15 @@ namespace Word2Vec
 
         public WordCollection() => _words = new Dictionary<string, WordInfo>();
 
+        public void InitWordPositions()
+        {
+            var wordPosition = 0L;
+            foreach (var x in GetWords())
+            {
+                _words[x].Position = wordPosition++;
+            }
+        }
+
         public void AddWords(string line, int maxCodeLength)
             => PopulateWithWords(ParseWords(line), GetWordInfoCreator(maxCodeLength));
 
@@ -26,11 +35,9 @@ namespace Word2Vec
 
         public long GetOccuranceOfWord(string word) => _words[word].Count;
 
-        public bool ContainsWord(string word) => _words.ContainsKey(word);
-
         public void RemoveWordsWithCountLessThanMinCount(int minCount)
         {
-            foreach (var word in _words)
+            foreach (var word in _words.ToArray())
             {
                 if (word.Value.Count < minCount) _words.Remove(word.Key);
             }

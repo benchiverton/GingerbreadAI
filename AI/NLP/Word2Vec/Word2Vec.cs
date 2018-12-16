@@ -35,7 +35,7 @@ namespace Word2Vec
         private float[,] _hiddenLayerWeights;
         private float[,] _outputLayerWeights;
         private int[] _table;
-        
+
         private long _wordCountActual;
 
         public Word2Vec(
@@ -63,7 +63,7 @@ namespace Word2Vec
             for (var i = 0; i < ExpTableSize; i++)
             {
                 _expTable[i] = (float)Math.Exp((i / (float)ExpTableSize * 2 - 1) * MaxExp);
-                _expTable[i] = _expTable[i] / (_expTable[i] + 1); 
+                _expTable[i] = _expTable[i] / (_expTable[i] + 1);
             }
         }
 
@@ -102,6 +102,7 @@ namespace Word2Vec
             {
                 MaxDegreeOfParallelism = _numberOfThreads
             };
+            _wordCollection.InitWordPositions();
             var result = Parallel.For(0, _numberOfThreads, parallelOptions, TrainModelThreadStart);
             if (!result.IsCompleted)
                 throw new InvalidOperationException();
@@ -138,8 +139,8 @@ namespace Word2Vec
             {
                 _outputLayerWeights = new float[_wordCollection.GetNumberOfUniqueWords(), _numberOfDimensions];
                 for (wordIndex = 0; wordIndex < _wordCollection.GetNumberOfUniqueWords(); wordIndex++)
-                for (dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
-                    _outputLayerWeights[wordIndex, dimensionIndex] = 0;
+                    for (dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
+                        _outputLayerWeights[wordIndex, dimensionIndex] = 0;
             }
             for (wordIndex = 0; wordIndex < _wordCollection.GetNumberOfUniqueWords(); wordIndex++)
                 for (dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
@@ -234,7 +235,7 @@ namespace Word2Vec
                         neu1[c] = 0;
                     nextRandom = LinearCongruentialGenerator(nextRandom);
                     var randomWindowPosition = (long) (nextRandom % (ulong) _windowSize);
-                    
+
                     nextRandom = SkipGram(randomWindowPosition, sentencePosition, sentenceLength, sentence, wordIndex.Value, nextRandom);
                     sentencePosition++;
                     if (sentencePosition >= sentenceLength)
@@ -363,7 +364,7 @@ namespace Word2Vec
                     // ever be the case?)
                     if (!indexOfContextWord.HasValue)
                         continue;
-                    
+
                     // NEGATIVE SAMPLING
                     if (_negative > 0)
                         nextRandom = NegativeSampling(word, nextRandom, indexOfContextWord.Value,
