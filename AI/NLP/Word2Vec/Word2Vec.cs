@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -23,15 +22,11 @@ namespace Word2Vec
         private readonly int _minCount = 5;
         private readonly int _negative;
         private readonly int _numberOfThreads = 4;
-        private readonly string _outputFile;
-        private readonly string _readVocabFile;
         private readonly float _thresholdForOccurrenceOfWords = 1e-3f;
-        private readonly string _saveVocabFile;
         private readonly WordCollection _wordCollection = new WordCollection();
-        private readonly string _trainFile;
         private readonly int _windowSize;
+        private readonly FileHandler _fileHandler;
         private float _alpha;
-        private long _fileSize;
         private float _startingAlpha;
         private float[,] _hiddenLayerWeights;
         private float[,] _outputLayerWeights;
@@ -41,8 +36,7 @@ namespace Word2Vec
 
         public Word2Vec(
             string trainFileName,
-            string outPutfileName,
-            string saveVocabFileName,
+            string outputfileName,
             int numberOfThreads = 4,
             int numberOfIterations = 4,
             int negative = 5,
@@ -51,9 +45,6 @@ namespace Word2Vec
             float alpha = 0.025f
         )
         {
-            _trainFile = trainFileName;
-            _outputFile = outPutfileName;
-            _saveVocabFile = saveVocabFileName;
             _expTable = new float[ExpTableSize + 1];
             _numberOfThreads = numberOfThreads;
             _numberOfIterations = numberOfIterations;
@@ -61,6 +52,7 @@ namespace Word2Vec
             _numberOfDimensions = numberOfDimensions;
             _windowSize = windowSize;
             _alpha = alpha;
+            _fileHandler = new FileHandler(trainFileName, outputfileName);
             for (var i = 0; i < ExpTableSize; i++)
             {
                 _expTable[i] = (float)Math.Exp((i / (float)ExpTableSize * 2 - 1) * MaxExp);
@@ -72,24 +64,17 @@ namespace Word2Vec
         {
             Setup();
             Train();
-            WriteOutput();
+            _fileHandler.WriteOutput(_wordCollection, _numberOfDimensions, _hiddenLayerWeights);
             GC.Collect();
         }
 
         private void Setup()
         {
             _startingAlpha = _alpha;
-            _fileSize = new FileInfo(_trainFile).Length;
 
-            FileHandler.GetWordDictionaryFromFile(_trainFile, _wordCollection, MaxCodeLength);
+            _fileHandler.GetWordDictionaryFromFile(_wordCollection, MaxCodeLength);
 
             _wordCollection.RemoveWordsWithCountLessThanMinCount(_minCount);
-
-            if (!string.IsNullOrEmpty(_saveVocabFile))
-                FileHandler.SaveWordDictionary(_saveVocabFile, _wordCollection);
-
-            if (string.IsNullOrEmpty(_outputFile))
-                throw new Exception("Output file not defined.");
 
             InitNetwork();
 
@@ -109,25 +94,6 @@ namespace Word2Vec
                 throw new InvalidOperationException();
         }
 
-
-        private void WriteOutput()
-        {
-            using (var fs = new FileStream(_outputFile, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(fs, Encoding.UTF8))
-            {
-                writer.WriteLine(_wordCollection.GetNumberOfUniqueWords());
-                writer.WriteLine(_numberOfDimensions);
-
-                var keys = _wordCollection.GetWords().ToArray();
-                for (var a = 0; a < _wordCollection.GetNumberOfUniqueWords(); a++)
-                {
-                    var bytes = new List<byte>();
-                    for (var dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
-                        bytes.AddRange(BitConverter.GetBytes(_hiddenLayerWeights[a, dimensionIndex]));
-                    writer.WriteLine($"{keys[a]}\t{Convert.ToBase64String(bytes.ToArray())}");
-                }
-            }
-        }
 
         private void InitNetwork()
         {
@@ -197,9 +163,9 @@ namespace Word2Vec
             var neu1 = new float[_numberOfDimensions];
             var sum = _wordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
-            using (var reader = File.OpenText(_trainFile))
+            using (var reader = _fileHandler.GetReader())
             {
-                reader.BaseStream.Seek(_fileSize / _numberOfThreads * id, SeekOrigin.Begin);
+                reader.BaseStream.Seek(_fileHandler.FileSize / _numberOfThreads * id, SeekOrigin.Begin);
                 while (true)
                 {
                     if (wordCount - lastWordCount > 10000)
@@ -224,7 +190,7 @@ namespace Word2Vec
                         wordCount = 0;
                         lastWordCount = 0;
                         sentenceLength = 0;
-                        reader.BaseStream.Seek(_fileSize / _numberOfThreads * id, SeekOrigin.Begin);
+                        reader.BaseStream.Seek(_fileHandler.FileSize / _numberOfThreads * id, SeekOrigin.Begin);
                         Console.WriteLine($"Iterations remaining: {localIter} Thread: {id}");
                         continue;
                     }
