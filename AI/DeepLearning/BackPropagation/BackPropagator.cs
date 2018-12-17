@@ -110,21 +110,25 @@
         {
             if (prevNode.Output == 0) return;
 
+            var nodeWeight = node.Weights[prevNode];
+
             var change = -(_learningRate * delta * prevNode.Output);
-            node.Weights[prevNode] += change;
+            nodeWeight += change;
 
             // apply momentum
-            node.Weights[prevNode] += _momentumFactor * momentumNode.Weights[prevNode];
+            nodeWeight += _momentumFactor * momentumNode.Weights[prevNode];
             momentumNode.Weights[prevNode] = change + _momentumFactor * momentumNode.Weights[prevNode];
         }
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta, Node momentumNode)
         {
+            var biasWeight = node.BiasWeights[prevLayer];
+
             var change = -(_learningRate * delta);
-            node.BiasWeights[prevLayer] += change;
+            biasWeight += change;
 
             // apply momentum
-            node.BiasWeights[prevLayer] += _momentumFactor * momentumNode.BiasWeights[prevLayer];
+            biasWeight += _momentumFactor * momentumNode.BiasWeights[prevLayer];
             momentumNode.BiasWeights[prevLayer] = change + _momentumFactor * momentumNode.BiasWeights[prevLayer];
         }
     }
