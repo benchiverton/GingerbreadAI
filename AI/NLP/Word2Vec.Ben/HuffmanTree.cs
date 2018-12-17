@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Word2Vec
+namespace Word2Vec.Ben
 {
     public static class HuffmanTree
     {

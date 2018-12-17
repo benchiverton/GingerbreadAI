@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Word2Vec.Extensions
+﻿namespace Word2Vec.Ben.Extensions
 {
     public static class UlongExtensions
     {

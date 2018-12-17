@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Word2Vec
+namespace Word2Vec.Ben
 {
     public class WordCollection
     {

@@ -8,18 +8,18 @@
     using NeuralNetwork.Data;
     using NeuralNetwork.Library;
     using NeuralNetwork.Library.Extensions;
-    using Word2Vec;
+    using Word2Vec.Ben;
 
     public class Program
     {
         public static void Main()
         {
-            var word2vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 1);
+            var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 1);
 
-            word2vec.TrainModel();
+            word2Vec.TrainModel();
 
             var outputGenerator = new OutputGenerator("output.csv");
-            outputGenerator.WriteOutput(word2vec.WordCollection, word2vec.Network);
+            outputGenerator.WriteOutput(word2Vec.WordCollection, word2Vec.Network);
 
             //var group = new Layer("Input", 1, new Layer[0]);
             //var inner1 = new Layer("Inner1", 3, new[] { group });

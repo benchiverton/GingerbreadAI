@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Word2Vec
+namespace Word2Vec.Ben
 {
     public class FileHandler
     {

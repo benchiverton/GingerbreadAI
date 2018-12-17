@@ -1,32 +1,32 @@
-﻿using BackPropagation;
-using NeuralNetwork.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Word2Vec.Extensions;
+using System.Linq;
+using BackPropagation;
+using NeuralNetwork.Data;
+using Word2Vec.Ben.Extensions;
 
-namespace Word2Vec
+namespace Word2Vec.Ben
 {
     public class SkipGram
     {
         private readonly int _windowSize;
-        private readonly int _numberOfWords;
+        private readonly int _numberOfUniqueWords;
         private readonly int _negativeSamples;
         private readonly int[] _table;
         private readonly int _maxExp;
         private readonly float[] _expTable;
         private readonly BackPropagator _backPropagator;
 
-        public SkipGram(int[] table, int maxExp, float[] expTable, int numberOfWords, Layer network, int iterations)
+        public SkipGram(int[] table, int maxExp, float[] expTable, int numberOfUniqueWords, Layer network, long totalWords, int iterations)
         {
             _windowSize = 5;
             _negativeSamples = 5;
             _table = table;
             _maxExp = maxExp;
             _expTable = expTable;
-            _numberOfWords = numberOfWords;
+            _numberOfUniqueWords = numberOfUniqueWords;
 
-            var backPropagator = new BackPropagator(network, 0.1, momentum:0.5, learningAction:(i) => 1 - (i / (numberOfWords * iterations)));
+            var backPropagator = new BackPropagator(network, 0.25, momentum: 0, learningAction: (i) => i - ((double)0.25 / (double)(totalWords * iterations)));
 
             _backPropagator = backPropagator;
         }
@@ -55,26 +55,31 @@ namespace Word2Vec
 
         private ulong NegativeSampling(long targetWord, List<long> wordsWithinWindow, ulong nextRandom)
         {
-            var inputs = new double[_numberOfWords];
+            var inputs = new double[_numberOfUniqueWords];
             for (var i = 0; i < inputs.Length; i++)
             {
-                inputs[i] = int.MinValue;
-            }
-            foreach (var word in wordsWithinWindow)
-            {
-                inputs[word] = int.MaxValue;
+                inputs[i] = long.MinValue;
             }
 
-            var targetOutput = new double?[_numberOfWords];
+            foreach (var word in wordsWithinWindow)
+            {
+                inputs[word] = long.MaxValue;
+            }
+
+            var temp = new List<long>();
+            var targetOutput = new double?[_numberOfUniqueWords];
             targetOutput[targetWord] = 1;
-            for (int i = 0; i < _negativeSamples - 1; i++)
+            for (var i = 0; i < _negativeSamples - 1; i++)
             {
                 var randomTarget = SelectTarget(ref nextRandom);
                 if (randomTarget == targetWord) continue; // don't want to override target
                 targetOutput[randomTarget] = 0;
+                temp.Add(randomTarget);
             }
 
             _backPropagator.BackPropagate(inputs, targetOutput);
+
+            Console.WriteLine($"Target: {targetWord}\tFalse Targets:{string.Join(",", temp)}\tWords: {string.Join(",", wordsWithinWindow)}");
 
             return nextRandom;
         }
@@ -83,7 +88,7 @@ namespace Word2Vec
         {
             nextRandom = nextRandom.LinearCongruentialGenerator();
             long target = _table[(nextRandom >> 16) % (ulong)_table.Length];
-            if (target == 0) target = (long)(nextRandom % (ulong)(_numberOfWords - 1) + 1);
+            if (target == 0) target = (long)(nextRandom % (ulong)(_numberOfUniqueWords - 1) + 1);
             return target;
         }
 

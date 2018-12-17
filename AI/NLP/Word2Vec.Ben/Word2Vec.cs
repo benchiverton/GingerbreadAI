@@ -1,15 +1,15 @@
-﻿using NeuralNetwork;
-using NeuralNetwork.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Word2Vec.Extensions;
+using NeuralNetwork;
+using NeuralNetwork.Data;
+using NeuralNetwork.Library.Extensions;
+using Word2Vec.Ben.Extensions;
 
-namespace Word2Vec
+namespace Word2Vec.Ben
 {
     //C# Word2Vec based on https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c
     //Any comments in here is to show how misleading they can be. :)
@@ -20,17 +20,18 @@ namespace Word2Vec
         private const int MaxExp = 6;
         private const int MaxSentenceLength = 10000;
         private const int TableSize = (int)1e8;
+        private const int MinCount = 5;
+        private const float ThresholdForOccurrenceOfWords = 1e-3f;
+
         private readonly float[] _expTable;
         private readonly int _numberOfIterations;
         private readonly int _numberOfDimensions;
-        private readonly int _minCount = 5;
         private readonly int _numberOfThreads;
-        private readonly float _thresholdForOccurrenceOfWords = 1e-3f;
         private readonly string _saveVocabFile;
         private readonly string _trainFile;
+
         private long _fileSize;
         private int[] _table;
-        private SkipGram _skipGram;
 
         public WordCollection WordCollection { get; private set; }
         public Layer Network { get; private set; }
@@ -64,7 +65,7 @@ namespace Word2Vec
 
             FileHandler.GetWordDictionaryFromFile(_trainFile, WordCollection, MaxCodeLength);
 
-            WordCollection.RemoveWordsWithCountLessThanMinCount(_minCount);
+            WordCollection.RemoveWordsWithCountLessThanMinCount(MinCount);
 
             if (!string.IsNullOrEmpty(_saveVocabFile))
                 FileHandler.SaveWordDictionary(_saveVocabFile, WordCollection);
@@ -95,9 +96,7 @@ namespace Word2Vec
             Network = new Layer("Output", WordCollection.GetNumberOfUniqueWords(), new Layer[] { hiddenLayer });
 
             LayerInitialiser.Initialise(new Random(), Network);
-
-            _skipGram = new SkipGram(_table, MaxExp, _expTable, WordCollection.GetNumberOfUniqueWords(), Network, _numberOfIterations);
-
+            
             GC.Collect();
         }
 
@@ -136,11 +135,14 @@ namespace Word2Vec
             long sentencePosition = 0;
             long wordCount = 0;
             var sentence = new long[MaxSentenceLength + 1]; //Sentence elements will not be null to my understanding
-            var localIter = _numberOfIterations;
-
+            var iterationsRemaining = _numberOfIterations;
             var nextRandom = (ulong)id;
             var sum = WordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
+
+            var skipGram = new SkipGram(_table, MaxExp, _expTable, WordCollection.GetNumberOfUniqueWords(),
+                Network, WordCollection.GetTotalNumberOfWords(), _numberOfIterations);
+
             using (var reader = File.OpenText(_trainFile))
             {
                 reader.BaseStream.Seek(_fileSize / _numberOfThreads * id, SeekOrigin.Begin);
@@ -153,19 +155,19 @@ namespace Word2Vec
                     }
                     if (reader.EndOfStream || wordCount > sum / _numberOfThreads)
                     {
-                        localIter--;
-                        if (localIter == 0)
+                        iterationsRemaining--;
+                        if (iterationsRemaining == 0)
                             break;
                         wordCount = 0;
                         sentenceLength = 0;
                         reader.BaseStream.Seek(_fileSize / _numberOfThreads * id, SeekOrigin.Begin);
-                        Console.WriteLine($"Iterations remaining: {localIter} Thread: {id}");
+                        Console.WriteLine($"Iterations remaining: {iterationsRemaining} Thread: {id}");
                         continue;
                     }
                     var wordIndex = sentence[sentencePosition];
 
                     nextRandom = nextRandom.LinearCongruentialGenerator();
-                    nextRandom = _skipGram.Train(sentencePosition, sentenceLength, sentence, wordIndex, nextRandom);
+                    nextRandom = skipGram.Train(sentencePosition, sentenceLength, sentence, wordIndex, nextRandom);
                     sentencePosition++;
 
                     if (sentencePosition >= sentenceLength)
@@ -182,7 +184,6 @@ namespace Word2Vec
         {
             string line;
             var loopEnd = false;
-            var numberOfLineRead = 0;
 
             if (lastLine != null && lastLine.Any())
             {
@@ -192,7 +193,6 @@ namespace Word2Vec
 
             while (!loopEnd && (line = reader.ReadLine()) != null)
             {
-                numberOfLineRead++;
                 var words = splitRegex.Split(line);
                 if (sentenceLength >= MaxSentenceLength - words.Length && words.Length < MaxSentenceLength)
                 {
@@ -222,11 +222,11 @@ namespace Word2Vec
                 {
                     return true;
                 }
-                if (_thresholdForOccurrenceOfWords > 0)
+                if (ThresholdForOccurrenceOfWords > 0)
                 {
                     var ran = ((float)Math.Sqrt(WordCollection.GetOccuranceOfWord(word) /
-                                                 (_thresholdForOccurrenceOfWords * sum)) + 1) *
-                              (_thresholdForOccurrenceOfWords * sum) / WordCollection.GetOccuranceOfWord(word);
+                                                 (ThresholdForOccurrenceOfWords * sum)) + 1) *
+                              (ThresholdForOccurrenceOfWords * sum) / WordCollection.GetOccuranceOfWord(word);
                     nextRandom = nextRandom.LinearCongruentialGenerator();
                     if (ran < (nextRandom & 0xFFFF) / (float)65536)
                         continue;

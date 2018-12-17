@@ -1,12 +1,11 @@
-﻿using NeuralNetwork;
-using NeuralNetwork.Data;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using NeuralNetwork;
+using NeuralNetwork.Data;
 
-namespace Word2Vec
+namespace Word2Vec.Ben
 {
     public class OutputGenerator
     {

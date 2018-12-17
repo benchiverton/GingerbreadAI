@@ -24,7 +24,7 @@
             _learningRateModifier = learningAction;
 
             _momentumFactor = momentum;
-            _momentumDeltaHolder = outputLayer.GetCopyWithReferences();
+            _momentumDeltaHolder = outputLayer.GetCopyWithNodeReferences();
         }
 
         public void BackPropagate(double[] inputs, double?[] targetOutputs)
@@ -42,6 +42,7 @@
             if (_learningRateModifier != null)
             {
                 _learningRate = _learningRateModifier(_learningRate);
+                Console.WriteLine(_learningRate);
             }
         }
 
@@ -108,27 +109,23 @@
 
         private void UpdateNodeWeight(Node node, Node prevNode, double delta, Node momentumNode)
         {
-            if (prevNode.Output == 0) return;
-
-            var nodeWeight = node.Weights[prevNode];
+            if (Math.Abs(prevNode.Output) < 1e-6) return;
 
             var change = -(_learningRate * delta * prevNode.Output);
-            nodeWeight += change;
+            node.Weights[prevNode] += change;
 
             // apply momentum
-            nodeWeight += _momentumFactor * momentumNode.Weights[prevNode];
+            node.Weights[prevNode] += _momentumFactor * momentumNode.Weights[prevNode];
             momentumNode.Weights[prevNode] = change + _momentumFactor * momentumNode.Weights[prevNode];
         }
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta, Node momentumNode)
         {
-            var biasWeight = node.BiasWeights[prevLayer];
-
             var change = -(_learningRate * delta);
-            biasWeight += change;
+            node.BiasWeights[prevLayer] += change;
 
             // apply momentum
-            biasWeight += _momentumFactor * momentumNode.BiasWeights[prevLayer];
+            node.BiasWeights[prevLayer] += _momentumFactor * momentumNode.BiasWeights[prevLayer];
             momentumNode.BiasWeights[prevLayer] = change + _momentumFactor * momentumNode.BiasWeights[prevLayer];
         }
     }
