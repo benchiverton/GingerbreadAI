@@ -106,8 +106,8 @@ namespace Word2Vec
             {
                 _outputLayerWeights = new float[_wordCollection.GetNumberOfUniqueWords(), _numberOfDimensions];
                 for (wordIndex = 0; wordIndex < _wordCollection.GetNumberOfUniqueWords(); wordIndex++)
-                for (dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
-                    _outputLayerWeights[wordIndex, dimensionIndex] = 0;
+                    for (dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
+                        _outputLayerWeights[wordIndex, dimensionIndex] = 0;
             }
             for (wordIndex = 0; wordIndex < _wordCollection.GetNumberOfUniqueWords(); wordIndex++)
                 for (dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
