@@ -1,29 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Word2Vec
 {
     public class FileHandler
     {
-        public static void SaveWordDictionary(string vocabFileName, WordCollection wordCollection)
+        private readonly string _trainFile;
+        private readonly string _outputFile;
+        public long FileSize { get; }
+
+        public FileHandler(string trainFile, string outputFile)
         {
-            using (var stream = new FileStream(vocabFileName, FileMode.OpenOrCreate))
-            using (var streamWriter = new StreamWriter(stream, Encoding.UTF8))
-            {
-                foreach (var word in wordCollection.GetWords())
-                    streamWriter.WriteLine($"{word}\t{wordCollection.GetOccuranceOfWord(word)}");
-            }
+            _trainFile = trainFile;
+            _outputFile = outputFile;
+
+            FileSize = new FileInfo(_trainFile).Length;
+
+            if (string.IsNullOrEmpty(_outputFile))
+                throw new Exception("Output file not defined.");
         }
 
-        public static void GetWordDictionaryFromFile(string trainFileName, WordCollection wordCollection,
+        public void GetWordDictionaryFromFile(WordCollection wordCollection,
             int maxCodeLength)
         {
-            if (!File.Exists(trainFileName))
-                throw new InvalidOperationException("ERROR: training data file not found!\n");
+            if (!File.Exists(_trainFile))
+                throw new InvalidOperationException($"Unable to find {_trainFile}");
 
-            using (var fs = new FileStream(trainFileName, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(fs, Encoding.UTF8))
+            using (var fileStream = new FileStream(_trainFile, FileMode.Open, FileAccess.Read))
+            using (var reader = new StreamReader(fileStream, Encoding.UTF8))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -34,6 +41,30 @@ namespace Word2Vec
                         break;
                 }
             }
+        }
+
+        public void WriteOutput(WordCollection wordCollection, int numberOfDimensions, float[,] hiddenLayerWeights)
+        {
+            using (var fs = new FileStream(_outputFile, FileMode.Create, FileAccess.Write))
+            using (var writer = new StreamWriter(fs, Encoding.UTF8))
+            {
+                writer.WriteLine(wordCollection.GetNumberOfUniqueWords());
+                writer.WriteLine(numberOfDimensions);
+
+                var keys = wordCollection.GetWords().ToArray();
+                for (var a = 0; a < wordCollection.GetNumberOfUniqueWords(); a++)
+                {
+                    var bytes = new List<byte>();
+                    for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
+                        bytes.AddRange(BitConverter.GetBytes(hiddenLayerWeights[a, dimensionIndex]));
+                    writer.WriteLine($"{keys[a]}\t{Convert.ToBase64String(bytes.ToArray())}");
+                }
+            }
+        }
+
+        public StreamReader GetReader()
+        {
+            return File.OpenText(_trainFile);
         }
     }
 }

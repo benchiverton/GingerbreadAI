@@ -7,7 +7,12 @@
 
     public class LayerCalculator
     {
-        public Layer OutputLayer { get; set; }
+        public Layer OutputLayer { get; }
+
+        public LayerCalculator(Layer outputLayer)
+        {
+            OutputLayer = outputLayer;
+        }
 
         public double[] GetResults(double[] inputs)
         {

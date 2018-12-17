@@ -18,12 +18,25 @@ namespace NeuralNetwork.Library.Extensions
             }
         }
 
-        public static Layer GetCopyWithReferences(this Layer layer)
+        public static Layer GetCopyWithNodeReferences(this Layer layer)
         {
-            return RecurseSettingWeightsToZero(layer);
+            return RecurseCopySettingWeightsToZero(layer);
         }
 
-        private static Layer RecurseSettingWeightsToZero(Layer layer)
+        public static void Save(this Layer layer, string location)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, layer);
+                using (var fileStream = File.Create(location))
+                {
+                    ms.WriteTo(fileStream);
+                }
+            }
+        }
+
+        private static Layer RecurseCopySettingWeightsToZero(Layer layer)
         {
             var newLayer = new Layer
             {
@@ -55,23 +68,10 @@ namespace NeuralNetwork.Library.Extensions
 
             for (var i = 0; i < layer.PreviousLayers.Length; i++)
             {
-                newLayer.PreviousLayers[i] = RecurseSettingWeightsToZero(layer.PreviousLayers[i]);
+                newLayer.PreviousLayers[i] = RecurseCopySettingWeightsToZero(layer.PreviousLayers[i]);
             }
 
             return newLayer;
-        }
-
-        public static void Save(this Layer layer, string location)
-        {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, layer);
-                using (var fileStream = File.Create(location))
-                {
-                    ms.WriteTo(fileStream);
-                }
-            }
         }
     }
 }

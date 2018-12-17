@@ -43,5 +43,12 @@ namespace NeuralNetwork.Data
                 BiasWeights.Add(prevNodeLayer, 0);
             }
         }
+
+        public Node(Dictionary<Node, double> weights, Dictionary<Layer, double> biasWeights, double output)
+        {
+            Weights = weights;
+            BiasWeights = biasWeights;
+            Output = output;
+        }
     }
 }

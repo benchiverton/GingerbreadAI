@@ -20,10 +20,7 @@ namespace NeuralNetwork.Test.Library
             try
             {
                 var inputs = new double[5];
-                var nodeLayerLogic = new LayerCalculator
-                {
-                    OutputLayer = outputGroup
-                };
+                var nodeLayerLogic = new LayerCalculator(outputGroup);
                 nodeLayerLogic.PopulateResults(inputs);
                 Assert.True(false, "An exception should have been thrown.");
             }
@@ -63,7 +60,7 @@ namespace NeuralNetwork.Test.Library
                 PreviousLayers = new[] { innerLayer }
             };
 
-            var nodeLayerLogic = new LayerCalculator { OutputLayer = outputLayer };
+            var nodeLayerLogic = new LayerCalculator(outputLayer);
             nodeLayerLogic.PopulateResults(new[] { 0.5 });
 
             // checking that the values calculated in the inner node are correct
@@ -119,7 +116,7 @@ namespace NeuralNetwork.Test.Library
                 PreviousLayers = new[] { innerLayer1, innerLayer2 }
             };
 
-            var nodeLayerLogic = new LayerCalculator { OutputLayer = outputLayer };
+            var nodeLayerLogic = new LayerCalculator(outputLayer);
             nodeLayerLogic.PopulateResults(new[] { 0.5 });
 
             // checking that the values calculated in the inner1 node are correct
@@ -175,10 +172,7 @@ namespace NeuralNetwork.Test.Library
                 PreviousLayers = new[] { innerLayer }
             };
 
-            var nodeLayerLogic = new LayerCalculator
-            {
-                OutputLayer = output
-            };
+            var nodeLayerLogic = new LayerCalculator(output);
             nodeLayerLogic.PopulateResults(new[] { 41.0, 43.0 });
 
             Assert.Equal(Math.Round(innerLayer.Nodes[0].Output, 8), Math.Round(0.978751677288986, 8));
@@ -207,10 +201,7 @@ namespace NeuralNetwork.Test.Library
             var stopWatch = new Stopwatch();
 
             stopWatch.Start();
-            var nodeLayerLogic = new LayerCalculator
-            {
-                OutputLayer = output
-            };
+            var nodeLayerLogic = new LayerCalculator(output);
             // Gets the result every time this loop iterates
             for (var i = 0; i < calcCount; i++)
             {
