@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DeepLearning\BackPropagation\BackPropagation.csproj" />
+    <ProjectReference Include="..\..\NLP\Word2Vec.Ben\Word2Vec.Ben.csproj" />
   </ItemGroup>
 
 </Project>
