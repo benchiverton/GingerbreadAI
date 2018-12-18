@@ -40,9 +40,9 @@ namespace Word2Vec
                 parentNode[min2I] = _wordCollection.GetNumberOfUniqueWords() + a;
                 binary[min2I] = 1;
             }
-            for (long a = 0; a < _wordCollection.GetNumberOfUniqueWords(); a++)
+            for (long wordIndex = 0; wordIndex < _wordCollection.GetNumberOfUniqueWords(); wordIndex++)
             {
-                var b = a;
+                var b = wordIndex;
                 long i = 0;
                 while (true)
                 {
@@ -53,11 +53,13 @@ namespace Word2Vec
                     if (b == _wordCollection.GetNumberOfUniqueWords() * 2 - 2)
                         break;
                 }
-                _wordCollection.SetPoint(keys, a);
+
+                _wordCollection.SetCodeLength(keys, i, wordIndex);
+                _wordCollection.SetPoint(keys, wordIndex);
                 for (b = 0; b < i; b++)
                 {
-                    _wordCollection.SetCode(keys, a, i, b, code);
-                    _wordCollection.SetPoint2(keys, a, i, b, point);
+                    _wordCollection.SetCode(keys, wordIndex, i, b, code);
+                    _wordCollection.SetPoint2(keys, wordIndex, i, b, point);
                 }
             }
             GC.Collect();

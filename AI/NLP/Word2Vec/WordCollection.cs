@@ -7,8 +7,10 @@ namespace Word2Vec
     public class WordCollection
     {
         private readonly Dictionary<string, WordInfo> _words;
+        private WordInfo[] _wordPositionLookup;
 
         public long? this[string index] => _words.ContainsKey(index) ? (long?)_words[index].Position : null;
+        internal WordInfo this[long index] => _wordPositionLookup[index]; // ? (long?)_words[index].Position : null;
 
         public WordCollection() => _words = new Dictionary<string, WordInfo>();
 
@@ -19,6 +21,8 @@ namespace Word2Vec
             {
                 _words[x].Position = wordPosition++;
             }
+
+            _wordPositionLookup = _words.Values.ToArray();
         }
 
         public void AddWords(string line, int maxCodeLength)
@@ -49,6 +53,11 @@ namespace Word2Vec
 
         public void SetPoint(string[] keys, long a)
             => _words[keys[a]].Point[0] = GetNumberOfUniqueWords() - 2;
+
+        public void SetCodeLength(string[] keys, long codeLength, long wordIndex)
+        {
+            _words[keys[wordIndex]].CodeLength = (int)codeLength;
+        }
 
         public void SetCode(string[] keys, long a, long i, long b, char[] code)
             => _words[keys[a]].Code[i - b - 1] = code[b];
@@ -84,5 +93,7 @@ namespace Word2Vec
                 UpsertWord(Clean(word), infoCreator, i++);
             }
         }
+
+        
     }
 }

@@ -9,6 +9,7 @@ namespace Word2Vec
         public int[] Point { get; }
         public long Position { get; set; }
         public long Count { get; private set; }
+        public int CodeLength { get; set; }
 
         public void IncrementCount() => Count++;
     }
