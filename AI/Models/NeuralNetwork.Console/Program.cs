@@ -15,7 +15,7 @@
     {
         public static void Main()
         {
-            var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 100, 4);
+            var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 1, 4);
 
             word2Vec.TrainModel();
 

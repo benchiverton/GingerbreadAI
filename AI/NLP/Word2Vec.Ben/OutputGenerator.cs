@@ -46,20 +46,12 @@ namespace Word2Vec.Ben
 
         private List<(string, double)> GetProbabilities(Layer network, WordCollection wordCollection, int index)
         {
-            var inputs = new double[wordCollection.GetNumberOfUniqueWords()];
-            for (var i = 0; i < inputs.Length; i++)
-            {
-                inputs[i] = int.MinValue;
-            }
-            inputs[index] = int.MaxValue;
-
-            var layerCalculator = new LayerCalculator(network);
+            var outputCalculator = new OutputCalculator(network);
             var outputs = new List<(string, double)>();
-            var results = layerCalculator.GetResults(inputs);
             var words = wordCollection.GetWords().ToArray();
             for (var i = 0; i < words.Length; i++)
             {
-                outputs.Add((words[i], results[i]));
+                outputs.Add((words[i], outputCalculator.GetResult(index, i)));
             }
 
             return outputs;

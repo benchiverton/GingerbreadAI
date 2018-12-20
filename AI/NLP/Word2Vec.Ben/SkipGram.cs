@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BackPropagation;
+using NegativeSampling;
 using NeuralNetwork.Data;
 using Word2Vec.Ben.Extensions;
 
@@ -13,7 +13,7 @@ namespace Word2Vec.Ben
         private readonly int _numberOfUniqueWords;
         private readonly int _negativeSamples;
         private readonly int[] _table;
-        private readonly BackPropagator _backPropagator;
+        private readonly NegativeSampler _negativeSampler;
 
         public SkipGram(int[] table, int numberOfUniqueWords, Layer network, long totalWords, int iterations, int threads)
         {
@@ -22,9 +22,9 @@ namespace Word2Vec.Ben
             _table = table;
             _numberOfUniqueWords = numberOfUniqueWords;
 
-            var backPropagator = new BackPropagator(network, 0.25, momentum: 0, learningAction: (i) => i < 0.001 ? 0.001 : i * (double)totalWords/(totalWords+1));
+            var negativeSampler = new NegativeSampler(network, 0.25, learningAction: (i) => i < 0.001 ? 0.001 : i * (double)totalWords/(totalWords+1));
 
-            _backPropagator = backPropagator;
+            _negativeSampler = negativeSampler;
         }
 
         public ulong Train(long sentencePosition, long sentenceLength, long[] sentence, long targetWord, ulong nextRandom)
@@ -51,30 +51,17 @@ namespace Word2Vec.Ben
 
         private ulong NegativeSampling(long targetWord, List<long> wordsWithinWindow, ulong nextRandom)
         {
-            var inputs = new double[_numberOfUniqueWords];
-            for (var i = 0; i < inputs.Length; i++)
-            {
-                inputs[i] = long.MinValue;
-            }
-
             foreach (var word in wordsWithinWindow)
             {
-                inputs[word] = long.MaxValue;
+                _negativeSampler.NegativeSample((int)word, (int)targetWord, true);
 
-                var temp = new List<long>();
-                var targetOutput = new double?[_numberOfUniqueWords];
-                targetOutput[targetWord] = 1;
                 for (var i = 0; i < _negativeSamples - 1; i++)
                 {
                     var randomTarget = SelectTarget(ref nextRandom);
                     if (randomTarget == targetWord) continue; // don't want to override target
-                    targetOutput[randomTarget] = 0;
-                    temp.Add(randomTarget);
+
+                    _negativeSampler.NegativeSample((int)word, (int)randomTarget, false);
                 }
-
-                _backPropagator.BackPropagate(inputs, targetOutput);
-
-                inputs[word] = long.MinValue;
             }
 
             return nextRandom;

@@ -153,6 +153,7 @@ namespace Word2Vec.Ben
                         wordCount = 0;
                         sentenceLength = 0;
                         reader.BaseStream.Seek(_fileSize / _numberOfThreads * id, SeekOrigin.Begin);
+                        Console.WriteLine($"Iterations remaining: {iterationsRemaining} Thread: {id}");
                         continue;
                     }
                     var wordIndex = sentence[sentencePosition];

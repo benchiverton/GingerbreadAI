@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Word2Vec.Ben", "..\NLP\Word
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Word2Vec", "..\NLP\Word2Vec\Word2Vec.csproj", "{91C8EEFD-4BCA-4487-934E-F43EFE915601}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NegativeSampling", "..\DeepLearning\NegativeSampling\NegativeSampling.csproj", "{5B439B8C-98B0-4E6F-9DD5-6AC83990EA87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{91C8EEFD-4BCA-4487-934E-F43EFE915601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91C8EEFD-4BCA-4487-934E-F43EFE915601}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91C8EEFD-4BCA-4487-934E-F43EFE915601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B439B8C-98B0-4E6F-9DD5-6AC83990EA87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B439B8C-98B0-4E6F-9DD5-6AC83990EA87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B439B8C-98B0-4E6F-9DD5-6AC83990EA87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B439B8C-98B0-4E6F-9DD5-6AC83990EA87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +90,7 @@ Global
 		{1362AE1F-C735-4639-9BCA-597DA71EFCDB} = {3489D91B-5D90-4015-B821-B9D9658106F8}
 		{58FEC281-131A-4850-B175-4854A8A97177} = {4DBB1526-22A1-45C1-8885-AC623E7B79C5}
 		{91C8EEFD-4BCA-4487-934E-F43EFE915601} = {4DBB1526-22A1-45C1-8885-AC623E7B79C5}
+		{5B439B8C-98B0-4E6F-9DD5-6AC83990EA87} = {D510F750-F9DD-467E-996E-B47FE58EDB09}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {316817EF-00A2-4C09-8C9C-7B0ABF43BF05}

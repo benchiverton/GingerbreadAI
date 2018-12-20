@@ -10,7 +10,7 @@
 
     public class BackPropagator
     {
-        private readonly LayerCalculator _layerCalculator;
+        private readonly OutputCalculator _outputCalculator;
         private readonly Func<double, double> _learningRateModifier;
         private readonly double _momentumFactor;
         private readonly Layer _momentumDeltaHolder;
@@ -19,7 +19,7 @@
 
         public BackPropagator(Layer outputLayer, double learningRate, Func<double, double> learningAction = null, double momentum = 0)
         {
-            _layerCalculator = new LayerCalculator(outputLayer);
+            _outputCalculator = new OutputCalculator(outputLayer);
             _learningRate = learningRate;
             _learningRateModifier = learningAction;
 
@@ -29,8 +29,8 @@
 
         public void BackPropagate(double[] inputs, double?[] targetOutputs)
         {
-            var currentLayer = _layerCalculator.OutputLayer;
-            var currentOutputs = _layerCalculator.GetResults(inputs);
+            var currentLayer = _outputCalculator.OutputLayer;
+            var currentOutputs = _outputCalculator.GetResults(inputs);
 
             var backwardsPassDeltas = UpdateOutputLayer(currentLayer, currentOutputs, targetOutputs);
 
@@ -108,8 +108,6 @@
 
         private void UpdateNodeWeight(Node node, Node prevNode, double delta, Node momentumNode)
         {
-            if (Math.Abs(prevNode.Output) < 1e-6) return;
-
             var change = -(_learningRate * delta * prevNode.Output);
             node.Weights[prevNode].Value += change;
 
