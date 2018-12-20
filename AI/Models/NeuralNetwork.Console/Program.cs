@@ -1,6 +1,7 @@
 ﻿namespace Network.Console
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using BackPropagation;
@@ -14,7 +15,7 @@
     {
         public static void Main()
         {
-            var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 1);
+            var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 100, 4);
 
             word2Vec.TrainModel();
 

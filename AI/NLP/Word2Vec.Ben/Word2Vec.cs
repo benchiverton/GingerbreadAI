@@ -17,13 +17,11 @@ namespace Word2Vec.Ben
     {
         private const int ExpTableSize = 1000;
         private const int MaxCodeLength = 40;
-        private const int MaxExp = 6;
-        private const int MaxSentenceLength = 10000;
+        private const int MaxSentenceLength = 100;
         private const int TableSize = (int)1e8;
         private const int MinCount = 5;
         private const float ThresholdForOccurrenceOfWords = 1e-3f;
 
-        private readonly float[] _expTable;
         private readonly int _numberOfIterations;
         private readonly int _numberOfDimensions;
         private readonly int _numberOfThreads;
@@ -36,19 +34,13 @@ namespace Word2Vec.Ben
         public WordCollection WordCollection { get; private set; }
         public Layer Network { get; private set; }
 
-        public Word2Vec(string trainFileName, string saveVocabFileName, int numberOfIterations)
+        public Word2Vec(string trainFileName, string saveVocabFileName, int numberOfIterations, int numberOfThreads)
         {
             _trainFile = trainFileName;
             _saveVocabFile = saveVocabFileName;
             _numberOfIterations = numberOfIterations;
-            _expTable = new float[ExpTableSize + 1];
-            _numberOfThreads = 1;
-            _numberOfDimensions = 35;
-            for (var i = 0; i < ExpTableSize; i++)
-            {
-                _expTable[i] = (float)Math.Exp((i / (float)ExpTableSize * 2 - 1) * MaxExp);
-                _expTable[i] = _expTable[i] / (_expTable[i] + 1);
-            }
+            _numberOfThreads = numberOfThreads;
+            _numberOfDimensions = 50;
         }
 
         public void TrainModel()
@@ -140,8 +132,8 @@ namespace Word2Vec.Ben
             var sum = WordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
 
-            var skipGram = new SkipGram(_table, MaxExp, _expTable, WordCollection.GetNumberOfUniqueWords(),
-                Network, WordCollection.GetTotalNumberOfWords(), _numberOfIterations);
+            var skipGram = new SkipGram(_table, WordCollection.GetNumberOfUniqueWords(),
+                Network.CloneNewWithWeightReferences(), WordCollection.GetTotalNumberOfWords(), _numberOfIterations, _numberOfThreads);
 
             using (var reader = File.OpenText(_trainFile))
             {
@@ -161,15 +153,14 @@ namespace Word2Vec.Ben
                         wordCount = 0;
                         sentenceLength = 0;
                         reader.BaseStream.Seek(_fileSize / _numberOfThreads * id, SeekOrigin.Begin);
-                        Console.WriteLine($"Iterations remaining: {iterationsRemaining} Thread: {id}");
                         continue;
                     }
                     var wordIndex = sentence[sentencePosition];
 
                     nextRandom = nextRandom.LinearCongruentialGenerator();
                     nextRandom = skipGram.Train(sentencePosition, sentenceLength, sentence, wordIndex, nextRandom);
-                    sentencePosition++;
 
+                    sentencePosition++;
                     if (sentencePosition >= sentenceLength)
                     {
                         sentenceLength = 0;
@@ -184,10 +175,9 @@ namespace Word2Vec.Ben
         {
             string line;
             var loopEnd = false;
-
             if (lastLine != null && lastLine.Any())
             {
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, lastLine);
+                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, lastLine, WordCollection);
                 lastLine = null;
             }
 
@@ -199,18 +189,17 @@ namespace Word2Vec.Ben
                     lastLine = words;
                     break;
                 }
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, words);
+                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, words, WordCollection);
             }
             return wordCount;
         }
 
-        private bool HandleWords(StreamReader reader, ref long wordCount, long sum, long[] sentence, ref ulong nextRandom,
-            ref long sentenceLength, IEnumerable<string> words)
+        private static bool HandleWords(StreamReader reader, ref long wordCount, long sum, long[] sentence, ref ulong nextRandom,
+            ref long sentenceLength, IEnumerable<string> words, WordCollection wordCollection)
         {
-            var loopEnd = false;
             foreach (var word in words)
             {
-                var wordIndex = WordCollection[word];
+                var wordIndex = wordCollection[word];
                 if (reader.EndOfStream)
                 {
                     return true;
@@ -224,11 +213,10 @@ namespace Word2Vec.Ben
                 }
                 if (ThresholdForOccurrenceOfWords > 0)
                 {
-                    var ran = ((float)Math.Sqrt(WordCollection.GetOccuranceOfWord(word) /
-                                                 (ThresholdForOccurrenceOfWords * sum)) + 1) *
-                              (ThresholdForOccurrenceOfWords * sum) / WordCollection.GetOccuranceOfWord(word);
+                    var random = ((float)Math.Sqrt(wordCollection.GetOccuranceOfWord(word) / (ThresholdForOccurrenceOfWords * sum)) + 1) *
+                              (ThresholdForOccurrenceOfWords * sum) / wordCollection.GetOccuranceOfWord(word);
                     nextRandom = nextRandom.LinearCongruentialGenerator();
-                    if (ran < (nextRandom & 0xFFFF) / (float)65536)
+                    if (random < (nextRandom & 0xFFFF) / (float)65536)
                         continue;
                 }
                 sentence[sentenceLength] = wordIndex.Value;
@@ -238,7 +226,7 @@ namespace Word2Vec.Ben
                     return true;
                 }
             }
-            return loopEnd;
+            return false;
         }
     }
 }

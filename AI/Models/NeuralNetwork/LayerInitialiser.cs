@@ -36,12 +36,12 @@
             var feedingNodes = node.Weights.Count;
             foreach (var prevNode in node.Weights.Keys.ToList())
             {
-                node.Weights[prevNode] = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
+                node.Weights[prevNode].Value = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
             }
             var biasWeightKeys = new List<Layer>(node.BiasWeights.Keys.ToList());
             foreach (var biasWeightKey in biasWeightKeys)
             {
-                node.BiasWeights[biasWeightKey] = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
+                node.BiasWeights[biasWeightKey].Value = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
             }
         }
     }

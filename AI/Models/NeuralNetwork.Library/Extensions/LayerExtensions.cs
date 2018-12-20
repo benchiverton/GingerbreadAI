@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using NeuralNetwork.Data;
 
@@ -18,9 +19,14 @@ namespace NeuralNetwork.Library.Extensions
             }
         }
 
-        public static Layer GetCopyWithNodeReferences(this Layer layer)
+        public static Layer CloneWithNodeReferences(this Layer layer)
         {
-            return RecurseCopySettingWeightsToZero(layer);
+            return RecurseCloneWithNodeReferences(layer);
+        }
+
+        public static Layer CloneNewWithWeightReferences(this Layer layer)
+        {
+            return RecurseCloneNewWithWeightReferences(layer);
         }
 
         public static void Save(this Layer layer, string location)
@@ -36,7 +42,7 @@ namespace NeuralNetwork.Library.Extensions
             }
         }
 
-        private static Layer RecurseCopySettingWeightsToZero(Layer layer)
+        private static Layer RecurseCloneWithNodeReferences(Layer layer)
         {
             var newLayer = new Layer
             {
@@ -48,19 +54,19 @@ namespace NeuralNetwork.Library.Extensions
             {
                 var newNode = new Node
                 {
-                    Weights = new Dictionary<Node, double>(),
-                    BiasWeights = new Dictionary<Layer, double>(),
+                    Weights = new Dictionary<Node, Weight>(),
+                    BiasWeights = new Dictionary<Layer, Weight>(),
                     Output = 0
                 };
 
                 foreach (var weightKey in layer.Nodes[i].Weights.Keys)
                 {
-                    newNode.Weights.Add(weightKey, 0);
+                    newNode.Weights.Add(weightKey, new Weight(0));
                 }
 
                 foreach (var biasWeightKey in layer.Nodes[i].BiasWeights.Keys)
                 {
-                    newNode.BiasWeights.Add(biasWeightKey, 0);
+                    newNode.BiasWeights.Add(biasWeightKey, new Weight(0));
                 }
 
                 newLayer.Nodes[i] = newNode;
@@ -68,7 +74,69 @@ namespace NeuralNetwork.Library.Extensions
 
             for (var i = 0; i < layer.PreviousLayers.Length; i++)
             {
-                newLayer.PreviousLayers[i] = RecurseCopySettingWeightsToZero(layer.PreviousLayers[i]);
+                newLayer.PreviousLayers[i] = RecurseCloneWithNodeReferences(layer.PreviousLayers[i]);
+            }
+
+            return newLayer;
+        }
+
+        private static Layer RecurseCloneNewWithWeightReferences(Layer layer)
+        {
+            if (!layer.PreviousLayers.Any())
+            {
+                var newInputLayer = new Layer()
+                {
+                    Name = $"{layer.Name}_CLONE",
+                    Nodes = new Node[layer.Nodes.Length],
+                    PreviousLayers = new Layer[0]
+                };
+
+                for (var i = 0; i < layer.Nodes.Length; i++)
+                {
+                    newInputLayer.Nodes[i] = new Node()
+                    {
+                        Weights = new Dictionary<Node, Weight>(),
+                        BiasWeights = new Dictionary<Layer, Weight>(),
+                        Output = 0
+                    };
+                }
+
+                return newInputLayer;
+            }
+
+            var clonedPreviousLayers = new List<Layer>();
+            for(var i=0; i<layer.PreviousLayers.Length; i++)
+            {
+                clonedPreviousLayers.Add(RecurseCloneNewWithWeightReferences(layer.PreviousLayers[i]));
+            }
+
+            var newLayer = new Layer()
+            {
+                Name = $"{layer.Name}_CLONE",
+                PreviousLayers = clonedPreviousLayers.ToArray(),
+                Nodes = new Node[layer.Nodes.Length]
+            };
+
+            for (var i = 0; i < layer.Nodes.Length; i++)
+            {
+                var newNode = new Node()
+                {
+                    Weights = new Dictionary<Node, Weight>(),
+                    BiasWeights = new Dictionary<Layer, Weight>(),
+                    Output = 0
+                };
+
+                for (var j = 0; j < layer.PreviousLayers.Length; j++)
+                {
+                    for (var k = 0; k < layer.PreviousLayers[j].Nodes.Length; k++)
+                    {
+                        newNode.Weights.Add(newLayer.PreviousLayers[j].Nodes[k], layer.Nodes[i].Weights[layer.PreviousLayers[j].Nodes[k]]);
+                    }
+
+                    newNode.BiasWeights.Add(newLayer.PreviousLayers[j], layer.Nodes[i].BiasWeights[layer.PreviousLayers[j]]);
+                }
+
+                newLayer.Nodes[i] = newNode;
             }
 
             return newLayer;

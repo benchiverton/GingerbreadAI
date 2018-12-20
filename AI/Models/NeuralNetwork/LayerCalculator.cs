@@ -72,10 +72,10 @@
                 {
                     foreach (var prevNode in prevLayer.Nodes)
                     {
-                        node.Output += prevNode.Output * node.Weights[prevNode];
+                        node.Output += prevNode.Output * node.Weights[prevNode].Value;
                     }
 
-                    node.Output += node.BiasWeights[prevLayer];
+                    node.Output += node.BiasWeights[prevLayer].Value;
                 }
             };
         }

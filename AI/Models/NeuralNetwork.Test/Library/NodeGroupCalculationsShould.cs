@@ -214,8 +214,8 @@ namespace NeuralNetwork.Test.Library
 
         private Node GenerateWeightedNode(Dictionary<Layer, (double[] layerWeights, double biasWeight)> nodeInformation)
         {
-            var w8s = new Dictionary<Node, double>();
-            var biasw8s = new Dictionary<Layer, double>();
+            var w8s = new Dictionary<Node, Weight>();
+            var biasw8s = new Dictionary<Layer, Weight>();
 
             foreach (var nodeLayer in nodeInformation.Keys)
             {
@@ -228,10 +228,10 @@ namespace NeuralNetwork.Test.Library
 
                 for (var i = 0; i < data.layerWeights.Length; i++)
                 {
-                    w8s.Add(nodeLayer.Nodes[i], data.layerWeights[i]);
+                    w8s.Add(nodeLayer.Nodes[i], new Weight(data.layerWeights[i]));
                 }
 
-                biasw8s.Add(nodeLayer, data.biasWeight);
+                biasw8s.Add(nodeLayer, new Weight(data.biasWeight));
             }
 
             return new Node

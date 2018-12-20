@@ -13,20 +13,16 @@ namespace Word2Vec.Ben
         private readonly int _numberOfUniqueWords;
         private readonly int _negativeSamples;
         private readonly int[] _table;
-        private readonly int _maxExp;
-        private readonly float[] _expTable;
         private readonly BackPropagator _backPropagator;
 
-        public SkipGram(int[] table, int maxExp, float[] expTable, int numberOfUniqueWords, Layer network, long totalWords, int iterations)
+        public SkipGram(int[] table, int numberOfUniqueWords, Layer network, long totalWords, int iterations, int threads)
         {
             _windowSize = 5;
-            _negativeSamples = 5;
+            _negativeSamples = 2;
             _table = table;
-            _maxExp = maxExp;
-            _expTable = expTable;
             _numberOfUniqueWords = numberOfUniqueWords;
 
-            var backPropagator = new BackPropagator(network, 0.25, momentum: 0, learningAction: (i) => i - ((double)0.25 / (double)(totalWords * iterations)));
+            var backPropagator = new BackPropagator(network, 0.25, momentum: 0, learningAction: (i) => i < 0.001 ? 0.001 : i * (double)totalWords/(totalWords+1));
 
             _backPropagator = backPropagator;
         }
@@ -45,7 +41,7 @@ namespace Word2Vec.Ben
                     continue;
                 var wordWithinWindow = sentence[indexOfCurrentContextWordInSentence];
 
-                wordsWithinWindow.Add(sentence[wordWithinWindow]);
+                wordsWithinWindow.Add(wordWithinWindow);
             }
 
             nextRandom = NegativeSampling(targetWord, wordsWithinWindow, nextRandom);
@@ -64,22 +60,22 @@ namespace Word2Vec.Ben
             foreach (var word in wordsWithinWindow)
             {
                 inputs[word] = long.MaxValue;
+
+                var temp = new List<long>();
+                var targetOutput = new double?[_numberOfUniqueWords];
+                targetOutput[targetWord] = 1;
+                for (var i = 0; i < _negativeSamples - 1; i++)
+                {
+                    var randomTarget = SelectTarget(ref nextRandom);
+                    if (randomTarget == targetWord) continue; // don't want to override target
+                    targetOutput[randomTarget] = 0;
+                    temp.Add(randomTarget);
+                }
+
+                _backPropagator.BackPropagate(inputs, targetOutput);
+
+                inputs[word] = long.MinValue;
             }
-
-            var temp = new List<long>();
-            var targetOutput = new double?[_numberOfUniqueWords];
-            targetOutput[targetWord] = 1;
-            for (var i = 0; i < _negativeSamples - 1; i++)
-            {
-                var randomTarget = SelectTarget(ref nextRandom);
-                if (randomTarget == targetWord) continue; // don't want to override target
-                targetOutput[randomTarget] = 0;
-                temp.Add(randomTarget);
-            }
-
-            _backPropagator.BackPropagate(inputs, targetOutput);
-
-            Console.WriteLine($"Target: {targetWord}\tFalse Targets:{string.Join(",", temp)}\tWords: {string.Join(",", wordsWithinWindow)}");
 
             return nextRandom;
         }

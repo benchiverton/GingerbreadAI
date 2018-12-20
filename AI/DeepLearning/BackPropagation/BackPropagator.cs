@@ -24,7 +24,7 @@
             _learningRateModifier = learningAction;
 
             _momentumFactor = momentum;
-            _momentumDeltaHolder = outputLayer.GetCopyWithNodeReferences();
+            _momentumDeltaHolder = outputLayer.CloneWithNodeReferences();
         }
 
         public void BackPropagate(double[] inputs, double?[] targetOutputs)
@@ -42,7 +42,6 @@
             if (_learningRateModifier != null)
             {
                 _learningRate = _learningRateModifier(_learningRate);
-                Console.WriteLine(_learningRate);
             }
         }
 
@@ -61,7 +60,7 @@
                 var sumDeltaWeights = (double)0;
                 foreach (var backPassNode in backwardsPassDeltas.Keys)
                 {
-                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node];
+                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
                 }
                 var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
                 deltas.Add(node, delta);
@@ -112,21 +111,21 @@
             if (Math.Abs(prevNode.Output) < 1e-6) return;
 
             var change = -(_learningRate * delta * prevNode.Output);
-            node.Weights[prevNode] += change;
+            node.Weights[prevNode].Value += change;
 
             // apply momentum
-            node.Weights[prevNode] += _momentumFactor * momentumNode.Weights[prevNode];
-            momentumNode.Weights[prevNode] = change + _momentumFactor * momentumNode.Weights[prevNode];
+            node.Weights[prevNode].Value += _momentumFactor * momentumNode.Weights[prevNode].Value;
+            momentumNode.Weights[prevNode].Value = change + _momentumFactor * momentumNode.Weights[prevNode].Value;
         }
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta, Node momentumNode)
         {
             var change = -(_learningRate * delta);
-            node.BiasWeights[prevLayer] += change;
+            node.BiasWeights[prevLayer].Value += change;
 
             // apply momentum
-            node.BiasWeights[prevLayer] += _momentumFactor * momentumNode.BiasWeights[prevLayer];
-            momentumNode.BiasWeights[prevLayer] = change + _momentumFactor * momentumNode.BiasWeights[prevLayer];
+            node.BiasWeights[prevLayer].Value += _momentumFactor * momentumNode.BiasWeights[prevLayer].Value;
+            momentumNode.BiasWeights[prevLayer].Value = change + _momentumFactor * momentumNode.BiasWeights[prevLayer].Value;
         }
     }
 }
