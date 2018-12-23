@@ -24,29 +24,17 @@ namespace NegativeSampling
 
         public void NegativeSample(int inputIndex, int outputIndex, bool isPositiveTarget)
         {
-            var currentLayer = _outputCalculator.OutputLayer;
+            var outputLayer = _outputCalculator.OutputLayer;
             var currentOutput = _outputCalculator.GetResult(inputIndex, outputIndex);
             var targetOutput = isPositiveTarget ? 1 : 0;
 
-            Console.WriteLine($"{currentOutput}\t{targetOutput}");
+            var deltas = NegativeSampleOutput(outputLayer, currentOutput, targetOutput, outputIndex);
 
-            var delta = BackpropagationCalculations.GetDeltaOutput(currentOutput, targetOutput);
-            foreach (var previousNodeWeight in _outputCalculator.OutputLayer.Nodes[outputIndex].Weights)
+            for (var i = 0; i < outputLayer.PreviousLayers.Length; i++)
             {
-                UpdateNodeWeight(_outputCalculator.OutputLayer.Nodes[outputIndex], previousNodeWeight.Key, delta);
-            }
-            foreach (var previousBiasWeight in _outputCalculator.OutputLayer.Nodes[outputIndex].BiasWeights)
-            {
-                UpdateBiasNodeWeight(_outputCalculator.OutputLayer.Nodes[outputIndex], previousBiasWeight.Key, delta);
-            }
-
-            var deltas = new Dictionary<Node, double> { { _outputCalculator.OutputLayer.Nodes[outputIndex], delta } };
-
-            foreach (var previousLayer in _outputCalculator.OutputLayer.PreviousLayers)
-            {
-                foreach (var previousPreviousLayer in previousLayer.PreviousLayers)
+                for (var j = 0; j < outputLayer.PreviousLayers[i].PreviousLayers.Length; j++)
                 {
-                    RecurseNegativeSample(previousLayer, previousPreviousLayer, deltas, inputIndex);
+                    RecurseNegativeSample(outputLayer.PreviousLayers[i], outputLayer.PreviousLayers[i].PreviousLayers[j], deltas, inputIndex);
                 }
             }
 
@@ -56,6 +44,38 @@ namespace NegativeSampling
             }
         }
 
+        private Dictionary<Node, double> NegativeSampleOutput(Layer outputLayer, double currentOutput, double targetOutput, int outputIndex)
+        {
+            var outputNode = outputLayer.Nodes[outputIndex];
+
+            var delta = BackpropagationCalculations.GetDeltaOutput(currentOutput, targetOutput);
+            foreach (var previousNode in outputNode.Weights.Keys.ToList())
+            {
+                UpdateNodeWeight(outputNode, previousNode, delta);
+            }
+            foreach (var previousBiasLayer in outputNode.BiasWeights.Keys.ToList())
+            {
+                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta);
+            }
+
+            return new Dictionary<Node, double> { { outputNode, delta } };
+        }
+
+        private void NegativeSampleInput(Layer layer, Layer inputLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
+        {
+            var inputNode = inputLayer.Nodes[inputIndex];
+            foreach (var node in layer.Nodes)
+            {
+                var sumDeltaWeights = (double)0;
+                foreach (var backPassNode in backwardsPassDeltas.Keys)
+                {
+                    sumDeltaWeights += backPassNode.Output * backPassNode.Weights[node].Value;
+                }
+                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
+                UpdateNodeWeight(node, inputNode, delta);
+                UpdateBiasNodeWeight(node, inputLayer, delta);
+            }
+        }
 
         private void RecurseNegativeSample(Layer layer, Layer previousLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
         {
@@ -69,9 +89,9 @@ namespace NegativeSampling
             foreach (var node in layer.Nodes)
             {
                 var sumDeltaWeights = (double)0;
-                foreach (var backPassNode in previousLayer.Nodes)
+                foreach (var backPassNode in backwardsPassDeltas.Keys)
                 {
-                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
+                    sumDeltaWeights += backPassNode.Output * backPassNode.Weights[node].Value;
                 }
                 var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
                 deltas.Add(node, delta);
@@ -90,21 +110,6 @@ namespace NegativeSampling
             foreach (var prevPrevLayer in previousLayer.PreviousLayers)
             {
                 RecurseNegativeSample(previousLayer, prevPrevLayer, deltas, inputIndex);
-            }
-        }
-
-        private void NegativeSampleInput(Layer layer, Layer previousLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
-        {
-            foreach (var node in layer.Nodes)
-            {
-                var sumDeltaWeights = (double)0;
-                foreach (var backPassNode in backwardsPassDeltas.Keys)
-                {
-                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
-                }
-                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
-                UpdateNodeWeight(node, previousLayer.Nodes[inputIndex], delta);
-                UpdateBiasNodeWeight(node, previousLayer, delta);
             }
         }
 

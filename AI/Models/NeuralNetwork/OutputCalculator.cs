@@ -35,13 +35,19 @@
         {
             foreach (var previousLayer in OutputLayer.PreviousLayers)
             {
-                PopulateIndexedResults(previousLayer, inputIndex, outputIndex, inputValue);
+                var isInput = PopulateIndexedResults(previousLayer, inputIndex, outputIndex, inputValue);
+                if (isInput) return;
             }
 
-            OutputLayer.Nodes[outputIndex].Output = 0;
-            foreach (var previousNodeWeight in OutputLayer.Nodes[outputIndex].Weights)
+            var outputNode = OutputLayer.Nodes[outputIndex];
+            outputNode.Output = 0;
+            foreach (var previousNodeWeight in outputNode.Weights)
             {
-                OutputLayer.Nodes[outputIndex].Output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
+                outputNode.Output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
+            }
+            foreach(var previousLayerWeight in outputNode.BiasWeights)
+            {
+                outputNode.Output += previousLayerWeight.Value.Value;
             }
 
             OutputLayer.Nodes[outputIndex].Output = NetworkCalculations.LogisticFunction(OutputLayer.Nodes[outputIndex].Output);
@@ -137,7 +143,7 @@
                 {
                     foreach (var node in layer.Nodes)
                     {
-                        node.Output = node.Weights[prevLayer.Nodes[inputIndex]].Value + node.BiasWeights[prevLayer].Value;
+                        node.Output = node.Weights[prevLayer.Nodes[inputIndex]].Value * prevLayer.Nodes[inputIndex].Output + node.BiasWeights[prevLayer].Value;
                         node.Output = NetworkCalculations.LogisticFunction(node.Output);
                     }
                 }

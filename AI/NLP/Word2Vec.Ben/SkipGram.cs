@@ -18,11 +18,11 @@ namespace Word2Vec.Ben
         public SkipGram(int[] table, int numberOfUniqueWords, Layer network, long totalWords, int iterations, int threads)
         {
             _windowSize = 5;
-            _negativeSamples = 2;
+            _negativeSamples = 5;
             _table = table;
             _numberOfUniqueWords = numberOfUniqueWords;
 
-            var negativeSampler = new NegativeSampler(network, 0.25, learningAction: (i) => i < 0.001 ? 0.001 : i * (double)totalWords/(totalWords+1));
+            var negativeSampler = new NegativeSampler(network, 0.25, learningAction: (i) => i < 0.001 ? 0.001 : i * (double)totalWords / (totalWords + 1));
 
             _negativeSampler = negativeSampler;
         }

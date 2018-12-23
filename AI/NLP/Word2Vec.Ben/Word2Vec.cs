@@ -17,7 +17,7 @@ namespace Word2Vec.Ben
     {
         private const int ExpTableSize = 1000;
         private const int MaxCodeLength = 40;
-        private const int MaxSentenceLength = 100;
+        private const int MaxSentenceLength = 10000;
         private const int TableSize = (int)1e8;
         private const int MinCount = 5;
         private const float ThresholdForOccurrenceOfWords = 1e-3f;
@@ -88,7 +88,7 @@ namespace Word2Vec.Ben
             Network = new Layer("Output", WordCollection.GetNumberOfUniqueWords(), new Layer[] { hiddenLayer });
 
             LayerInitialiser.Initialise(new Random(), Network);
-            
+
             GC.Collect();
         }
 
@@ -132,8 +132,8 @@ namespace Word2Vec.Ben
             var sum = WordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
 
-            var skipGram = new SkipGram(_table, WordCollection.GetNumberOfUniqueWords(),
-                Network.CloneNewWithWeightReferences(), WordCollection.GetTotalNumberOfWords(), _numberOfIterations, _numberOfThreads);
+            var skipGram = new SkipGram(_table, WordCollection.GetNumberOfUniqueWords(), Network.CloneNewWithWeightReferences(),
+                WordCollection.GetTotalNumberOfWords(), _numberOfIterations, _numberOfThreads);
 
             using (var reader = File.OpenText(_trainFile))
             {
@@ -176,31 +176,35 @@ namespace Word2Vec.Ben
         {
             string line;
             var loopEnd = false;
+            var numberOfLineRead = 0;
+
             if (lastLine != null && lastLine.Any())
             {
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, lastLine, WordCollection);
+                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, lastLine);
                 lastLine = null;
             }
 
             while (!loopEnd && (line = reader.ReadLine()) != null)
             {
+                numberOfLineRead++;
                 var words = splitRegex.Split(line);
                 if (sentenceLength >= MaxSentenceLength - words.Length && words.Length < MaxSentenceLength)
                 {
                     lastLine = words;
                     break;
                 }
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, words, WordCollection);
+                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, words);
             }
             return wordCount;
         }
 
-        private static bool HandleWords(StreamReader reader, ref long wordCount, long sum, long[] sentence, ref ulong nextRandom,
-            ref long sentenceLength, IEnumerable<string> words, WordCollection wordCollection)
+        private bool HandleWords(StreamReader reader, ref long wordCount, long sum, long[] sentence, ref ulong nextRandom,
+            ref long sentenceLength, IEnumerable<string> words)
         {
+            var loopEnd = false;
             foreach (var word in words)
             {
-                var wordIndex = wordCollection[word];
+                var wordIndex = WordCollection[word];
                 if (reader.EndOfStream)
                 {
                     return true;
@@ -214,10 +218,10 @@ namespace Word2Vec.Ben
                 }
                 if (ThresholdForOccurrenceOfWords > 0)
                 {
-                    var random = ((float)Math.Sqrt(wordCollection.GetOccuranceOfWord(word) / (ThresholdForOccurrenceOfWords * sum)) + 1) *
-                              (ThresholdForOccurrenceOfWords * sum) / wordCollection.GetOccuranceOfWord(word);
+                    var ran = ((float)Math.Sqrt(WordCollection.GetOccuranceOfWord(word) / (ThresholdForOccurrenceOfWords * sum)) + 1) 
+                        * (ThresholdForOccurrenceOfWords * sum) / WordCollection.GetOccuranceOfWord(word);
                     nextRandom = nextRandom.LinearCongruentialGenerator();
-                    if (random < (nextRandom & 0xFFFF) / (float)65536)
+                    if (ran < (nextRandom & 0xFFFF) / (float)65536)
                         continue;
                 }
                 sentence[sentenceLength] = wordIndex.Value;
@@ -227,7 +231,7 @@ namespace Word2Vec.Ben
                     return true;
                 }
             }
-            return false;
+            return loopEnd;
         }
     }
 }

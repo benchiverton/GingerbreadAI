@@ -10,7 +10,7 @@ namespace NeuralNetwork.Test.Library
     using NeuralNetwork;
     using Xunit;
 
-    public class NodeGroupCalculationsShould
+    public class OutputGeneratorShould
     {
         [Fact]
         public void ThrowAnExceptionWhenInputIsInvalid()
@@ -19,17 +19,9 @@ namespace NeuralNetwork.Test.Library
             var inputGroup = new Layer("Input Group", 10, new Layer[0]);
             var outputGroup = new Layer("Output Group", 10, new[] { inputGroup });
 
-            try
-            {
-                var inputs = new double[5];
-                var nodeLayerLogic = new OutputCalculator(outputGroup);
-                nodeLayerLogic.PopulateResults(inputs);
-                Assert.True(false, "An exception should have been thrown.");
-            }
-            catch (NeuralNetworkException)
-            {
-                // this is meant to be hit, yay!
-            }
+            var inputs = new double[5];
+            var nodeLayerLogic = new OutputCalculator(outputGroup);
+            Assert.Throws<NeuralNetworkException>(() => nodeLayerLogic.PopulateResults(inputs));
         }
 
         [Fact]
