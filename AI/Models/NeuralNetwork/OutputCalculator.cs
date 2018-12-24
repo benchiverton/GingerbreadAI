@@ -107,7 +107,7 @@
 
                     node.Output += node.BiasWeights[prevLayer].Value;
                 }
-            };
+            }
         }
 
         #endregion

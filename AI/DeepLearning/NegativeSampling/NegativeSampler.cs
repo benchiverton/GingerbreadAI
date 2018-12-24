@@ -69,7 +69,7 @@ namespace NegativeSampling
                 var sumDeltaWeights = (double)0;
                 foreach (var backPassNode in backwardsPassDeltas.Keys)
                 {
-                    sumDeltaWeights += backPassNode.Output * backPassNode.Weights[node].Value;
+                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
                 }
                 var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
                 UpdateNodeWeight(node, inputNode, delta);
@@ -91,7 +91,7 @@ namespace NegativeSampling
                 var sumDeltaWeights = (double)0;
                 foreach (var backPassNode in backwardsPassDeltas.Keys)
                 {
-                    sumDeltaWeights += backPassNode.Output * backPassNode.Weights[node].Value;
+                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
                 }
                 var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
                 deltas.Add(node, delta);

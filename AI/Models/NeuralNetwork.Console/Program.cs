@@ -16,30 +16,6 @@
     {
         public static void Main()
         {
-            var x = new Layer("input", 5, new Layer[0]);
-            var y = new Layer("hidden", 10, new Layer[] { x });
-            var z = new Layer("output", 5, new Layer[] { y });
-
-            LayerInitialiser.Initialise(new Random(), z);
-
-            var sampler = new NegativeSampler(z, 0.25);
-            for(int i=0; i<10000; i++)
-            {
-                sampler.NegativeSample(0, 0, false);
-                sampler.NegativeSample(1, 1, false);
-                sampler.NegativeSample(2, 2, true);
-                sampler.NegativeSample(3, 3, false);
-                sampler.NegativeSample(4, 4, false);
-            }
-
-            var og = new OutputCalculator(z);
-            Console.WriteLine(og.GetResult(0, 0));
-            Console.WriteLine(og.GetResult(1, 1));
-            Console.WriteLine(og.GetResult(2, 2));
-            Console.WriteLine(og.GetResult(3, 3));
-            Console.WriteLine(og.GetResult(4, 4));
-
-
             var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 10, 4);
 
             word2Vec.TrainModel();

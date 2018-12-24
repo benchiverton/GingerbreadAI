@@ -55,7 +55,7 @@ namespace Word2Vec.Ben
             {
                 _negativeSampler.NegativeSample((int)word, (int)targetWord, true);
 
-                for (var i = 0; i < _negativeSamples - 1; i++)
+                for (var i = 0; i < _negativeSamples; i++)
                 {
                     var randomTarget = SelectTarget(ref nextRandom);
                     if (randomTarget == targetWord) continue; // don't want to override target
