@@ -1,4 +1,3 @@
-using BackPropagation;
 using NeuralNetwork;
 using NeuralNetwork.Data;
 using System;

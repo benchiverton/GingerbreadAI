@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NegativeSampling;
+﻿using NegativeSampling;
 using NeuralNetwork.Data;
+using System;
 using Word2Vec.Ben.Extensions;
 
 namespace Word2Vec.Ben
@@ -10,77 +8,67 @@ namespace Word2Vec.Ben
     public class SkipGram
     {
         private readonly int _windowSize;
-        private readonly int _numberOfUniqueWords;
         private readonly int _negativeSamples;
         private readonly int[] _table;
+        private readonly long _totalWords;
         private readonly NegativeSampler _negativeSampler;
 
-        public SkipGram(int[] table, int numberOfUniqueWords, Layer network, long totalWords, int iterations, int threads)
+        public SkipGram(int[] table, Layer network, long totalWords, int iterations, int threads)
         {
             _windowSize = 5;
             _negativeSamples = 5;
             _table = table;
-            _numberOfUniqueWords = numberOfUniqueWords;
+            _totalWords = totalWords;
 
-            var negativeSampler = new NegativeSampler(network, 0.25, learningAction: (i) => i < 0.001 ? 0.001 : i * (double)totalWords / (totalWords + 1));
+            var negativeSampler = new NegativeSampler(network, 0.025, learningRateModifier: LearningAction);
 
             _negativeSampler = negativeSampler;
         }
 
-        public ulong Train(long sentencePosition, long sentenceLength, long[] sentence, long targetWord, ulong nextRandom)
+        public ulong Train(long sentencePosition, long sentenceLength, long?[] sentence, long targetWord, ulong nextRandom)
         {
-            var wordsWithinWindow = new List<long>();
-
+            nextRandom = nextRandom.LinearCongruentialGenerator();
             var randomWindowPosition = (long)(nextRandom % (ulong)_windowSize);
             for (var offsetWithinWindow = randomWindowPosition; offsetWithinWindow < _windowSize * 2 + 1 - randomWindowPosition; offsetWithinWindow++)
             {
                 if (offsetWithinWindow == _windowSize) continue;
 
                 var indexOfCurrentContextWordInSentence = sentencePosition - _windowSize + offsetWithinWindow;
-                if (indexOfCurrentContextWordInSentence < 0 || indexOfCurrentContextWordInSentence >= sentenceLength)
-                    continue;
-                var wordWithinWindow = sentence[indexOfCurrentContextWordInSentence];
+                if (indexOfCurrentContextWordInSentence < 0 || indexOfCurrentContextWordInSentence >= sentenceLength) continue;
 
-                wordsWithinWindow.Add(wordWithinWindow);
+                var indexOfContextWord = sentence[indexOfCurrentContextWordInSentence];
+                if (!indexOfContextWord.HasValue) continue;
+
+                nextRandom = NegativeSampling(indexOfContextWord.Value, targetWord, nextRandom);
             }
-
-            nextRandom = NegativeSampling(targetWord, wordsWithinWindow, nextRandom);
 
             return nextRandom;
         }
 
-        private ulong NegativeSampling(long targetWord, List<long> wordsWithinWindow, ulong nextRandom)
+        private ulong NegativeSampling(long indexOfContextWord, long targetWord, ulong nextRandom)
         {
-            foreach (var word in wordsWithinWindow)
+            // this is the positive sample
+            _negativeSampler.NegativeSample((int)indexOfContextWord, (int)targetWord, true);
+
+            for (var i = 0; i < _negativeSamples; i++)
             {
-                _negativeSampler.NegativeSample((int)word, (int)targetWord, true);
+                var randomTarget = SelectTarget(ref nextRandom);
+                if (randomTarget == targetWord) continue; // don't want to use positive sample as negative sample
 
-                for (var i = 0; i < _negativeSamples; i++)
-                {
-                    var randomTarget = SelectTarget(ref nextRandom);
-                    if (randomTarget == targetWord) continue; // don't want to override target
-
-                    _negativeSampler.NegativeSample((int)word, (int)randomTarget, false);
-                }
+                _negativeSampler.NegativeSample((int)indexOfContextWord, (int)randomTarget, false);
             }
 
             return nextRandom;
         }
+
+        private double LearningAction(double alpha)
+            => alpha <= 0.0001 ? 0.0001 : alpha * _totalWords / (_totalWords + 1);
 
         private long SelectTarget(ref ulong nextRandom)
         {
             nextRandom = nextRandom.LinearCongruentialGenerator();
             long target = _table[(nextRandom >> 16) % (ulong)_table.Length];
-            if (target == 0) target = (long)(nextRandom % (ulong)(_numberOfUniqueWords - 1) + 1);
             return target;
-        }
-
-        private static float[] InitOutputErrorContainer(int numberOfDimensions)
-        {
-            var accumulatedOutputError = new float[numberOfDimensions];
-            for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
-                accumulatedOutputError[dimensionIndex] = 0;
-            return accumulatedOutputError;
         }
     }
 }

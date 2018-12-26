@@ -35,7 +35,7 @@
         {
             foreach (var previousLayer in OutputLayer.PreviousLayers)
             {
-                var isInput = PopulateIndexedResults(previousLayer, inputIndex, outputIndex, inputValue);
+                var isInput = PopulateIndexedResults(previousLayer, inputIndex, inputValue);
                 if (isInput) return;
             }
 
@@ -114,7 +114,7 @@
 
         #region PopulateIndexedResults
 
-        private static bool PopulateIndexedResults(Layer layer, int inputIndex, int outputIndex, double inputValue)
+        private static bool PopulateIndexedResults(Layer layer, int inputIndex, double inputValue)
         {
             if (!layer.PreviousLayers.Any())
             {
@@ -127,17 +127,17 @@
                 node.Output = 0;
             }
 
-            HandleLayer(layer, inputIndex, outputIndex, inputValue);
+            HandleLayer(layer, inputIndex, inputValue);
 
             return false;
         }
 
-        private static void HandleLayer(Layer layer, int inputIndex, int outputIndex, double inputValue)
+        private static void HandleLayer(Layer layer, int inputIndex, double inputValue)
         {
             foreach (var prevLayer in layer.PreviousLayers)
             {
                 // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
-                var isNextToInput = PopulateIndexedResults(prevLayer, inputIndex, outputIndex, inputValue);
+                var isNextToInput = PopulateIndexedResults(prevLayer, inputIndex, inputValue);
 
                 if (isNextToInput)
                 {

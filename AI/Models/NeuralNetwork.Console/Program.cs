@@ -1,27 +1,17 @@
 ﻿namespace Network.Console
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using BackPropagation;
-    using NegativeSampling;
-    using NeuralNetwork;
-    using NeuralNetwork.Data;
-    using NeuralNetwork.Library;
-    using NeuralNetwork.Library.Extensions;
     using Word2Vec.Ben;
 
     public class Program
     {
         public static void Main()
         {
-            var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 10, 4);
+            var word2Vec = new Word2Vec("input.txt", "wordDictionaryFile.dic", 4, 1);
 
             word2Vec.TrainModel();
 
-            var outputGenerator = new OutputGenerator("output.csv");
-            outputGenerator.WriteOutput(word2Vec.WordCollection, word2Vec.Network);
+            FileHandler.WriteOutput("output.csv", word2Vec.WordCollection, word2Vec.Network);
 
             //var group = new Layer("Input", 1, new Layer[0]);
             //var inner1 = new Layer("Inner1", 3, new[] { group });

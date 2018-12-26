@@ -6,119 +6,85 @@ namespace Word2Vec.Ben
 {
     public class WordCollection
     {
-        private readonly Dictionary<string, long> _countPerWord;
-        private readonly Dictionary<string, char[]> _code;
-        private readonly Dictionary<string, int[]> _point;
-        private readonly Dictionary<string, long?> _wordPosition;
+        private readonly Dictionary<string, WordInfo> _words;
 
-        public long? this[string index] => _wordPosition.ContainsKey(index) ? _wordPosition[index] : null;
+        public long? this[string index] => _words.ContainsKey(index) ? (long?)_words[index].Position : null;
 
-        public WordCollection()
-        {
-            _countPerWord = new Dictionary<string, long>();
-            _code = new Dictionary<string, char[]>();
-            _point = new Dictionary<string, int[]>();
-            _wordPosition = new Dictionary<string, long?>();            
-        }
-
-        public void AddWords(string line, int maxCodeLength)
-        {
-                var words = line.Split(new[] { "\r", "\n", "\t", " ", ",", "\"" },
-                    StringSplitOptions.RemoveEmptyEntries).Select(y => y.ToLower());
-
-                foreach (var word in words)
-                {
-                    if (string.IsNullOrWhiteSpace(word))
-                        continue;
-
-                    var cleanWord = Clean(word);
-                    if (ContainsWord(cleanWord))
-                    {
-                        _countPerWord[cleanWord]++;
-                    }
-                    else
-                    {
-                        AddWordToDictionary(cleanWord, 1, maxCodeLength);
-                    }
-                }
-            }
-
-        public static string Clean(string input)
-        {
-            return input.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ").Replace(",", " ").Replace("\"", " ").ToLower();
-        }
-
-        private void AddWordToDictionary(string word, long wordCount, int MaxCodeLength)
-        {
-            _countPerWord.Add(word, wordCount);
-            _code.Add(word, new char[MaxCodeLength]);
-            _point.Add(word, new int[MaxCodeLength]);
-        }
+        public WordCollection() => _words = new Dictionary<string, WordInfo>();
 
         public void InitWordPositions()
         {
+            var wordPosition = 0L;
             foreach (var x in GetWords())
             {
-                _wordPosition.Add(x, _wordPosition.Count);
+                _words[x].Position = wordPosition++;
             }
         }
 
-        public int GetNumberOfUniqueWords()
-        {
-            return _countPerWord.Count;
-        }
+        public void AddWords(string line, int maxCodeLength)
+            => PopulateWithWords(ParseWords(line), GetWordInfoCreator(maxCodeLength));
 
-        public IEnumerable<string> GetWords()
-        {
-            return _countPerWord.Keys;
-        }
+        public int GetNumberOfUniqueWords() => _words.Count;
 
-        public long GetTotalNumberOfWords()
-        {
-            return _countPerWord.Sum(x => x.Value);
-        }
+        public IEnumerable<string> GetWords() => _words.Keys;
+
+        public long GetTotalNumberOfWords() => _words.Sum(x => x.Value.Count);
 
         public double GetTrainWordsPow(double power)
-        {
-            return _countPerWord.Sum(x => Math.Pow(x.Value, power));
-        }
+            => _words.Sum(x => Math.Pow(x.Value.Count, power));
 
-        public long GetOccuranceOfWord(string word)
-        {
-            return _countPerWord[word];
-        }
-
-        public bool ContainsWord(string word)
-        {
-            return _countPerWord.ContainsKey(word);
-        }
+        public long GetOccuranceOfWord(string word) => _words[word].Count;
 
         public void RemoveWordsWithCountLessThanMinCount(int minCount)
         {
-            var remove = (from x in _countPerWord where x.Value < minCount select x.Key).ToArray();
-            foreach (var x in remove)
+            foreach (var word in _words.ToArray())
             {
-                _countPerWord.Remove(x);
-                _code.Remove(x);
-                _point.Remove(x);
+                if (word.Value.Count < minCount) _words.Remove(word.Key);
             }
             GC.Collect();
         }
 
-
         public void SetPoint2(string[] keys, long a, long i, long b, long[] point)
-        {
-            _point[keys[a]][i - b] = (int)(point[b] - GetNumberOfUniqueWords());
-        }
+            => _words[keys[a]].Point[i - b] = (int)(point[b] - GetNumberOfUniqueWords());
 
         public void SetPoint(string[] keys, long a)
-        {
-            _point[keys[a]][0] = GetNumberOfUniqueWords() - 2;
-        }
+            => _words[keys[a]].Point[0] = GetNumberOfUniqueWords() - 2;
 
         public void SetCode(string[] keys, long a, long i, long b, char[] code)
+            => _words[keys[a]].Code[i - b - 1] = code[b];
+
+        private static string Clean(string input)
+            => input.Replace("\r", " ")
+                    .Replace("\n", " ")
+                    .Replace("\t", " ")
+                    .Replace(".", " ")
+                    .Replace(",", " ")
+                    .Replace("\"", " ")
+                    .Trim()
+                    .ToLower();
+
+        private static IEnumerable<string> ParseWords(string input)
+            => input.Split(new[] { "\r", "\n", "\t", " ", ",", "\"" },
+                StringSplitOptions.RemoveEmptyEntries).Select(y => y.ToLower());
+
+        private static Func<long, WordInfo> GetWordInfoCreator(int length)
+            => x => new WordInfo(new char[length], new int[length], x);
+
+        private void UpsertWord(string word, Func<long, WordInfo> createWordInfo, long position)
         {
-            _code[keys[a]][i - b - 1] = code[b];
+            if (_words.ContainsKey(word)) _words[word].IncrementCount();
+            else _words.Add(word, createWordInfo(position));
+        }
+
+        private void PopulateWithWords(IEnumerable<string> words,
+            Func<long, WordInfo> infoCreator)
+        {
+            var i = 0;
+            foreach (var word in words)
+            {
+                if (string.IsNullOrWhiteSpace(word)) continue;
+                UpsertWord(Clean(word), infoCreator, i++);
+            }
         }
     }
 }

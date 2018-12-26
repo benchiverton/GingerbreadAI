@@ -1,5 +1,3 @@
-using AI.Calculations;
-
 namespace NeuralNetwork.Test.Library
 {
     using System;

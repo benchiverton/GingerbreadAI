@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using AI.Calculations;
 using NeuralNetwork;
 using NeuralNetwork.Data;
@@ -15,11 +14,11 @@ namespace NegativeSampling
 
         private double _learningRate;
 
-        public NegativeSampler(Layer outputLayer, double learningRate, Func<double, double> learningAction = null)
+        public NegativeSampler(Layer outputLayer, double learningRate, Func<double, double> learningRateModifier = null)
         {
             _outputCalculator = new OutputCalculator(outputLayer);
             _learningRate = learningRate;
-            _learningRateModifier = learningAction;
+            _learningRateModifier = learningRateModifier;
         }
 
         public void NegativeSample(int inputIndex, int outputIndex, bool isPositiveTarget)
@@ -48,12 +47,12 @@ namespace NegativeSampling
         {
             var outputNode = outputLayer.Nodes[outputIndex];
 
-            var delta = BackpropagationCalculations.GetDeltaOutput(currentOutput, targetOutput);
-            foreach (var previousNode in outputNode.Weights.Keys.ToList())
+            var delta = targetOutput - currentOutput;
+            foreach (var previousNode in outputNode.Weights.Keys)
             {
                 UpdateNodeWeight(outputNode, previousNode, delta);
             }
-            foreach (var previousBiasLayer in outputNode.BiasWeights.Keys.ToList())
+            foreach (var previousBiasLayer in outputNode.BiasWeights.Keys)
             {
                 UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta);
             }
@@ -67,11 +66,11 @@ namespace NegativeSampling
             foreach (var node in layer.Nodes)
             {
                 var sumDeltaWeights = (double)0;
-                foreach (var backPassNode in backwardsPassDeltas.Keys)
+                foreach (var backPassDelta in backwardsPassDeltas)
                 {
-                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
+                    sumDeltaWeights += backPassDelta.Value;
                 }
-                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
+                var delta = sumDeltaWeights * node.Output;
                 UpdateNodeWeight(node, inputNode, delta);
                 UpdateBiasNodeWeight(node, inputLayer, delta);
             }
@@ -89,19 +88,19 @@ namespace NegativeSampling
             foreach (var node in layer.Nodes)
             {
                 var sumDeltaWeights = (double)0;
-                foreach (var backPassNode in backwardsPassDeltas.Keys)
+                foreach (var backPassDelta in backwardsPassDeltas)
                 {
-                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
+                    sumDeltaWeights += backPassDelta.Value * backPassDelta.Key.Weights[node].Value;
                 }
-                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
+                var delta = sumDeltaWeights * node.Output;
                 deltas.Add(node, delta);
 
-                foreach (var prevNode in node.Weights.Keys.ToList())
+                foreach (var prevNode in node.Weights.Keys)
                 {
                     UpdateNodeWeight(node, prevNode, delta);
                 }
 
-                foreach (var prevLayer in node.BiasWeights.Keys.ToList())
+                foreach (var prevLayer in node.BiasWeights.Keys)
                 {
                     UpdateBiasNodeWeight(node, prevLayer, delta);
                 }
@@ -115,13 +114,13 @@ namespace NegativeSampling
 
         private void UpdateNodeWeight(Node node, Node prevNode, double delta)
         {
-            var change = -(_learningRate * delta * prevNode.Output);
+            var change = _learningRate * delta * prevNode.Output;
             node.Weights[prevNode].Value += change;
         }
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta)
         {
-            var change = -(_learningRate * delta);
+            var change = _learningRate * delta;
             node.BiasWeights[prevLayer].Value += change;
         }
     }

@@ -9,6 +9,7 @@
     <ProjectReference Include="..\..\DeepLearning\BackPropagation\BackPropagation.csproj" />
     <ProjectReference Include="..\..\DeepLearning\NegativeSampling\NegativeSampling.csproj" />
     <ProjectReference Include="..\..\NLP\Word2Vec.Ben\Word2Vec.Ben.csproj" />
+    <ProjectReference Include="..\..\NLP\Word2Vec\Word2Vec.csproj" />
     <ProjectReference Include="..\NeuralNetwork.Library\NeuralNetwork.Library.csproj" />
   </ItemGroup>
 
