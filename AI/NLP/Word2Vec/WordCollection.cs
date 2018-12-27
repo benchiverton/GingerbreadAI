@@ -83,7 +83,7 @@ namespace Word2Vec
             _words[word].CodeLength = index;
         } 
 
-        private static string Clean(string input)
+        public static string Clean(string input)
             => input.Replace("\r", " ")
                     .Replace("\n", " ")
                     .Replace("\t", " ")
@@ -91,7 +91,7 @@ namespace Word2Vec
                     .Replace("\"", " ")
                     .ToLower();
 
-        private static IEnumerable<string> ParseWords(string input)
+        public static IEnumerable<string> ParseWords(string input)
             => input.Split(new[] { "\r", "\n", "\t", " ", ",", "\"" },
                 StringSplitOptions.RemoveEmptyEntries).Select(y => y.ToLower());
 

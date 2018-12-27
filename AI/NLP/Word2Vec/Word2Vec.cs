@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Word2Vec
@@ -156,7 +155,6 @@ namespace Word2Vec
 
         private void TrainModelThreadStart(int id)
         {
-            var splitRegex = new Regex("\\s");
             long sentenceLength = 0;
             long sentencePosition = 0;
             long wordCount = 0, lastWordCount = 0;
@@ -182,7 +180,7 @@ namespace Word2Vec
                     }
                     if (sentenceLength == 0)
                     {
-                        wordCount = SetSentence(reader, splitRegex, wordCount, sum, sentence, ref nextRandom, ref sentenceLength, ref lastLine);
+                        wordCount = SetSentence(reader, wordCount, sentence, ref nextRandom, ref sentenceLength, ref lastLine, _wordCollection, _thresholdForOccurrenceOfWords);
                         sentencePosition = 0;
                     }
                     if (reader.EndOfStream || wordCount > sum / _numberOfThreads)
@@ -216,51 +214,46 @@ namespace Word2Vec
             GC.Collect();
         }
 
-        private long SetSentence(StreamReader reader, Regex splitRegex, long wordCount, long sum, long?[] sentence,
-            ref ulong nextRandom, ref long sentenceLength, ref string [] lastLine)
+        public static long SetSentence(StreamReader reader, long wordCount, long?[] sentence,
+            ref ulong nextRandom, ref long sentenceLength, ref string [] lineThatGotCutOff, WordCollection wordCollection, float thresholdForOccurrenceOfWords)
         {
             string line;
             var loopEnd = false;
-            if (lastLine != null && lastLine.Any())
+            if (lineThatGotCutOff != null && lineThatGotCutOff.Any())
             {
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, lastLine, _wordCollection, _thresholdForOccurrenceOfWords);
-                lastLine = null;
+                loopEnd = HandleWords(reader, ref wordCount, sentence, ref nextRandom, ref sentenceLength, lineThatGotCutOff, wordCollection, thresholdForOccurrenceOfWords);
+                lineThatGotCutOff = null;
             }
 
             while (!loopEnd && (line = reader.ReadLine()) != null)
             {
-                var words = splitRegex.Split(line);
+                var words = WordCollection.ParseWords(line).Select(WordCollection.Clean).ToArray();
                 if (sentenceLength >= MaxSentenceLength - words.Length && words.Length < MaxSentenceLength)
                 {
-                    lastLine = words;
+                    lineThatGotCutOff = words;
                     break;
                 }
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, words, _wordCollection, _thresholdForOccurrenceOfWords);
+                loopEnd = HandleWords(reader, ref wordCount, sentence, ref nextRandom, ref sentenceLength, words, wordCollection, thresholdForOccurrenceOfWords);
             }
             return wordCount;
         }
 
-        private static bool HandleWords(StreamReader reader, ref long wordCount, long sum, long?[] sentence, ref ulong nextRandom,
+        private static bool HandleWords(StreamReader reader, ref long wordCount, long?[] sentence, ref ulong nextRandom,
             ref long sentenceLength, IEnumerable<string> words, WordCollection wordCollection, float thresholdForOccurrenceOfWords)
         {
+            var totalNumberOfWords = wordCollection.GetTotalNumberOfWords();
             foreach (var word in words)
             {
                 var wordIndex = wordCollection[word];
-                if (reader.EndOfStream)
-                {
-                    return true;
-                }
                 if (!wordIndex.HasValue)
                     continue;
                 wordCount++;
-                if (wordIndex == 0)
-                {
-                    return true;
-                }
+
+                //Subsampling of frequent words
                 if (thresholdForOccurrenceOfWords > 0)
                 {
-                    var random = ((float) Math.Sqrt(wordCollection.GetOccuranceOfWord(word) / (thresholdForOccurrenceOfWords * sum)) + 1) *
-                              (thresholdForOccurrenceOfWords * sum) / wordCollection.GetOccuranceOfWord(word);
+                    var random = ((float) Math.Sqrt(wordCollection.GetOccuranceOfWord(word) / (thresholdForOccurrenceOfWords * totalNumberOfWords)) + 1) *
+                              (thresholdForOccurrenceOfWords * totalNumberOfWords) / wordCollection.GetOccuranceOfWord(word);
                     nextRandom = LinearCongruentialGenerator(nextRandom);
                     if (random < (nextRandom & 0xFFFF) / (float) 65536)
                         continue;
@@ -271,6 +264,10 @@ namespace Word2Vec
                 {
                     return true;
                 }
+            }
+            if (reader.EndOfStream)
+            {
+                return true;
             }
             return false;
         }
@@ -498,9 +495,6 @@ namespace Word2Vec
             nextRandom = LinearCongruentialGenerator(nextRandom);
             // 'target' becomes the index of the word in the vocab to use as the negative sample.
             long target = table[(nextRandom >> 16) % TableSize];
-            // If the target is the special end of sentence token, then just pick a random word from the vocabulary instead.
-            if (target == 0)
-                target = (long) (nextRandom % (ulong) (numberOfWords - 1) + 1);
             return target;
         }
     }
