@@ -10,8 +10,8 @@ namespace Word2Vec
         private WordInfo[] _wordPositionLookup;
 
         public long? this[string index] => _words.ContainsKey(index) ? (long?)_words[index].Position : null;
-        internal WordInfo this[long index] => _wordPositionLookup[index]; // ? (long?)_words[index].Position : null;
-
+        public WordInfo this[long index] => _wordPositionLookup[index]; // ? (long?)_words[index].Position : null;
+        public KeyValuePair<string, WordInfo>[] ToArray() => _words.ToArray();
         public WordCollection() => _words = new Dictionary<string, WordInfo>();
 
         public void InitWordPositions()
@@ -61,6 +61,27 @@ namespace Word2Vec
 
         public void SetCode(string[] keys, long a, long i, long b, char[] code)
             => _words[keys[a]].Code[i - b - 1] = code[b];
+
+        public void SetCode(string word, char[] codeArray)
+        {
+            var index = 0;
+            foreach (var code in codeArray)
+            {
+                switch (code)
+                {
+                    case '0':
+                        _words[word].Code[index] = '\0';
+                        break;
+                    case '1':
+                        _words[word].Code[index] = (char)1;
+                        break;
+                }
+
+                index++;
+            }
+
+            _words[word].CodeLength = index;
+        } 
 
         private static string Clean(string input)
             => input.Replace("\r", " ")

@@ -118,7 +118,8 @@ namespace Word2Vec
                     nextRandom = LinearCongruentialGenerator(nextRandom);
                     _hiddenLayerWeights[wordIndex, dimensionIndex] = ((nextRandom & 0xFFFF) / (float) 65536 - (float) 0.5) / _numberOfDimensions;
                 }
-            HuffmanTree.Create(_wordCollection, MaxCodeLength);
+            var huffmanTree = new HuffmanTree();
+            huffmanTree.Create(_wordCollection, MaxCodeLength);
             GC.Collect();
         }
 
@@ -367,12 +368,12 @@ namespace Word2Vec
                 if (dotProduct >= MaxExp) continue;
                 dotProduct = _expTable[(int) ((dotProduct + MaxExp) * (ExpTableSize / (float) MaxExp / 2f))];
                 // 'g' is the gradient multiplied by the learning rate
-                var g = (1 - _wordCollection[word].Code[d] - dotProduct) * _alpha;
+                var outputError = GetGradient(word, d, dotProduct) * _alpha;
                 // Propagate errors output -> hidden
-                for (var c = 0; c < _numberOfDimensions; c++) accumulatedOutputError[c] += g * _outputLayerWeights[l2, c];
+                for (var c = 0; c < _numberOfDimensions; c++) accumulatedOutputError[c] += outputError * _outputLayerWeights[l2, c];
                 // Learn weights hidden -> output
                 for (var c = 0; c < _numberOfDimensions; c++)
-                    _outputLayerWeights[l2, c] += g * _hiddenLayerWeights[indexOfContextWord.Value, c];
+                    _outputLayerWeights[l2, c] += outputError * _hiddenLayerWeights[indexOfContextWord.Value, c];
             }
 
             // Learn weights input -> hidden
@@ -380,6 +381,11 @@ namespace Word2Vec
             // been accumulated, update the hidden layer weights.
             for (var dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
                 _hiddenLayerWeights[indexOfContextWord.Value, dimensionIndex] += accumulatedOutputError[dimensionIndex];
+        }
+
+        private float GetGradient(long word, int d, float dotProduct)
+        {
+            return (1 - _wordCollection[word].Code[d] - dotProduct);
         }
 
         private static float GetDotProduct(long indexOfContextWord, int numberOfDimensions, float[,] hiddenLayerWeights,

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Word2Vec
 {
-    public static class HuffmanTree
+    public class HuffmanTree
     {
         /**
          * ======== CreateBinaryTree ========
@@ -12,7 +12,7 @@ namespace Word2Vec
          * Huffman encoding is used for lossless compression.
          * The vocab_word structure contains a field for the 'code' for the word.
          */
-        public static void Create(WordCollection _wordCollection, int maxCodeLength)
+        public void Create(WordCollection _wordCollection, int maxCodeLength)
         {
             var code = new char[maxCodeLength];
             var point = new long[maxCodeLength];
