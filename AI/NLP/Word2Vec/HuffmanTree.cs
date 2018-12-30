@@ -15,7 +15,7 @@ namespace Word2Vec
          */
         private WordCollection _wordCollection;
 
-        public void Create(WordCollection wordCollection, int maxCodeLength)
+        public void Create(WordCollection wordCollection)
         {
             _wordCollection = wordCollection;
             var sortedByLowestCount = wordCollection.ToArray();
@@ -27,7 +27,7 @@ namespace Word2Vec
             var keys = wordCollection.GetWords().ToArray();
 
             for (var a = 0; a < wordCollection.GetNumberOfUniqueWords(); a++)
-                count[a] = wordCollection.GetOccuranceOfWord(keys[a]);
+                count[a] = wordCollection.GetOccurrenceOfWord(keys[a]);
             for (var a = wordCollection.GetNumberOfUniqueWords(); a < wordCollection.GetNumberOfUniqueWords() * 2; a++)
                 count[a] = (long)1e15;
             var numberOfNoneLeafNodes = 0;
@@ -45,22 +45,13 @@ namespace Word2Vec
                 queue.Remove(node.Left);
                 queue.Remove(node.Right);
                 var index = queue.BinarySearch(node, new FrequencyComparer());
-                try
+                if (index >= 0)
                 {
-                    if (index >= 0)
-                    {
-                        queue.Insert(index, node);
-                    }
-                    else
-                    {
-                        queue.Insert(~index, node);
-                    }
-
+                    queue.Insert(index, node);
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e);
-                    throw;
+                    queue.Insert(~index, node);
                 }
             }
 
@@ -105,7 +96,6 @@ namespace Word2Vec
                     }
                 }
                 Preorder(root.Right);
-
                 Preorder(root.Left);
             }
         }

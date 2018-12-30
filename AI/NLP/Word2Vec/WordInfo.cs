@@ -6,7 +6,6 @@ namespace Word2Vec
             => (Code, Point, Position, Count) = (code, point, position, 1);
 
         public char[] Code { get; }
-        public string ActualWord { get; }
         public long[] Point { get; }
         public long Position { get; set; }
         public long Count { get; private set; }

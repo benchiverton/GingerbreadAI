@@ -32,7 +32,7 @@ namespace Word2Vec
         private int[] _table;
         
         private long _wordCountActual;
-        private bool _useHs = false;
+        private readonly bool _useHs;
 
         public Word2Vec(
             string trainFileName,
@@ -120,7 +120,7 @@ namespace Word2Vec
                     _hiddenLayerWeights[wordIndex, dimensionIndex] = ((nextRandom & 0xFFFF) / (float) 65536 - (float) 0.5) / _numberOfDimensions;
                 }
             var huffmanTree = new HuffmanTree();
-            huffmanTree.Create(_wordCollection, MaxCodeLength);
+            huffmanTree.Create(_wordCollection);
             GC.Collect();
         }
 
@@ -141,14 +141,14 @@ namespace Word2Vec
 
             var i = 0;
             var keys = _wordCollection.GetWords().ToArray();
-            var d1 = Math.Pow(_wordCollection.GetOccuranceOfWord(keys.First()), power) / trainWordsPow;
+            var d1 = Math.Pow(_wordCollection.GetOccurrenceOfWord(keys.First()), power) / trainWordsPow;
             for (a = 0; a < TableSize; a++)
             {
                 _table[a] = i;
                 if (a / (double) TableSize > d1)
                 {
                     i++;
-                    d1 += Math.Pow(_wordCollection.GetOccuranceOfWord(keys[i]), power) / trainWordsPow;
+                    d1 += Math.Pow(_wordCollection.GetOccurrenceOfWord(keys[i]), power) / trainWordsPow;
                 }
                 if (i >= _wordCollection.GetNumberOfUniqueWords())
                     i = _wordCollection.GetNumberOfUniqueWords() - 1;
@@ -234,7 +234,7 @@ namespace Word2Vec
                 {
                     continue;
                 }
-                if (sentenceLength > sentence.Length - words.Length /*&& words.Length < sentence.Length*/)
+                if (sentenceLength > sentence.Length - words.Length)
                 {
                     lineThatGotCutOff = words;
                     break;
@@ -258,8 +258,8 @@ namespace Word2Vec
                 //Subsampling of frequent words
                 if (thresholdForOccurrenceOfWords > 0)
                 {
-                    var random = ((float) Math.Sqrt(wordCollection.GetOccuranceOfWord(word) / (thresholdForOccurrenceOfWords * totalNumberOfWords)) + 1) *
-                              (thresholdForOccurrenceOfWords * totalNumberOfWords) / wordCollection.GetOccuranceOfWord(word);
+                    var random = ((float) Math.Sqrt(wordCollection.GetOccurrenceOfWord(word) / (thresholdForOccurrenceOfWords * totalNumberOfWords)) + 1) *
+                              (thresholdForOccurrenceOfWords * totalNumberOfWords) / wordCollection.GetOccurrenceOfWord(word);
                     nextRandom = LinearCongruentialGenerator(nextRandom);
                     if (random < (nextRandom & 0xFFFF) / (float) 65536)
                         continue;

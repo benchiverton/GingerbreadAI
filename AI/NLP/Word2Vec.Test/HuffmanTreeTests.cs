@@ -16,7 +16,7 @@ namespace Word2Vec.Test
             AddWords(12, wordCollection, "c");
             AddWords(16, wordCollection, "d");
             wordCollection.InitWordPositions();
-            new HuffmanTree().Create(wordCollection, 3);
+            new HuffmanTree().Create(wordCollection);
 
             var word = "a";
             var expectedCode = new[] { '\0', '\0', '\0', '\0' };

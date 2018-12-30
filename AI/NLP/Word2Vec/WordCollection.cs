@@ -10,7 +10,7 @@ namespace Word2Vec
         private WordInfo[] _wordPositionLookup;
 
         public long? this[string index] => _words.ContainsKey(index) ? (long?)_words[index].Position : null;
-        public WordInfo this[long index] => _wordPositionLookup[index]; // ? (long?)_words[index].Position : null;
+        public WordInfo this[long index] => _wordPositionLookup[index];
         public KeyValuePair<string, WordInfo>[] ToArray() => _words.ToArray();
         public WordCollection() => _words = new Dictionary<string, WordInfo>();
 
@@ -37,7 +37,7 @@ namespace Word2Vec
         public double GetTrainWordsPow(double power)
             => _words.Sum(x => Math.Pow(x.Value.Count, power));
 
-        public long GetOccuranceOfWord(string word) => _words[word].Count;
+        public long GetOccurrenceOfWord(string word) => _words[word].Count;
 
         public void RemoveWordsWithCountLessThanMinCount(int minCount)
         {
@@ -49,13 +49,23 @@ namespace Word2Vec
         }
 
         public void SetPoint(string word, int pointIndex, long value)
-            => _words[word].Point[pointIndex] = value;
+        {
+            if (pointIndex > _words[word].Point.Length)
+            {
+                return;
+            }
+            _words[word].Point[pointIndex] = value;
+        }
 
         public void SetCode(string word, char[] codeArray)
         {
             var index = 0;
             foreach (var code in codeArray)
             {
+                if (index > _words[word].Code.Length) //TODO: Look into if we can get rid of MaxCodeLength concept.
+                {
+                    break;
+                }
                 switch (code)
                 {
                     case '0':
