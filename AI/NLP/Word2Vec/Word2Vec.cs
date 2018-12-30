@@ -13,7 +13,7 @@ namespace Word2Vec
         private const int ExpTableSize = 1000;
         private const int MaxCodeLength = 40;
         private const int MaxExp = 6;
-        private const int MaxSentenceLength = 10000;
+        private readonly int _maxSentenceLength;
         private const int TableSize = (int) 1e8;
         private readonly float[] _expTable;
         private readonly long _numberOfIterations;
@@ -43,7 +43,8 @@ namespace Word2Vec
             int numberOfDimensions = 50,
             int windowSize = 5,
             float alpha = 0.025f,
-            bool useHs = false
+            bool useHs = false,
+            int maxSentenceLength = 10000
         )
         {
             _expTable = new float[ExpTableSize + 1];
@@ -55,6 +56,7 @@ namespace Word2Vec
             _alpha = alpha;
             _fileHandler = new FileHandler(trainFileName, outputFileName);
             _useHs = useHs;
+            _maxSentenceLength = maxSentenceLength;
             for (var i = 0; i < ExpTableSize; i++)
             {
                 _expTable[i] = (float)Math.Exp((i / (float)ExpTableSize * 2 - 1) * MaxExp);
@@ -158,7 +160,7 @@ namespace Word2Vec
             long sentenceLength = 0;
             long sentencePosition = 0;
             long wordCount = 0, lastWordCount = 0;
-            var sentence = new long?[MaxSentenceLength + 1]; //Sentence elements will not be null to my understanding
+            var sentence = new long?[_maxSentenceLength]; //Sentence elements will not be null to my understanding
             var localIter = _numberOfIterations;
 
             var nextRandom = (ulong) id;
@@ -228,7 +230,11 @@ namespace Word2Vec
             while (!loopEnd && (line = reader.ReadLine()) != null)
             {
                 var words = WordCollection.ParseWords(line).Select(WordCollection.Clean).ToArray();
-                if (sentenceLength >= MaxSentenceLength - words.Length && words.Length < MaxSentenceLength)
+                if (words.Length > sentence.Length)
+                {
+                    continue;
+                }
+                if (sentenceLength > sentence.Length - words.Length /*&& words.Length < sentence.Length*/)
                 {
                     lineThatGotCutOff = words;
                     break;
@@ -260,7 +266,7 @@ namespace Word2Vec
                 }
                 sentence[sentenceLength] = wordIndex.Value;
                 sentenceLength++;
-                if (sentenceLength >= MaxSentenceLength)
+                if (sentenceLength > sentence.Length)
                 {
                     return true;
                 }
