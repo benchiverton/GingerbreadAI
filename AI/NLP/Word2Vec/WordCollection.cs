@@ -48,19 +48,8 @@ namespace Word2Vec
             GC.Collect();
         }
 
-        public void SetPoint2(string[] keys, long a, long i, long b, long[] point)
-            => _words[keys[a]].Point[i - b] = (int)(point[b] - GetNumberOfUniqueWords());
-
-        public void SetPoint(string[] keys, long a)
-            => _words[keys[a]].Point[0] = GetNumberOfUniqueWords() - 2;
-
-        public void SetCodeLength(string[] keys, long codeLength, long wordIndex)
-        {
-            _words[keys[wordIndex]].CodeLength = (int)codeLength;
-        }
-
-        public void SetCode(string[] keys, long a, long i, long b, char[] code)
-            => _words[keys[a]].Code[i - b - 1] = code[b];
+        public void SetPoint(string word, int pointIndex, long value)
+            => _words[word].Point[pointIndex] = value;
 
         public void SetCode(string word, char[] codeArray)
         {
@@ -96,7 +85,7 @@ namespace Word2Vec
                 StringSplitOptions.RemoveEmptyEntries).Select(y => y.ToLower());
 
         private static Func<long, WordInfo> GetWordInfoCreator(int length)
-            => x => new WordInfo(new char[length], new int[length], x);
+            => x => new WordInfo(new char[length], new long[length], x);
 
         private void UpsertWord(string word, Func<long, WordInfo> createWordInfo, long position)
         {

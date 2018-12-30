@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Word2Vec
@@ -12,61 +13,125 @@ namespace Word2Vec
          * Huffman encoding is used for lossless compression.
          * The vocab_word structure contains a field for the 'code' for the word.
          */
-        public void Create(WordCollection _wordCollection, int maxCodeLength)
+        private WordCollection _wordCollection;
+
+        public void Create(WordCollection wordCollection, int maxCodeLength)
         {
-            var code = new char[maxCodeLength];
-            var point = new long[maxCodeLength];
-            var count = new long[_wordCollection.GetNumberOfUniqueWords() * 2 + 1];
-            var binary = new long[_wordCollection.GetNumberOfUniqueWords() * 2 + 1];
-            var parentNode = new int[_wordCollection.GetNumberOfUniqueWords() * 2 + 1];
-            var keys = _wordCollection.GetWords().ToArray();
+            _wordCollection = wordCollection;
+            var sortedByLowestCount = wordCollection.ToArray();
+            var queue = sortedByLowestCount.Select(word => new Node
+            { Frequency = word.Value.Count, WordInfo = word.Value, Word = word.Key })
+                .OrderBy(y => y.Frequency).ToList();
 
-            for (var a = 0; a < _wordCollection.GetNumberOfUniqueWords(); a++)
-                count[a] = _wordCollection.GetOccuranceOfWord(keys[a]);
-            for (var a = _wordCollection.GetNumberOfUniqueWords(); a < _wordCollection.GetNumberOfUniqueWords() * 2; a++)
+            var count = new long[wordCollection.GetNumberOfUniqueWords() * 2 + 1];
+            var keys = wordCollection.GetWords().ToArray();
+
+            for (var a = 0; a < wordCollection.GetNumberOfUniqueWords(); a++)
+                count[a] = wordCollection.GetOccuranceOfWord(keys[a]);
+            for (var a = wordCollection.GetNumberOfUniqueWords(); a < wordCollection.GetNumberOfUniqueWords() * 2; a++)
                 count[a] = (long)1e15;
-            long pos1 = _wordCollection.GetNumberOfUniqueWords() - 1;
-            long pos2 = _wordCollection.GetNumberOfUniqueWords();
-            for (var a = 0; a < _wordCollection.GetNumberOfUniqueWords() - 1; a++)
+            var numberOfNoneLeafNodes = 0;
+            for (var a = 0; a < wordCollection.GetNumberOfUniqueWords() - 1; a++)
             {
-                bool decideDirection(long x, long y) => x >= 0 && count[x] < count[y];
-                long min1I;
-                long min2I;
-                (min1I, pos1, pos2) = GetMinI(pos1, pos2, decideDirection);
-                (min2I, pos1, pos2) = GetMinI(pos1, pos2, decideDirection);
-
-                count[_wordCollection.GetNumberOfUniqueWords() + a] = count[min1I] + count[min2I];
-                parentNode[min1I] = _wordCollection.GetNumberOfUniqueWords() + a;
-                parentNode[min2I] = _wordCollection.GetNumberOfUniqueWords() + a;
-                binary[min2I] = 1;
-            }
-            for (long wordIndex = 0; wordIndex < _wordCollection.GetNumberOfUniqueWords(); wordIndex++)
-            {
-                var b = wordIndex;
-                long i = 0;
-                while (true)
+                var node = new Node
                 {
-                    code[i] = (char)binary[b];
-                    point[i] = b;
-                    i++;
-                    b = parentNode[b];
-                    if (b == _wordCollection.GetNumberOfUniqueWords() * 2 - 2)
-                        break;
+                    Left = queue.First(), Right = queue.Skip(1).First(),
+                    IndexOfLeafNodeThisNoneLeafNodePretendsToBe = numberOfNoneLeafNodes
+                };
+                numberOfNoneLeafNodes++;
+                node.Left.Parent = node;
+                node.Right.Parent = node;
+                node.Frequency = node.Left.Frequency + node.Right.Frequency;
+                queue.Remove(node.Left);
+                queue.Remove(node.Right);
+                var index = queue.BinarySearch(node, new FrequencyComparer());
+                try
+                {
+                    if (index >= 0)
+                    {
+                        queue.Insert(index, node);
+                    }
+                    else
+                    {
+                        queue.Insert(~index, node);
+                    }
+
                 }
-
-                _wordCollection.SetCodeLength(keys, i, wordIndex);
-                _wordCollection.SetPoint(keys, wordIndex);
-                for (b = 0; b < i; b++)
+                catch (Exception e)
                 {
-                    _wordCollection.SetCode(keys, wordIndex, i, b, code);
-                    _wordCollection.SetPoint2(keys, wordIndex, i, b, point);
+                    Console.WriteLine(e);
+                    throw;
                 }
             }
+
+            var root = queue.Single();
+            root.Code = "";
+            Preorder(root);
             GC.Collect();
         }
 
-        private static (long MinI, long pos1, long pos2) GetMinI(long pos1, long pos2,
-            Func<long, long, bool> decideDirection)
-            => decideDirection(pos1, pos2) ? (pos1, pos1 - 1, pos2) : (pos2, pos1, pos2 + 1);
+
+        private class FrequencyComparer : IComparer<Node>
+        {
+            public int Compare(Node x, Node y)
+            {
+                return Comparer<long>.Default.Compare(x.Frequency, y.Frequency);
+            }
+        }
+
+        private void Preorder(Node root)
+        {
+            if (root != null)
+            {
+                if (root.Left != null)
+                {
+                    root.Left.Code = root.Code + "0";
+                    if (root.Left.WordInfo != null)
+                    {
+                        _wordCollection.SetCode(root.Left.Word, root.Left.Code.ToCharArray());
+                        SetPoint(root.Left.Word, root.Left.Code.Length, root, 1);
+                    }
+
+                }
+
+                if (root.Right != null)
+                {
+                    root.Right.Code = root.Code + "1";
+                    if (root.Right.WordInfo != null)
+                    {
+                        _wordCollection.SetCode(root.Right.Word, root.Right.Code.ToCharArray());
+                        SetPoint(root.Right.Word, root.Right.Code.Length, root, 1);
+
+                    }
+                }
+                Preorder(root.Right);
+
+                Preorder(root.Left);
+            }
+        }
+
+        private void SetPoint(string word, int codeLength, Node root, int i)
+        {
+            _wordCollection.SetPoint(word, codeLength - i, root.IndexOfLeafNodeThisNoneLeafNodePretendsToBe.Value);
+
+            if (codeLength - i == 0 || root.Parent == null)
+            {
+                return;
+            }
+
+            SetPoint(word, codeLength, root.Parent, ++i);
+        }
+        
+        private class Node
+        {
+            public Node Parent { get; set; }
+            public string Word { get; set; }
+            public string Code { get; set; }
+            public WordInfo WordInfo { get; set; }
+            public Node Left { get; set; }
+            public Node Right { get; set; }
+            public long Frequency { get; set; }
+            public long? IndexOfLeafNodeThisNoneLeafNodePretendsToBe { get; set; }
+        }
     }
 }
