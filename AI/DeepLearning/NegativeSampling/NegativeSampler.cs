@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AI.Calculations;
 using NeuralNetwork;
 using NeuralNetwork.Data;
 
@@ -62,14 +61,15 @@ namespace NegativeSampling
 
         private void NegativeSampleInput(Layer layer, Layer inputLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
         {
+            var sumDeltaWeights = (double)0;
+            foreach (var backPassDelta in backwardsPassDeltas)
+            {
+                sumDeltaWeights += backPassDelta.Value;
+            }
+
             var inputNode = inputLayer.Nodes[inputIndex];
             foreach (var node in layer.Nodes)
             {
-                var sumDeltaWeights = (double)0;
-                foreach (var backPassDelta in backwardsPassDeltas)
-                {
-                    sumDeltaWeights += backPassDelta.Value;
-                }
                 var delta = sumDeltaWeights * node.Output;
                 UpdateNodeWeight(node, inputNode, delta);
                 UpdateBiasNodeWeight(node, inputLayer, delta);
