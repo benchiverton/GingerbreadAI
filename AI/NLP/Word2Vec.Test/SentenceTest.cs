@@ -31,7 +31,7 @@ namespace Word2Vec.Test
         }
 
         [Fact]
-        public void WillScipSentencesThatAreTooLong()
+        public void WillSkipSentencesThatAreTooLong()
         {
             long wordCount = 0;
             const string input = "This is a string. The String to test, the strings   to prevail.\r\nWhat is the string?";
