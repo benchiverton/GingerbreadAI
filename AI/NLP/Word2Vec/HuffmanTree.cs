@@ -44,7 +44,7 @@ namespace Word2Vec
                 node.Frequency = node.Left.Frequency + node.Right.Frequency;
                 queue.Remove(node.Left);
                 queue.Remove(node.Right);
-                var index = queue.BinarySearch(node, new FrequencyComparer());
+                var index = queue.BinarySearch(node);
                 if (index >= 0)
                 {
                     queue.Insert(index, node);
@@ -61,43 +61,32 @@ namespace Word2Vec
             GC.Collect();
         }
 
-
-        private class FrequencyComparer : IComparer<Node>
-        {
-            public int Compare(Node x, Node y)
-            {
-                return Comparer<long>.Default.Compare(x.Frequency, y.Frequency);
-            }
-        }
-
         private void Preorder(Node root)
         {
-            if (root != null)
+            if (root == null) return;
+            if (root.Left != null)
             {
-                if (root.Left != null)
+                root.Left.Code = root.Code + "0";
+                if (root.Left.WordInfo != null)
                 {
-                    root.Left.Code = root.Code + "0";
-                    if (root.Left.WordInfo != null)
-                    {
-                        _wordCollection.SetCode(root.Left.Word, root.Left.Code.ToCharArray());
-                        SetPoint(root.Left.Word, root.Left.Code.Length, root, 1);
-                    }
-
+                    _wordCollection.SetCode(root.Left.Word, root.Left.Code.ToCharArray());
+                    SetPoint(root.Left.Word, root.Left.Code.Length, root, 1);
                 }
 
-                if (root.Right != null)
-                {
-                    root.Right.Code = root.Code + "1";
-                    if (root.Right.WordInfo != null)
-                    {
-                        _wordCollection.SetCode(root.Right.Word, root.Right.Code.ToCharArray());
-                        SetPoint(root.Right.Word, root.Right.Code.Length, root, 1);
-
-                    }
-                }
-                Preorder(root.Right);
-                Preorder(root.Left);
             }
+
+            if (root.Right != null)
+            {
+                root.Right.Code = root.Code + "1";
+                if (root.Right.WordInfo != null)
+                {
+                    _wordCollection.SetCode(root.Right.Word, root.Right.Code.ToCharArray());
+                    SetPoint(root.Right.Word, root.Right.Code.Length, root, 1);
+
+                }
+            }
+            Preorder(root.Right);
+            Preorder(root.Left);
         }
 
         private void SetPoint(string word, int codeLength, Node root, int i)
@@ -112,7 +101,7 @@ namespace Word2Vec
             SetPoint(word, codeLength, root.Parent, ++i);
         }
         
-        private class Node
+        private class Node : IComparable<Node>
         {
             public Node Parent { get; set; }
             public string Word { get; set; }
@@ -122,6 +111,12 @@ namespace Word2Vec
             public Node Right { get; set; }
             public long Frequency { get; set; }
             public long? IndexOfLeafNodeThisNoneLeafNodePretendsToBe { get; set; }
+
+            public int CompareTo(Node other)
+            {
+                return Comparer<long>.Default.Compare(Frequency, other.Frequency);
+
+            }
         }
     }
 }
