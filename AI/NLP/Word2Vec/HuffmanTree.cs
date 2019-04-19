@@ -18,47 +18,69 @@ namespace Word2Vec
         public void Create(WordCollection wordCollection)
         {
             _wordCollection = wordCollection;
-            var sortedByLowestCount = wordCollection.ToArray();
-            var queue = sortedByLowestCount.Select(word => new Node
-            { Frequency = word.Value.Count, WordInfo = word.Value, Word = word.Key })
-                .OrderBy(y => y.Frequency).ToList();
-
-            var count = new long[wordCollection.GetNumberOfUniqueWords() * 2 + 1];
-            var keys = wordCollection.GetWords().ToArray();
-
-            for (var a = 0; a < wordCollection.GetNumberOfUniqueWords(); a++)
-                count[a] = wordCollection.GetOccurrenceOfWord(keys[a]);
-            for (var a = wordCollection.GetNumberOfUniqueWords(); a < wordCollection.GetNumberOfUniqueWords() * 2; a++)
-                count[a] = (long)1e15;
-            var numberOfNoneLeafNodes = 0;
-            for (var a = 0; a < wordCollection.GetNumberOfUniqueWords() - 1; a++)
-            {
-                var node = new Node
-                {
-                    Left = queue.First(), Right = queue.Skip(1).First(),
-                    IndexOfLeafNodeThisNoneLeafNodePretendsToBe = numberOfNoneLeafNodes
-                };
-                numberOfNoneLeafNodes++;
-                node.Left.Parent = node;
-                node.Right.Parent = node;
-                node.Frequency = node.Left.Frequency + node.Right.Frequency;
-                queue.Remove(node.Left);
-                queue.Remove(node.Right);
-                var index = queue.BinarySearch(node);
-                if (index >= 0)
-                {
-                    queue.Insert(index, node);
-                }
-                else
-                {
-                    queue.Insert(~index, node);
-                }
-            }
-
+            var queue = GetQueueSortedByWordFrequencyAscending(wordCollection);
+            IterateQueue(wordCollection, queue);
             var root = queue.Single();
             root.Code = "";
             Preorder(root);
             GC.Collect();
+        }
+
+        private static void IterateQueue(WordCollection wordCollection, List<Node> queue)
+        {
+            var numberOfInteriorNodes = 0;
+
+            for (var a = 0; a < wordCollection.GetNumberOfUniqueWords() - 1; a++)
+            {
+                var node = CreateInteriorNode(queue, numberOfInteriorNodes);
+                numberOfInteriorNodes++;
+                InsertNodeInQueue(queue, node);
+            }
+        }
+
+        private static Node CreateInteriorNode(List<Node> queue, int numberOfInteriorNodes)
+        {
+            var left = GetNodeFromQueue(queue);
+            var right = GetNodeFromQueue(queue);
+            var node = new Node
+            {
+                Left = left,
+                Right = right,
+                IndexOfLeafNodeThisInteriorNodePretendsToBe = numberOfInteriorNodes
+            };
+            node.Left.Parent = node;
+            node.Right.Parent = node;
+            node.Frequency = node.Left.Frequency + node.Right.Frequency;
+            return node;
+        }
+
+        private static Node GetNodeFromQueue(List<Node> queue)
+        {
+            var node = queue.First();
+            queue.Remove(node);
+            return node;
+        }
+
+        private static void InsertNodeInQueue(List<Node> queue, Node node)
+        {
+            var index = queue.BinarySearch(node);
+            if (index >= 0)
+            {
+                queue.Insert(index, node);
+            }
+            else
+            {
+                queue.Insert(~index, node);
+            }
+        }
+
+        private static List<Node> GetQueueSortedByWordFrequencyAscending(WordCollection wordCollection)
+        {
+            var sortedByLowestCount = wordCollection.ToArray();
+            var queue = sortedByLowestCount.Select(word => new Node
+                    {Frequency = word.Value.Count, WordInfo = word.Value, Word = word.Key})
+                .OrderBy(y => y.Frequency).ToList();
+            return queue;
         }
 
         private void Preorder(Node root)
@@ -91,7 +113,7 @@ namespace Word2Vec
 
         private void SetPoint(string word, int codeLength, Node root, int i)
         {
-            _wordCollection.SetPoint(word, codeLength - i, root.IndexOfLeafNodeThisNoneLeafNodePretendsToBe.Value);
+            _wordCollection.SetPoint(word, codeLength - i, root.IndexOfLeafNodeThisInteriorNodePretendsToBe.Value);
 
             if (codeLength - i == 0 || root.Parent == null)
             {
@@ -110,7 +132,7 @@ namespace Word2Vec
             public Node Left { get; set; }
             public Node Right { get; set; }
             public long Frequency { get; set; }
-            public long? IndexOfLeafNodeThisNoneLeafNodePretendsToBe { get; set; }
+            public long? IndexOfLeafNodeThisInteriorNodePretendsToBe { get; set; }
 
             public int CompareTo(Node other)
             {
