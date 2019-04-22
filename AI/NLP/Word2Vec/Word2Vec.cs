@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Word2Vec
@@ -14,7 +13,7 @@ namespace Word2Vec
         private const int ExpTableSize = 1000;
         private const int MaxCodeLength = 40;
         private const int MaxExp = 6;
-        private const int MaxSentenceLength = 10000;
+        private readonly int _maxSentenceLength;
         private const int TableSize = (int) 1e8;
         private readonly float[] _expTable;
         private readonly long _numberOfIterations;
@@ -33,16 +32,19 @@ namespace Word2Vec
         private int[] _table;
         
         private long _wordCountActual;
+        private readonly bool _useHs;
 
         public Word2Vec(
             string trainFileName,
-            string outputfileName,
+            string outputFileName,
             int numberOfThreads = 4,
             int numberOfIterations = 4,
             int negative = 5,
             int numberOfDimensions = 50,
             int windowSize = 5,
-            float alpha = 0.025f
+            float alpha = 0.025f,
+            bool useHs = false,
+            int maxSentenceLength = 10000
         )
         {
             _expTable = new float[ExpTableSize + 1];
@@ -52,7 +54,9 @@ namespace Word2Vec
             _numberOfDimensions = numberOfDimensions;
             _windowSize = windowSize;
             _alpha = alpha;
-            _fileHandler = new FileHandler(trainFileName, outputfileName);
+            _fileHandler = new FileHandler(trainFileName, outputFileName);
+            _useHs = useHs;
+            _maxSentenceLength = maxSentenceLength;
             for (var i = 0; i < ExpTableSize; i++)
             {
                 _expTable[i] = (float)Math.Exp((i / (float)ExpTableSize * 2 - 1) * MaxExp);
@@ -115,7 +119,8 @@ namespace Word2Vec
                     nextRandom = LinearCongruentialGenerator(nextRandom);
                     _hiddenLayerWeights[wordIndex, dimensionIndex] = ((nextRandom & 0xFFFF) / (float) 65536 - (float) 0.5) / _numberOfDimensions;
                 }
-            HuffmanTree.Create(_wordCollection, MaxCodeLength);
+            var huffmanTree = new HuffmanTree();
+            huffmanTree.Create(_wordCollection);
             GC.Collect();
         }
 
@@ -136,14 +141,14 @@ namespace Word2Vec
 
             var i = 0;
             var keys = _wordCollection.GetWords().ToArray();
-            var d1 = Math.Pow(_wordCollection.GetOccuranceOfWord(keys.First()), power) / trainWordsPow;
+            var d1 = Math.Pow(_wordCollection.GetOccurrenceOfWord(keys.First()), power) / trainWordsPow;
             for (a = 0; a < TableSize; a++)
             {
                 _table[a] = i;
                 if (a / (double) TableSize > d1)
                 {
                     i++;
-                    d1 += Math.Pow(_wordCollection.GetOccuranceOfWord(keys[i]), power) / trainWordsPow;
+                    d1 += Math.Pow(_wordCollection.GetOccurrenceOfWord(keys[i]), power) / trainWordsPow;
                 }
                 if (i >= _wordCollection.GetNumberOfUniqueWords())
                     i = _wordCollection.GetNumberOfUniqueWords() - 1;
@@ -152,11 +157,10 @@ namespace Word2Vec
 
         private void TrainModelThreadStart(int id)
         {
-            var splitRegex = new Regex("\\s");
             long sentenceLength = 0;
             long sentencePosition = 0;
             long wordCount = 0, lastWordCount = 0;
-            var sentence = new long?[MaxSentenceLength + 1]; //Sentence elements will not be null to my understanding
+            var sentence = new long?[_maxSentenceLength]; //Sentence elements will not be null to my understanding
             var localIter = _numberOfIterations;
 
             var nextRandom = (ulong) id;
@@ -178,7 +182,7 @@ namespace Word2Vec
                     }
                     if (sentenceLength == 0)
                     {
-                        wordCount = SetSentence(reader, splitRegex, wordCount, sum, sentence, ref nextRandom, ref sentenceLength, ref lastLine);
+                        wordCount = SetSentence(reader, wordCount, sentence, ref nextRandom, ref sentenceLength, ref lastLine, _wordCollection, _thresholdForOccurrenceOfWords);
                         sentencePosition = 0;
                     }
                     if (reader.EndOfStream || wordCount > sum / _numberOfThreads)
@@ -212,68 +216,66 @@ namespace Word2Vec
             GC.Collect();
         }
 
-        private long SetSentence(StreamReader reader, Regex splitRegex, long wordCount, long sum, long?[] sentence,
-            ref ulong nextRandom, ref long sentenceLength, ref string [] lastLine)
+        public static long SetSentence(StreamReader reader, long wordCount, long?[] sentence,
+            ref ulong nextRandom, ref long sentenceLength, ref string [] lineThatGotCutOff, WordCollection wordCollection, float thresholdForOccurrenceOfWords)
         {
             string line;
             var loopEnd = false;
-            var numberOfLineRead = 0;
-
-            if (lastLine != null && lastLine.Any())
+            if (lineThatGotCutOff != null && lineThatGotCutOff.Any())
             {
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, lastLine);
-                lastLine = null;
+                loopEnd = HandleWords(reader, ref wordCount, sentence, ref nextRandom, ref sentenceLength, lineThatGotCutOff, wordCollection, thresholdForOccurrenceOfWords);
+                lineThatGotCutOff = null;
             }
 
             while (!loopEnd && (line = reader.ReadLine()) != null)
             {
-                numberOfLineRead++;
-                var words = splitRegex.Split(line);
-                if (sentenceLength >= MaxSentenceLength - words.Length && words.Length < MaxSentenceLength)
+                var words = WordCollection.ParseWords(line).Select(WordCollection.Clean).ToArray();
+                if (words.Length > sentence.Length)
                 {
-                    lastLine = words;
+                    continue;
+                }
+                if (sentenceLength > sentence.Length - words.Length)
+                {
+                    lineThatGotCutOff = words;
                     break;
                 }
-                loopEnd = HandleWords(reader, ref wordCount, sum, sentence, ref nextRandom, ref sentenceLength, words);
+                loopEnd = HandleWords(reader, ref wordCount, sentence, ref nextRandom, ref sentenceLength, words, wordCollection, thresholdForOccurrenceOfWords);
             }
             return wordCount;
         }
 
-        private bool HandleWords(StreamReader reader, ref long wordCount, long sum, long?[] sentence, ref ulong nextRandom,
-            ref long sentenceLength, IEnumerable<string> words)
+        private static bool HandleWords(StreamReader reader, ref long wordCount, long?[] sentence, ref ulong nextRandom,
+            ref long sentenceLength, IEnumerable<string> words, WordCollection wordCollection, float thresholdForOccurrenceOfWords)
         {
-            var loopEnd = false;
+            var totalNumberOfWords = wordCollection.GetTotalNumberOfWords();
             foreach (var word in words)
             {
-                var wordIndex = _wordCollection[word];
-                if (reader.EndOfStream)
-                {
-                    return true;
-                }
+                var wordIndex = wordCollection[word];
                 if (!wordIndex.HasValue)
                     continue;
                 wordCount++;
-                if (wordIndex == 0)
+
+                //Subsampling of frequent words
+                if (thresholdForOccurrenceOfWords > 0)
                 {
-                    return true;
-                }
-                if (_thresholdForOccurrenceOfWords > 0)
-                {
-                    var ran = ((float) Math.Sqrt(_wordCollection.GetOccuranceOfWord(word) /
-                                                 (_thresholdForOccurrenceOfWords * sum)) + 1) *
-                              (_thresholdForOccurrenceOfWords * sum) / _wordCollection.GetOccuranceOfWord(word);
+                    var random = ((float) Math.Sqrt(wordCollection.GetOccurrenceOfWord(word) / (thresholdForOccurrenceOfWords * totalNumberOfWords)) + 1) *
+                              (thresholdForOccurrenceOfWords * totalNumberOfWords) / wordCollection.GetOccurrenceOfWord(word);
                     nextRandom = LinearCongruentialGenerator(nextRandom);
-                    if (ran < (nextRandom & 0xFFFF) / (float) 65536)
+                    if (random < (nextRandom & 0xFFFF) / (float) 65536)
                         continue;
                 }
                 sentence[sentenceLength] = wordIndex.Value;
                 sentenceLength++;
-                if (sentenceLength >= MaxSentenceLength)
+                if (sentenceLength > sentence.Length)
                 {
                     return true;
                 }
             }
-            return loopEnd;
+            if (reader.EndOfStream)
+            {
+                return true;
+            }
+            return false;
         }
 
         /* 
@@ -331,14 +333,74 @@ namespace Word2Vec
                     // ever be the case?)
                     if (!indexOfContextWord.HasValue)
                         continue;
-                    
-                    // NEGATIVE SAMPLING
-                    if (_negative > 0)
+
+
+                    if (_useHs)
+                    {
+                        HierarchicalSoftmax(word, indexOfContextWord);
+                    }
+                    else if (_negative > 0)
                         nextRandom = NegativeSampling(word, nextRandom, indexOfContextWord.Value,
                             _negative, _table, _wordCollection.GetNumberOfUniqueWords(), _numberOfDimensions, _hiddenLayerWeights,
                             _outputLayerWeights, _alpha, _expTable);
                 }
             return nextRandom;
+        }
+
+        private void HierarchicalSoftmax(long word, long? indexOfContextWord)
+        {
+            var accumulatedOutputError = InitOutputErrorContainer(_numberOfDimensions);
+            for (var d = 0; d < _wordCollection[word].CodeLength; d++)
+            {
+                var dotProduct = 0f;
+                var l2 = _wordCollection[word].Point[d];
+                // Propagate hidden -> output outputLayerWeights[target, dimensionIndex];
+                try
+                {
+                    for (var c = 0; c < _numberOfDimensions; c++)
+                        dotProduct += _hiddenLayerWeights[indexOfContextWord.Value, c]
+                                      * _outputLayerWeights[l2, c];
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                
+                if (dotProduct <= MaxExp * -1) continue;
+                if (dotProduct >= MaxExp) continue;
+                dotProduct = _expTable[(int) ((dotProduct + MaxExp) * (ExpTableSize / (float) MaxExp / 2f))];
+                // 'g' is the gradient multiplied by the learning rate
+                var outputError = GetGradient(word, d, dotProduct) * _alpha;
+                // Propagate errors output -> hidden
+                for (var c = 0; c < _numberOfDimensions; c++) accumulatedOutputError[c] += outputError * _outputLayerWeights[l2, c];
+                // Learn weights hidden -> output
+                for (var c = 0; c < _numberOfDimensions; c++)
+                    _outputLayerWeights[l2, c] += outputError * _hiddenLayerWeights[indexOfContextWord.Value, c];
+            }
+
+            // Learn weights input -> hidden
+            // Once the hidden layer gradients for all of the negative samples have
+            // been accumulated, update the hidden layer weights.
+            for (var dimensionIndex = 0; dimensionIndex < _numberOfDimensions; dimensionIndex++)
+                _hiddenLayerWeights[indexOfContextWord.Value, dimensionIndex] += accumulatedOutputError[dimensionIndex];
+        }
+
+        private float GetGradient(long word, int d, float dotProduct)
+        {
+            return (1 - _wordCollection[word].Code[d] - dotProduct);
+        }
+
+        private static float GetDotProduct(long indexOfContextWord, int numberOfDimensions, float[,] hiddenLayerWeights,
+            float[,] outputLayerWeights, long target)
+        {
+            float dotProduct = 0;
+            // Calculate the dot-product between the input words weights (in 
+            // syn0) and the output word's weights (in syn1neg).
+            for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
+                dotProduct += hiddenLayerWeights[indexOfContextWord, dimensionIndex] *
+                              outputLayerWeights[target, dimensionIndex];
+            return dotProduct;
         }
 
         private static float[] InitOutputErrorContainer(int numberOfDimensions)
@@ -387,25 +449,9 @@ namespace Word2Vec
                 // l2 - The index of our output word within the output layer weights.
                 // label - Whether this is a positive (1) or negative (0) example.
 
-                float dotProduct = 0;
-                // Calculate the dot-product between the input words weights (in 
-                // syn0) and the output word's weights (in syn1neg).
-                for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
-                    dotProduct += hiddenLayerWeights[indexOfContextWord, dimensionIndex] * outputLayerWeights[target, dimensionIndex];
-                float outputError;
-                // This block does two things:
-                //   1. Calculates the output of the network for this training
-                //      pair, using the expTable to evaluate the output layer
-                //      activation function.
-                //   2. Calculate the error at the output, stored in 'g', by
-                //      subtracting the network output from the desired output, 
-                //      and finally multiply this by the learning rate.
-                if (dotProduct > MaxExp) //DotProduct > MaxExp. G will be negative for negative sample.
-                    outputError = (label - 1) * trainingRate;
-                else if (dotProduct < MaxExp * -1) // DotProduct < -MaxExp. G will be Zero for negative sample. 
-                    outputError = (label - 0) * trainingRate;
-                else //-MaxExp < dotproduct < MaxExp. 
-                    outputError = (label - expTable[(int) ((dotProduct + MaxExp) * (ExpTableSize / (float) MaxExp / 2))]) * trainingRate;
+                
+                var dotProduct = GetDotProduct(indexOfContextWord, numberOfDimensions, hiddenLayerWeights, outputLayerWeights, target);
+                var outputError = GetOutputError(trainingRate, expTable, dotProduct, label);
 
                 for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
                 {
@@ -428,14 +474,33 @@ namespace Word2Vec
             return nextRandom;
         }
 
+        
+
+        private static float GetOutputError(float trainingRate, float[] expTable, float dotProduct, long label)
+        {
+            float outputError;
+            // This block does two things:
+            //   1. Calculates the output of the network for this training
+            //      pair, using the expTable to evaluate the output layer
+            //      activation function.
+            //   2. Calculate the error at the output, stored in 'g', by
+            //      subtracting the network output from the desired output, 
+            //      and finally multiply this by the learning rate.
+            if (dotProduct > MaxExp) //DotProduct > MaxExp. G will be negative for negative sample.
+                outputError = (label - 1) * trainingRate;
+            else if (dotProduct < MaxExp * -1) // DotProduct < -MaxExp. G will be Zero for negative sample. 
+                outputError = (label - 0) * trainingRate;
+            else //-MaxExp < dotproduct < MaxExp. 
+                outputError = (label - expTable[(int) ((dotProduct + MaxExp) * (ExpTableSize / (float) MaxExp / 2))]) *
+                              trainingRate;
+            return outputError;
+        }
+
         private static long SelectTarget(ref ulong nextRandom, int[] table, long numberOfWords)
         {
             nextRandom = LinearCongruentialGenerator(nextRandom);
             // 'target' becomes the index of the word in the vocab to use as the negative sample.
             long target = table[(nextRandom >> 16) % TableSize];
-            // If the target is the special end of sentence token, then just pick a random word from the vocabulary instead.
-            if (target == 0)
-                target = (long) (nextRandom % (ulong) (numberOfWords - 1) + 1);
             return target;
         }
     }
