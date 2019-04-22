@@ -8,31 +8,31 @@ namespace NegativeSampling
 {
     public class NegativeSampler
     {
-        private readonly OutputCalculator _outputCalculator;
+        private readonly Layer _outputLayer;
         private readonly Func<double, double> _learningRateModifier;
 
         private double _learningRate;
 
         public NegativeSampler(Layer outputLayer, double learningRate, Func<double, double> learningRateModifier = null)
         {
-            _outputCalculator = new OutputCalculator(outputLayer);
+            _outputLayer = outputLayer;
             _learningRate = learningRate;
             _learningRateModifier = learningRateModifier;
         }
 
         public void NegativeSample(int inputIndex, int outputIndex, bool isPositiveTarget)
         {
-            var outputLayer = _outputCalculator.OutputLayer;
-            var currentOutput = _outputCalculator.GetResult(inputIndex, outputIndex);
+            var currentOutput = _outputLayer.GetResult(inputIndex, outputIndex);
             var targetOutput = isPositiveTarget ? 1 : 0;
 
-            var deltas = NegativeSampleOutput(outputLayer, currentOutput, targetOutput, outputIndex);
+            var deltas = NegativeSampleOutput(_outputLayer, currentOutput, targetOutput, outputIndex);
 
-            for (var i = 0; i < outputLayer.PreviousLayers.Length; i++)
+            for (var i = 0; i < _outputLayer.PreviousLayers.Length; i++)
             {
-                for (var j = 0; j < outputLayer.PreviousLayers[i].PreviousLayers.Length; j++)
+                var previousLayer = _outputLayer.PreviousLayers[i];
+                for (var j = 0; j < previousLayer.PreviousLayers.Length; j++)
                 {
-                    RecurseNegativeSample(outputLayer.PreviousLayers[i], outputLayer.PreviousLayers[i].PreviousLayers[j], deltas, inputIndex);
+                    RecurseNegativeSample(previousLayer, previousLayer.PreviousLayers[j], deltas, inputIndex);
                 }
             }
 

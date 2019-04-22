@@ -10,7 +10,7 @@
 
     public class BackPropagator
     {
-        private readonly OutputCalculator _outputCalculator;
+        private readonly Layer _outputLayer;
         private readonly Func<double, double> _learningRateModifier;
         private readonly double _momentumFactor;
         private readonly Layer _momentumDeltaHolder;
@@ -19,7 +19,7 @@
 
         public BackPropagator(Layer outputLayer, double learningRate, Func<double, double> learningAction = null, double momentum = 0)
         {
-            _outputCalculator = new OutputCalculator(outputLayer);
+            _outputLayer = outputLayer;
             _learningRate = learningRate;
             _learningRateModifier = learningAction;
 
@@ -29,14 +29,13 @@
 
         public void BackPropagate(double[] inputs, double?[] targetOutputs)
         {
-            var currentLayer = _outputCalculator.OutputLayer;
-            var currentOutputs = _outputCalculator.GetResults(inputs);
+            var currentOutputs = _outputLayer.GetResults(inputs);
 
-            var backwardsPassDeltas = UpdateOutputLayer(currentLayer, currentOutputs, targetOutputs);
+            var backwardsPassDeltas = UpdateOutputLayer(_outputLayer, currentOutputs, targetOutputs);
 
-            for (var i = 0; i < currentLayer.PreviousLayers.Length; i++)
+            for (var i = 0; i < _outputLayer.PreviousLayers.Length; i++)
             {
-                RecurseBackpropagation(currentLayer.PreviousLayers[i], backwardsPassDeltas, _momentumDeltaHolder.PreviousLayers[i]);
+                RecurseBackpropagation(_outputLayer.PreviousLayers[i], backwardsPassDeltas, _momentumDeltaHolder.PreviousLayers[i]);
             }
 
             if (_learningRateModifier != null)

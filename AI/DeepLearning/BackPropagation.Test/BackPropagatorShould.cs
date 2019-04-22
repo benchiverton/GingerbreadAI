@@ -16,7 +16,6 @@ namespace BackPropagation.Test
 
             LayerInitialiser.Initialise(new Random(), output);
 
-            var og = new OutputCalculator(output);
             var bp = new BackPropagator(output, 0.25);
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
@@ -26,7 +25,7 @@ namespace BackPropagation.Test
                 bp.BackPropagate(inputs, targetOutputs);
             }
 
-            var outputResults = og.GetResults(inputs);
+            var outputResults = output.GetResults(inputs);
 
             Assert.True(outputResults[0] > targetOutputs[0] - 0.05);
             Assert.True(outputResults[2] > targetOutputs[2] - 0.05);
@@ -47,7 +46,6 @@ namespace BackPropagation.Test
 
             LayerInitialiser.Initialise(new Random(), output);
 
-            var og = new OutputCalculator(output);
             var bp = new BackPropagator(output, 0.25);
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
@@ -57,7 +55,7 @@ namespace BackPropagation.Test
                 bp.BackPropagate(inputs, targetOutputs);
             }
 
-            var outputResults = og.GetResults(inputs);
+            var outputResults = output.GetResults(inputs);
 
             Assert.True(outputResults[0] > targetOutputs[0] - 0.05);
             Assert.True(outputResults[2] > targetOutputs[2] - 0.05);

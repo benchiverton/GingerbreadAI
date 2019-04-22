@@ -71,13 +71,12 @@ namespace Word2Vec.Ben
 
         private static double[] GetProbabilities(Layer network, WordCollection wordCollection, int index)
         {
-            var outputCalculator = new OutputCalculator(network);
             var words = wordCollection.GetWords().ToArray();
             var outputs = new double[words.Length];
 
             for (var i = 0; i < words.Length; i++)
             {
-                outputs[i] = outputCalculator.GetResult(index, i);
+                outputs[i] = network.GetResult(index, i);
             }
 
             return outputs;

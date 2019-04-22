@@ -17,7 +17,6 @@ namespace NegativeSampling.Test
 
             LayerInitialiser.Initialise(new Random(), h1);
 
-            var og = new OutputCalculator(output);
             var ns = new NegativeSampler(output, 0.25);
 
             for (int i = 0; i < 2000; i++)
@@ -29,11 +28,11 @@ namespace NegativeSampling.Test
                 ns.NegativeSample(4, 4, false);
             }
 
-            Assert.True(og.GetResult(0, 0) < 0.05);
-            Assert.True(og.GetResult(1, 1) < 0.05);
-            Assert.True(og.GetResult(2, 2) > 0.95);
-            Assert.True(og.GetResult(3, 3) < 0.05);
-            Assert.True(og.GetResult(4, 4) < 0.05);
+            Assert.True(output.GetResult(0, 0) < 0.05);
+            Assert.True(output.GetResult(1, 1) < 0.05);
+            Assert.True(output.GetResult(2, 2) > 0.95);
+            Assert.True(output.GetResult(3, 3) < 0.05);
+            Assert.True(output.GetResult(4, 4) < 0.05);
         }
 
         [Fact]
@@ -47,7 +46,6 @@ namespace NegativeSampling.Test
 
             LayerInitialiser.Initialise(new Random(), h3);
 
-            var og = new OutputCalculator(output);
             var ns = new NegativeSampler(output, 0.25);
 
             for (int i = 0; i < 2000; i++)
@@ -59,11 +57,11 @@ namespace NegativeSampling.Test
                 ns.NegativeSample(4, 4, false);
             }
 
-            Assert.True(og.GetResult(0, 0) < 0.05);
-            Assert.True(og.GetResult(1, 1) < 0.05);
-            Assert.True(og.GetResult(2, 2) > 0.95);
-            Assert.True(og.GetResult(3, 3) < 0.05);
-            Assert.True(og.GetResult(4, 4) < 0.05);
+            Assert.True(output.GetResult(0, 0) < 0.05);
+            Assert.True(output.GetResult(1, 1) < 0.05);
+            Assert.True(output.GetResult(2, 2) > 0.95);
+            Assert.True(output.GetResult(3, 3) < 0.05);
+            Assert.True(output.GetResult(4, 4) < 0.05);
         }
 
         [Fact]
@@ -75,7 +73,6 @@ namespace NegativeSampling.Test
 
             LayerInitialiser.Initialise(new Random(), h1);
 
-            var og = new OutputCalculator(output);
             var ns = new NegativeSampler(output, 0.25);
 
             for (int i = 0; i < 2000; i++)
@@ -87,11 +84,11 @@ namespace NegativeSampling.Test
                 ns.NegativeSample(4, 2, false);
             }
 
-            Assert.True(og.GetResult(0, 2) > 0.95);
-            Assert.True(og.GetResult(1, 2) > 0.95);
-            Assert.True(og.GetResult(2, 2) < 0.05);
-            Assert.True(og.GetResult(3, 2) < 0.05);
-            Assert.True(og.GetResult(4, 2) < 0.05);
+            Assert.True(output.GetResult(0, 2) > 0.95);
+            Assert.True(output.GetResult(1, 2) > 0.95);
+            Assert.True(output.GetResult(2, 2) < 0.05);
+            Assert.True(output.GetResult(3, 2) < 0.05);
+            Assert.True(output.GetResult(4, 2) < 0.05);
         }
 
         [Fact]
@@ -103,7 +100,6 @@ namespace NegativeSampling.Test
 
             LayerInitialiser.Initialise(new Random(), h1);
 
-            var og = new OutputCalculator(output);
             var ns = new NegativeSampler(output, 0.25);
 
             for (int i = 0; i < 2000; i++)
@@ -115,11 +111,11 @@ namespace NegativeSampling.Test
                 ns.NegativeSample(2, 4, false);
             }
 
-            Assert.True(og.GetResult(2, 0) > 0.95);
-            Assert.True(og.GetResult(2, 1) > 0.95);
-            Assert.True(og.GetResult(2, 2) < 0.05);
-            Assert.True(og.GetResult(2, 3) < 0.05);
-            Assert.True(og.GetResult(2, 4) < 0.05);
+            Assert.True(output.GetResult(2, 0) > 0.95);
+            Assert.True(output.GetResult(2, 1) > 0.95);
+            Assert.True(output.GetResult(2, 2) < 0.05);
+            Assert.True(output.GetResult(2, 3) < 0.05);
+            Assert.True(output.GetResult(2, 4) < 0.05);
         }
 
         [Fact]
@@ -155,7 +151,6 @@ namespace NegativeSampling.Test
                 initialOutputWeights[i] = dict;
             }
 
-            var og = new OutputCalculator(output);
             var ns = new NegativeSampler(output, 0.25);
 
             for (int i = 0; i < 2000; i++)

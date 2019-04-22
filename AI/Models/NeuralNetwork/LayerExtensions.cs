@@ -5,41 +5,39 @@
     using Data;
     using Exceptions;
 
-    public class OutputCalculator
+    public static class LayerExtensions
     {
-        public Layer OutputLayer { get; }
-
-        public OutputCalculator(Layer outputLayer)
+        public static double[] GetResults(this Layer layer, double[] inputs)
         {
-            OutputLayer = outputLayer;
+            PopulateAllResults(layer, inputs);
+            return layer.Nodes.Select(n => n.Output).ToArray();
         }
 
-        public double[] GetResults(double[] inputs)
+        public static void PopulateResults(this Layer layer, double[] inputs)
         {
-            PopulateResults(inputs);
-            return OutputLayer.Nodes.Select(n => n.Output).ToArray();
+            PopulateAllResults(layer, inputs);
         }
 
-        public double GetResult(int inputIndex, int outputIndex, double inputValue = 1)
+        public static double GetResult(this Layer layer, int inputIndex, int outputIndex, double inputValue = 1)
         {
-            PopulateResults(inputIndex, outputIndex, inputValue);
-            return OutputLayer.Nodes[outputIndex].Output;
+            PopulateResult(layer, inputIndex, outputIndex, inputValue);
+            return layer.Nodes[outputIndex].Output;
         }
 
-        public void PopulateResults(double[] inputs)
+        public static void PopulateResult(this Layer layer, int inputIndex, int outputIndex, double inputValue)
         {
-            PopulateAllResults(OutputLayer, inputs);
+            PopulateSingleResults(layer, inputIndex, outputIndex, inputValue);
         }
 
-        public void PopulateResults(int inputIndex, int outputIndex, double inputValue)
+        private static void PopulateSingleResults(Layer layer, int inputIndex, int outputIndex, double inputValue)
         {
-            foreach (var previousLayer in OutputLayer.PreviousLayers)
+            foreach (var previousLayer in layer.PreviousLayers)
             {
                 var isInput = PopulateIndexedResults(previousLayer, inputIndex, inputValue);
                 if (isInput) return;
             }
 
-            var outputNode = OutputLayer.Nodes[outputIndex];
+            var outputNode = layer.Nodes[outputIndex];
             outputNode.Output = 0;
             foreach (var previousNodeWeight in outputNode.Weights)
             {
@@ -50,7 +48,7 @@
                 outputNode.Output += previousLayerWeight.Value.Value;
             }
 
-            OutputLayer.Nodes[outputIndex].Output = NetworkCalculations.LogisticFunction(OutputLayer.Nodes[outputIndex].Output);
+            layer.Nodes[outputIndex].Output = NetworkCalculations.LogisticFunction(layer.Nodes[outputIndex].Output);
         }
 
         #region PopulateAllResults
