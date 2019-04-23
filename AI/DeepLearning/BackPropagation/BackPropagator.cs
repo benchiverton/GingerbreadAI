@@ -6,7 +6,6 @@
     using AI.Calculations;
     using NeuralNetwork;
     using NeuralNetwork.Data;
-    using NeuralNetwork.Library.Extensions;
 
     public class BackPropagator
     {

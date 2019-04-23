@@ -3,7 +3,7 @@ using Xunit;
 
 namespace AI.Tests
 {
-    public class RunnableInDebugOnlyAttribute : FactAttribute
+    public sealed class RunnableInDebugOnlyAttribute : FactAttribute
     {
         public RunnableInDebugOnlyAttribute()
         {

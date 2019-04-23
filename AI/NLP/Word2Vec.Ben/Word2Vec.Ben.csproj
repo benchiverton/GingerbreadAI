@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DeepLearning\NegativeSampling\NegativeSampling.csproj" />
-    <ProjectReference Include="..\..\Models\NeuralNetwork.Library\NeuralNetwork.Library.csproj" />
     <ProjectReference Include="..\..\Models\NeuralNetwork\NeuralNetwork.csproj" />
   </ItemGroup>
 

@@ -27,12 +27,11 @@ namespace NegativeSampling
 
             var deltas = NegativeSampleOutput(_outputLayer, currentOutput, targetOutput, outputIndex);
 
-            for (var i = 0; i < _outputLayer.PreviousLayers.Length; i++)
+            foreach (var previousLayer in _outputLayer.PreviousLayers)
             {
-                var previousLayer = _outputLayer.PreviousLayers[i];
-                for (var j = 0; j < previousLayer.PreviousLayers.Length; j++)
+                foreach (var previousPreviousLayer in previousLayer.PreviousLayers)
                 {
-                    RecurseNegativeSample(previousLayer, previousLayer.PreviousLayers[j], deltas, inputIndex);
+                    RecurseNegativeSample(previousLayer, previousPreviousLayer, deltas, inputIndex);
                 }
             }
 

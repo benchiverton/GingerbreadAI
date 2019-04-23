@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AI.Test.Framework.Accuracy;
 using BackPropagation;
 using NeuralNetwork;
 using NeuralNetwork.Data;
-using NeuralNetwork.Library.Extensions;
 using Xunit;
 
 namespace AI.Tests.SineCurve
 {
+    using Calculations.Statistics;
+
     public class SineCurveUsingBackPropagation
     {
         private const string ResultsDirectory = "SineCurveUsingBackPropagation";
@@ -37,7 +37,7 @@ namespace AI.Tests.SineCurve
                initialResults[i] = outputLayer.GetResults(new[] { inputs[i] })[0];
             }
 
-            Parallel.ForEach(new double[4], x => TrainNetwork(outputLayer, inputs, accuracyResults));
+            Parallel.For(0, 4, x => TrainNetwork(outputLayer, inputs, accuracyResults));
             SetResults(inputs, outputLayer, finalResults);
 
             var suffix = DateTime.Now.Ticks;
@@ -66,7 +66,7 @@ namespace AI.Tests.SineCurve
                 if(i % 1000 == 0){
                     var currentResults = new double[inputs.Length];
                     SetResults(inputs, output, currentResults);
-                    accuracyResults.Add(AccuracyTester.CalculateKolmogorovStatistic(
+                    accuracyResults.Add(AccuracyStatistics.CalculateKolmogorovStatistic(
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                var trial = rand.NextDouble();
