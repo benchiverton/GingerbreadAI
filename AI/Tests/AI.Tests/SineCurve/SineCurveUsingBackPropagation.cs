@@ -14,7 +14,7 @@ namespace AI.Tests.SineCurve
 
     public class SineCurveUsingBackPropagation
     {
-        private const string ResultsDirectory = "SineCurveUsingBackPropagation";
+        private const string ResultsDirectory = nameof(SineCurveUsingBackPropagation);
 
         [RunnableInDebugOnly]
         public void ApproximateSineCurveUsingBackPropagation()

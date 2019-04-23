@@ -104,7 +104,7 @@
 
             _network = output;
 
-            _learningRateModifier = (rate) => rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
+            _learningRateModifier = (rate) => rate * 0.99 < 0.001 ? 0.001 : rate * 0.99;
 
             var huffmanTree = new HuffmanTree();
             huffmanTree.Create(_wordCollection);

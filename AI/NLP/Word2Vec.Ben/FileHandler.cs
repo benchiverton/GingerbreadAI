@@ -50,13 +50,13 @@
             var words = wordCollection.GetWords().ToArray();
 
             var result = new StringBuilder();
-            result.AppendJoin(',', words);
-            result.AppendLine();
+            result.Append(',').AppendJoin(',', words).AppendLine();
             for (int i = 0; i < words.Length; i++)
             {
+                result.Append(words[i]);
                 for (int j = 0; j < words.Length; j++)
                 {
-                    result.Append($"{network.GetResult(j, i)},");
+                    result.Append($",{network.GetResult(i, j)}");
                 }
                 result.AppendLine();
             }
@@ -64,7 +64,7 @@
             using (var fs = new FileStream(_outputFile, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(fs, Encoding.UTF8))
             {
-                writer.WriteLine($"Unique Words`: {wordCollection.GetNumberOfUniqueWords()}");
+                writer.WriteLine($"Unique Words: {wordCollection.GetNumberOfUniqueWords()}");
                 writer.WriteLine($"Network used:");
                 writer.WriteLine(network.ToString());
                 writer.WriteLine();

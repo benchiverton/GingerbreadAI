@@ -118,6 +118,46 @@ namespace NegativeSampling.Test
             Assert.True(output.GetResult(2, 4) < 0.05);
         }
 
+
+        [Fact]
+        public void TrainNetworksUsingDifferentInputsAndOutputsSortofWell()
+        {
+            var input = new Layer("input", 100, new Layer[0]);
+            var h1 = new Layer("hidden1", 50, new Layer[] { input });
+            var output = new Layer("output", 100, new Layer[] { h1 });
+
+            LayerInitialiser.Initialise(new Random(), h1);
+
+            var ns = new NegativeSampler(output, 0.25);
+
+            for (int i = 0; i < 2000; i++)
+            {
+                ns.NegativeSample(2, 0, true);
+                ns.NegativeSample(2, 1, true);
+                ns.NegativeSample(2, 2, false);
+                ns.NegativeSample(2, 3, false);
+                ns.NegativeSample(2, 4, false);
+
+                ns.NegativeSample(3, 0, false);
+                ns.NegativeSample(3, 1, false);
+                ns.NegativeSample(3, 2, true);
+                ns.NegativeSample(3, 3, true);
+                ns.NegativeSample(3, 4, true);
+            }
+
+            Assert.True(output.GetResult(2, 0) > 0.95);
+            Assert.True(output.GetResult(2, 1) > 0.95);
+            Assert.True(output.GetResult(2, 2) < 0.05);
+            Assert.True(output.GetResult(2, 3) < 0.05);
+            Assert.True(output.GetResult(2, 4) < 0.05);
+
+            Assert.True(output.GetResult(3, 0) < 0.05);
+            Assert.True(output.GetResult(3, 1) < 0.05);
+            Assert.True(output.GetResult(3, 2) > 0.95);
+            Assert.True(output.GetResult(3, 3) > 0.95);
+            Assert.True(output.GetResult(3, 4) > 0.95);
+        }
+
         [Fact]
         public void OnlyChangeRelatedWeights()
         {
