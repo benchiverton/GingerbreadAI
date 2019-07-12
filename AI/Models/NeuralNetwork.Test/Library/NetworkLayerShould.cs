@@ -7,9 +7,17 @@ namespace NeuralNetwork.Test.Library
     using Exceptions;
     using NeuralNetwork;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class NetworkLayerShould
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public NetworkLayerShould(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void ThrowAnExceptionWhenInputIsInvalid()
         {
@@ -236,13 +244,13 @@ namespace NeuralNetwork.Test.Library
             }
             stopWatch.Stop();
 
-            Console.WriteLine($"{calcCount} calculations took {stopWatch.ElapsedMilliseconds}ms.");
+            _testOutputHelper.WriteLine($"{calcCount} calculations took {stopWatch.ElapsedMilliseconds}ms.");
         }
 
         private Node GenerateWeightedNode(Dictionary<Layer, (double[] layerWeights, double biasWeight)> nodeInformation)
         {
-            var w8s = new Dictionary<Node, Weight>();
-            var biasw8s = new Dictionary<Layer, Weight>();
+            var weights = new Dictionary<Node, Weight>();
+            var biasWeights = new Dictionary<Layer, Weight>();
 
             foreach (var nodeLayer in nodeInformation.Keys)
             {
@@ -255,16 +263,16 @@ namespace NeuralNetwork.Test.Library
 
                 for (var i = 0; i < data.layerWeights.Length; i++)
                 {
-                    w8s.Add(nodeLayer.Nodes[i], new Weight(data.layerWeights[i]));
+                    weights.Add(nodeLayer.Nodes[i], new Weight(data.layerWeights[i]));
                 }
 
-                biasw8s.Add(nodeLayer, new Weight(data.biasWeight));
+                biasWeights.Add(nodeLayer, new Weight(data.biasWeight));
             }
 
             return new Node
             {
-                Weights = w8s,
-                BiasWeights = biasw8s,
+                Weights = weights,
+                BiasWeights = biasWeights,
                 Output = 0
             };
         }

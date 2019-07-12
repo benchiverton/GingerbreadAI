@@ -43,7 +43,7 @@
             }
         }
 
-        private void RecurseBackpropagation(Layer layer, Dictionary<Node, double> backwardsPassDeltas, Layer momentumLayer)
+        private void RecurseBackpropagation(Layer layer, Dictionary<Node, double> backwardsPassDeltas, Layer momentumDeltaHolder)
         {
             if (!layer.PreviousLayers.Any())
             {
@@ -65,18 +65,18 @@
 
                 foreach (var prevNode in node.Weights.Keys.ToList())
                 {
-                    UpdateNodeWeight(node, prevNode, delta, momentumLayer.Nodes[i]);
+                    UpdateNodeWeight(node, prevNode, delta, momentumDeltaHolder.Nodes[i]);
                 }
 
                 foreach (var prevLayer in node.BiasWeights.Keys.ToList())
                 {
-                    UpdateBiasNodeWeight(node, prevLayer, delta, momentumLayer.Nodes[i]);
+                    UpdateBiasNodeWeight(node, prevLayer, delta, momentumDeltaHolder.Nodes[i]);
                 }
             }
 
             for (var i = 0; i < layer.PreviousLayers.Length; i++)
             {
-                RecurseBackpropagation(layer.PreviousLayers[i], deltas, momentumLayer.PreviousLayers[i]);
+                RecurseBackpropagation(layer.PreviousLayers[i], deltas, momentumDeltaHolder.PreviousLayers[i]);
             }
         }
 
@@ -104,14 +104,14 @@
             return deltas;
         }
 
-        private void UpdateNodeWeight(Node node, Node prevNode, double delta, Node momentumNode)
+        private void UpdateNodeWeight(Node node, Node prevNode, double delta, Node momentumDelta)
         {
             var change = -(delta * prevNode.Output);
             node.Weights[prevNode].Value += change;
 
             // apply momentum
-            node.Weights[prevNode].Value += _momentumFactor * momentumNode.Weights[prevNode].Value;
-            momentumNode.Weights[prevNode].Value = change + _momentumFactor * momentumNode.Weights[prevNode].Value;
+            node.Weights[prevNode].Value += _momentumFactor * momentumDelta.Weights[prevNode].Value;
+            momentumDelta.Weights[prevNode].Value = change + _momentumFactor * momentumDelta.Weights[prevNode].Value;
         }
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta, Node momentumNode)
