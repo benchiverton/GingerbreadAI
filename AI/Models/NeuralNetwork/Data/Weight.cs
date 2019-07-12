@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeuralNetwork.Data
+﻿namespace NeuralNetwork.Data
 {
     public class Weight
     {

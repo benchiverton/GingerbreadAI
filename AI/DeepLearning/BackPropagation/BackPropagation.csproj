@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Models\NeuralNetwork.Library\NeuralNetwork.Library.csproj" />
     <ProjectReference Include="..\..\Models\NeuralNetwork\NeuralNetwork.csproj" />
   </ItemGroup>
 

@@ -1,9 +1,9 @@
-﻿using NeuralNetwork.Data;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-
-namespace NeuralNetwork.Library
+﻿namespace NeuralNetwork
 {
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using Data;
+
     public static class NetworkLoader
     {
         public static Layer LoadNetwork(string location)
