@@ -2,7 +2,7 @@
 {
     using System;
     using System.IO;
-    using global::Word2Vec.Ben;
+    using global::Word2Vec;
     using Xunit;
 
     public class BasicNovelWithoutSoftmax

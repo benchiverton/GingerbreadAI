@@ -92,12 +92,12 @@
                 deltas.Add(node, delta);
                 foreach (var prevNode in node.Weights.Keys.ToList())
                 {
-                    UpdateNodeWeight(node, prevNode, delta, _momentumDeltaHolder.Nodes[i]);
+                    UpdateNodeWeight(node, prevNode, delta * _learningRate, _momentumDeltaHolder.Nodes[i]);
                 }
 
                 foreach (var prevLayer in node.BiasWeights.Keys.ToList())
                 {
-                    UpdateBiasNodeWeight(node, prevLayer, delta, _momentumDeltaHolder.Nodes[i]);
+                    UpdateBiasNodeWeight(node, prevLayer, delta * _learningRate, _momentumDeltaHolder.Nodes[i]);
                 }
             }
 
@@ -106,7 +106,7 @@
 
         private void UpdateNodeWeight(Node node, Node prevNode, double delta, Node momentumNode)
         {
-            var change = -(_learningRate * delta * prevNode.Output);
+            var change = -(delta * prevNode.Output);
             node.Weights[prevNode].Value += change;
 
             // apply momentum
@@ -116,7 +116,7 @@
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta, Node momentumNode)
         {
-            var change = -(_learningRate * delta);
+            var change = -delta;
             node.BiasWeights[prevLayer].Value += change;
 
             // apply momentum

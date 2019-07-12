@@ -6,6 +6,7 @@
     public class AccuracyStatistics
     {
         // https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test
+        // smaller value returned => values closer to target
         public static double CalculateKolmogorovStatistic(double[] values, double[] target)
         {
             ValidateData(values, target);

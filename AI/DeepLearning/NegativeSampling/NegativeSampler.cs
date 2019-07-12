@@ -48,11 +48,11 @@ namespace NegativeSampling
             var delta = targetOutput - currentOutput;
             foreach (var previousNode in outputNode.Weights.Keys)
             {
-                UpdateNodeWeight(outputNode, previousNode, delta);
+                UpdateNodeWeight(outputNode, previousNode, delta * _learningRate);
             }
             foreach (var previousBiasLayer in outputNode.BiasWeights.Keys)
             {
-                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta);
+                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta * _learningRate);
             }
 
             return new Dictionary<Node, double> { { outputNode, delta } };
@@ -113,13 +113,13 @@ namespace NegativeSampling
 
         private void UpdateNodeWeight(Node node, Node prevNode, double delta)
         {
-            var change = _learningRate * delta * prevNode.Output;
+            var change = delta * prevNode.Output;
             node.Weights[prevNode].Value += change;
         }
 
         private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta)
         {
-            var change = _learningRate * delta;
+            var change = delta;
             node.BiasWeights[prevLayer].Value += change;
         }
     }
