@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using AI.Calculations;
-    using Data;
+    using NeuralNetwork.Models;
 
     public static class LayerInitialiser
     {

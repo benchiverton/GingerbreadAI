@@ -1,5 +1,5 @@
 using NeuralNetwork;
-using NeuralNetwork.Data;
+using NeuralNetwork.Models;
 using System;
 using Xunit;
 

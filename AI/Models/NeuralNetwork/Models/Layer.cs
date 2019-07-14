@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace NeuralNetwork.Data
+namespace NeuralNetwork.Models
 {
     [Serializable]
     public class Layer

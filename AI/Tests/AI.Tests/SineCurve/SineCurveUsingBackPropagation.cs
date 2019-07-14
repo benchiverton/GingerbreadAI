@@ -5,12 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using BackPropagation;
 using NeuralNetwork;
-using NeuralNetwork.Data;
-using Xunit;
 
 namespace AI.Tests.SineCurve
 {
     using Calculations.Statistics;
+    using NeuralNetwork.Models;
     using Xunit.Abstractions;
 
     public class SineCurveUsingBackPropagation

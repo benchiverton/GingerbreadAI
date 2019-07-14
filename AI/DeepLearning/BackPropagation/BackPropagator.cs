@@ -5,7 +5,7 @@
     using System.Linq;
     using AI.Calculations;
     using NeuralNetwork;
-    using NeuralNetwork.Data;
+    using NeuralNetwork.Models;
 
     public class BackPropagator
     {

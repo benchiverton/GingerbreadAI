@@ -5,20 +5,39 @@
     using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
     using AI.Calculations;
-    using Data;
     using Exceptions;
+    using NeuralNetwork.Models;
 
     public static class LayerExtensions
     {
         public static double[] GetResults(this Layer layer, double[] inputs)
         {
-            PopulateAllResults(layer, inputs);
+            PopulateResults(layer, inputs);
             return layer.Nodes.Select(n => n.Output).ToArray();
         }
 
         public static void PopulateResults(this Layer layer, double[] inputs)
         {
-            PopulateAllResults(layer, inputs);
+            // this should only happen when you reach an input group
+            if (!layer.PreviousLayers.Any())
+            {
+                HandleInputLayer(layer, inputs);
+                return;
+            }
+
+            // ensure that the output array is clear
+            foreach (var node in layer.Nodes)
+            {
+                node.Output = 0;
+            }
+
+            HandleLayer(layer, inputs);
+
+            // apply the logistic function to each of the results
+            foreach (var node in layer.Nodes)
+            {
+                node.Output = NetworkCalculations.LogisticFunction(node.Output);
+            }
         }
 
         public static double GetResult(this Layer layer, int inputIndex, int outputIndex, double inputValue = 1)
@@ -29,7 +48,24 @@
 
         public static void PopulateResult(this Layer layer, int inputIndex, int outputIndex, double inputValue)
         {
-            PopulateSingleResults(layer, inputIndex, outputIndex, inputValue);
+            foreach (var previousLayer in layer.PreviousLayers)
+            {
+                var isInput = PopulateIndexedResults(previousLayer, inputIndex, inputValue);
+                if (isInput) return;
+            }
+
+            var outputNode = layer.Nodes[outputIndex];
+            outputNode.Output = 0;
+            foreach (var previousNodeWeight in outputNode.Weights)
+            {
+                outputNode.Output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
+            }
+            foreach (var previousLayerWeight in outputNode.BiasWeights)
+            {
+                outputNode.Output += previousLayerWeight.Value.Value;
+            }
+
+            layer.Nodes[outputIndex].Output = NetworkCalculations.LogisticFunction(layer.Nodes[outputIndex].Output);
         }
 
         public static Layer DeepCopy(this Layer layer)
@@ -69,52 +105,6 @@
 
         #region Private Methods
 
-        private static void PopulateSingleResults(Layer layer, int inputIndex, int outputIndex, double inputValue)
-        {
-            foreach (var previousLayer in layer.PreviousLayers)
-            {
-                var isInput = PopulateIndexedResults(previousLayer, inputIndex, inputValue);
-                if (isInput) return;
-            }
-
-            var outputNode = layer.Nodes[outputIndex];
-            outputNode.Output = 0;
-            foreach (var previousNodeWeight in outputNode.Weights)
-            {
-                outputNode.Output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
-            }
-            foreach (var previousLayerWeight in outputNode.BiasWeights)
-            {
-                outputNode.Output += previousLayerWeight.Value.Value;
-            }
-
-            layer.Nodes[outputIndex].Output = NetworkCalculations.LogisticFunction(layer.Nodes[outputIndex].Output);
-        }
-
-        private static void PopulateAllResults(Layer nodeLayer, double[] inputs)
-        {
-            // this should only happen when you reach an input group
-            if (!nodeLayer.PreviousLayers.Any())
-            {
-                HandleInputLayer(nodeLayer, inputs);
-                return;
-            }
-
-            // ensure that the output array is clear
-            foreach (var node in nodeLayer.Nodes)
-            {
-                node.Output = 0;
-            }
-
-            HandleLayer(nodeLayer, inputs);
-
-            // apply the logistic function to each of the results
-            foreach (var node in nodeLayer.Nodes)
-            {
-                node.Output = NetworkCalculations.LogisticFunction(node.Output);
-            }
-        }
-
         private static void HandleInputLayer(Layer nodeLayer, double[] inputs)
         {
             if (nodeLayer.Nodes.Length != inputs.Length)
@@ -132,7 +122,7 @@
             foreach (var prevLayer in nodeLayer.PreviousLayers)
             {
                 // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
-                PopulateAllResults(prevLayer, inputs);
+                PopulateResults(prevLayer, inputs);
 
                 foreach (var node in nodeLayer.Nodes)
                 {

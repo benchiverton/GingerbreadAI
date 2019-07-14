@@ -3,9 +3,9 @@ namespace NeuralNetwork.Test.Library
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using Data;
     using Exceptions;
     using NeuralNetwork;
+    using NeuralNetwork.Models;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -220,7 +220,7 @@ namespace NeuralNetwork.Test.Library
 
         /// <summary>
         ///     Test to check the efficiency of the GetResult() method (the time taken should be as small as possible).
-        ///     Should only be run during debugging.
+        ///     Should only be run whilst debugging.
         /// </summary>
         [Fact(Skip = "Debug only")]
         public void CalculateResultsEfficiently()

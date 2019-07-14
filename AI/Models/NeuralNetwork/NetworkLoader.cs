@@ -1,8 +1,8 @@
 ﻿namespace NeuralNetwork
 {
+    using NeuralNetwork.Models;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
-    using Data;
 
     public static class NetworkLoader
     {

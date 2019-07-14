@@ -8,7 +8,7 @@
     using BackPropagation;
     using Calculations.Statistics;
     using NeuralNetwork;
-    using NeuralNetwork.Data;
+    using NeuralNetwork.Models;
     using Xunit.Abstractions;
 
     public class CurveUsingMultiThreadBackPropagation
