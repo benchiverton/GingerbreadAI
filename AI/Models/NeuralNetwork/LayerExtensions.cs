@@ -39,7 +39,7 @@
         }
 
         // Use this when multi-threading the same network
-        public static Layer CloneNewWithWeightReferences(this Layer layer)
+        public static Layer CloneWithNodeAndWeightReferences(this Layer layer)
         {
             return RecurseCloneNewWithWeightReferences(layer);
         }

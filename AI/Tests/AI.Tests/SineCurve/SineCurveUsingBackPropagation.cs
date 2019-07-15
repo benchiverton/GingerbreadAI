@@ -66,7 +66,7 @@ namespace AI.Tests.SineCurve
         private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults)
         {
             var rand = new Random();
-            var output = outputLayer.CloneNewWithWeightReferences();
+            var output = outputLayer.CloneWithNodeAndWeightReferences();
             var backpropagator = new BackPropagator(output, 0.1, LearningRateModifier, 0.9);
             for (var i = 0; i < 100000; i++)
             {
