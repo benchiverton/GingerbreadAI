@@ -63,12 +63,12 @@
                 var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
                 deltas.Add(node, delta);
 
-                foreach (var prevNode in node.Weights.Keys.ToList())
+                foreach (var prevNode in node.Weights.Keys)
                 {
                     UpdateNodeWeight(node, prevNode, delta, momentumDeltaHolder.Nodes[i]);
                 }
 
-                foreach (var prevLayer in node.BiasWeights.Keys.ToList())
+                foreach (var prevLayer in node.BiasWeights.Keys)
                 {
                     UpdateBiasNodeWeight(node, prevLayer, delta, momentumDeltaHolder.Nodes[i]);
                 }
@@ -90,12 +90,12 @@
                 var node = outputLayer.Nodes[i];
                 var delta = BackpropagationCalculations.GetDeltaOutput(currentOutputs[i], targetOutputs[i].Value);
                 deltas.Add(node, delta);
-                foreach (var prevNode in node.Weights.Keys.ToList())
+                foreach (var prevNode in node.Weights.Keys)
                 {
                     UpdateNodeWeight(node, prevNode, delta * _learningRate, _momentumDeltaHolder.Nodes[i]);
                 }
 
-                foreach (var prevLayer in node.BiasWeights.Keys.ToList())
+                foreach (var prevLayer in node.BiasWeights.Keys)
                 {
                     UpdateBiasNodeWeight(node, prevLayer, delta * _learningRate, _momentumDeltaHolder.Nodes[i]);
                 }
