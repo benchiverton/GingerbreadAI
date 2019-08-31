@@ -4,8 +4,6 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
-    using AI.Calculations;
-    using Exceptions;
     using NeuralNetwork.Models;
 
     public static class LayerExtensions

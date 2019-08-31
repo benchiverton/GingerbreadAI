@@ -2,10 +2,9 @@
 {
     using System;
     using System.Linq;
-    using Models;
+    using NeuralNetwork.Models;
     using Xunit;
     using Xunit.Abstractions;
-    using Xunit.Sdk;
 
     public class LayerExtensionsShould
     {

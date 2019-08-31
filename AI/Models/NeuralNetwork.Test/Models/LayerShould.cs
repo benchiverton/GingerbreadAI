@@ -2,9 +2,7 @@ namespace NeuralNetwork.Test.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using Exceptions;
-    using NeuralNetwork;
     using NeuralNetwork.Models;
     using Xunit;
     using Xunit.Abstractions;
