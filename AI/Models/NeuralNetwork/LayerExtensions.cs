@@ -12,13 +12,13 @@
     {
         public static double[] GetResults(this Layer layer, double[] inputs)
         {
-            layer.PopulateResults(inputs);
+            layer.PopulateAllOutputs(inputs);
             return layer.Nodes.Select(n => n.Output).ToArray();
         }
 
         public static double GetResult(this Layer layer, int inputIndex, int outputIndex, double inputValue = 1)
         {
-            layer.PopulateResult(inputIndex, outputIndex, inputValue);
+            layer.PopulateIndexedOutputs(inputIndex, outputIndex, inputValue);
             return layer.Nodes[outputIndex].Output;
         }
 
@@ -72,8 +72,7 @@
                 var newNode = new Node
                 {
                     Weights = new Dictionary<Node, Weight>(),
-                    BiasWeights = new Dictionary<Layer, Weight>(),
-                    Output = 0
+                    BiasWeights = new Dictionary<Layer, Weight>()
                 };
 
                 foreach (var weightKey in layer.Nodes[i].Weights.Keys)
@@ -110,11 +109,10 @@
 
                 for (var i = 0; i < layer.Nodes.Length; i++)
                 {
-                    newInputLayer.Nodes[i] = new Node()
+                    newInputLayer.Nodes[i] = new Node
                     {
                         Weights = new Dictionary<Node, Weight>(),
-                        BiasWeights = new Dictionary<Layer, Weight>(),
-                        Output = 0
+                        BiasWeights = new Dictionary<Layer, Weight>()
                     };
                 }
 
@@ -139,8 +137,7 @@
                 var newNode = new Node()
                 {
                     Weights = new Dictionary<Node, Weight>(),
-                    BiasWeights = new Dictionary<Layer, Weight>(),
-                    Output = 0
+                    BiasWeights = new Dictionary<Layer, Weight>()
                 };
 
                 for (var j = 0; j < layer.PreviousLayers.Length; j++)

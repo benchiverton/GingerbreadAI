@@ -25,7 +25,7 @@
             _hidden2 = new Layer("hidden2", 15, new[] { _input });
             _output = new Layer("output", 20, new[] { _hidden1, _hidden2 });
 
-            _output.PopulateResults(new[] { 0.1, 0.2, 0.3, 0.4, 0.5 });
+            _output.PopulateAllOutputs(new[] { 0.1, 0.2, 0.3, 0.4, 0.5 });
         }
 
         [Fact]

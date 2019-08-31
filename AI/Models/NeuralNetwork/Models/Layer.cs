@@ -39,56 +39,27 @@ namespace NeuralNetwork.Models
                 Nodes[i] = new Node(previousGroups);
             }
             PreviousLayers = previousGroups;
-            foreach (var node in Nodes)
-            {
-                node.Output = 0;
-            }
         }
 
-        public void PopulateResults(double[] inputs)
+        public void PopulateAllOutputs(double[] inputs)
         {
-            // this should only happen when you reach an input group
             if (!PreviousLayers.Any())
             {
-                HandleInputLayer(this, inputs);
+                PopulateInputLayersOutputs( inputs);
                 return;
             }
 
-            // ensure that the output array is clear
-            foreach (var node in Nodes)
-            {
-                node.Output = 0;
-            }
-
-            HandleLayer(this, inputs);
-
-            // apply the logistic function to each of the results
-            foreach (var node in Nodes)
-            {
-                node.Output = NetworkCalculations.LogisticFunction(node.Output);
-            }
+            PopulateOutputs(inputs);
         }
 
-        public void PopulateResult(int inputIndex, int outputIndex, double inputValue)
+        public void PopulateIndexedOutputs(int inputIndex, int outputIndex, double inputValue)
         {
             foreach (var previousLayer in PreviousLayers)
             {
-                var isInput = PopulateIndexedResults(previousLayer, inputIndex, inputValue);
-                if (isInput) return;
+                PopulateIndexedOutputs(previousLayer, inputIndex, inputValue);
             }
 
-            var outputNode = Nodes[outputIndex];
-            outputNode.Output = 0;
-            foreach (var previousNodeWeight in outputNode.Weights)
-            {
-                outputNode.Output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
-            }
-            foreach (var previousLayerWeight in outputNode.BiasWeights)
-            {
-                outputNode.Output += previousLayerWeight.Value.Value;
-            }
-
-            Nodes[outputIndex].Output = NetworkCalculations.LogisticFunction(Nodes[outputIndex].Output);
+            Nodes[outputIndex].PopulateOutput();
         }
 
         public string ToString(bool recurse = false, int layer = 0)
@@ -115,38 +86,33 @@ namespace NeuralNetwork.Models
         #region Private methods
 
 
-        private void HandleInputLayer(Layer nodeLayer, double[] inputs)
+        private void PopulateInputLayersOutputs(double[] inputs)
         {
-            if (nodeLayer.Nodes.Length != inputs.Length)
-                throw new NeuralNetworkException($"Input layer length ({nodeLayer.Nodes.Length}) not equal to length of your inputs ({inputs.Length}).");
+            if (Nodes.Length != inputs.Length)
+                throw new NeuralNetworkException($"Input layer length ({Nodes.Length}) not equal to length of your inputs ({inputs.Length}).");
 
             var i = 0;
-            foreach (var node in nodeLayer.Nodes)
+            foreach (var node in Nodes)
             {
                 node.Output = inputs[i++];
             }
         }
 
-        private void HandleLayer(Layer nodeLayer, double[] inputs)
+        private void PopulateOutputs(double[] inputs)
         {
-            foreach (var prevLayer in nodeLayer.PreviousLayers)
+            foreach (var prevLayer in PreviousLayers)
             {
                 // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
-                prevLayer.PopulateResults(inputs);
+                prevLayer.PopulateAllOutputs(inputs);
+            }
 
-                foreach (var node in nodeLayer.Nodes)
-                {
-                    foreach (var prevNode in prevLayer.Nodes)
-                    {
-                        node.Output += prevNode.Output * node.Weights[prevNode].Value;
-                    }
-
-                    node.Output += node.BiasWeights[prevLayer].Value;
-                }
+            foreach(var node in Nodes)
+            {
+                node.PopulateOutput();
             }
         }
 
-        private bool PopulateIndexedResults(Layer layer, int inputIndex, double inputValue)
+        private bool PopulateIndexedOutputs(Layer layer, int inputIndex, double inputValue)
         {
             if (!layer.PreviousLayers.Any())
             {
@@ -154,22 +120,17 @@ namespace NeuralNetwork.Models
                 return true;
             }
 
-            foreach (var node in layer.Nodes)
-            {
-                node.Output = 0;
-            }
-
-            HandleLayer(layer, inputIndex, inputValue);
+            HandleIndexedLayer(layer, inputIndex, inputValue);
 
             return false;
         }
 
-        private void HandleLayer(Layer layer, int inputIndex, double inputValue)
+        private void HandleIndexedLayer(Layer layer, int inputIndex, double inputValue)
         {
             foreach (var prevLayer in layer.PreviousLayers)
             {
                 // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
-                var isNextToInput = PopulateIndexedResults(prevLayer, inputIndex, inputValue);
+                var isNextToInput = PopulateIndexedOutputs(prevLayer, inputIndex, inputValue);
 
                 if (isNextToInput)
                 {
@@ -178,21 +139,14 @@ namespace NeuralNetwork.Models
                         node.Output = node.Weights[prevLayer.Nodes[inputIndex]].Value * prevLayer.Nodes[inputIndex].Output + node.BiasWeights[prevLayer].Value;
                         node.Output = NetworkCalculations.LogisticFunction(node.Output);
                     }
+                    return;
                 }
-                else
-                {
-                    foreach (var node in layer.Nodes)
-                    {
-                        foreach (var prevNode in prevLayer.Nodes)
-                        {
-                            node.Output += prevNode.Output * node.Weights[prevNode].Value;
-                        }
+            }
 
-                        node.Output += node.BiasWeights[prevLayer].Value;
-                        node.Output = NetworkCalculations.LogisticFunction(node.Output);
-                    }
-                }
-            };
+            foreach(var node in layer.Nodes)
+            {
+                node.PopulateOutput();
+            }
         }
 
         #endregion
