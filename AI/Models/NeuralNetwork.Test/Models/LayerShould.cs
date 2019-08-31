@@ -1,4 +1,4 @@
-namespace NeuralNetwork.Test.Library
+namespace NeuralNetwork.Test.Models
 {
     using System;
     using System.Collections.Generic;
@@ -9,11 +9,11 @@ namespace NeuralNetwork.Test.Library
     using Xunit;
     using Xunit.Abstractions;
 
-    public class NetworkLayerShould
+    public class LayerShould
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public NetworkLayerShould(ITestOutputHelper testOutputHelper)
+        public LayerShould(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -216,35 +216,6 @@ namespace NeuralNetwork.Test.Library
             Assert.Equal(Math.Round(innerLayer.Nodes[2].Output, 8), Math.Round(0.99951940263283, 8));
             Assert.Equal(Math.Round(output.Nodes[0].Output, 8), Math.Round(0.669438581764625, 8));
             Assert.Equal(Math.Round(output.Nodes[1].Output, 8), Math.Round(0.699525372246435, 8));
-        }
-
-        /// <summary>
-        ///     Test to check the efficiency of the GetResult() method (the time taken should be as small as possible).
-        ///     Should only be run whilst debugging.
-        /// </summary>
-        [Fact(Skip = "Debug only")]
-        public void CalculateResultsEfficiently()
-        {
-            const int calcCount = 5000;
-            var group = new Layer("Input", 20, new Layer[0]);
-            var inner1 = new Layer("Inner1", 100, new[] { group });
-            var inner2 = new Layer("Inner2", 100, new[] { group });
-            var output = new Layer("Output", 20, new[] { inner1, inner2 });
-            LayerInitialiser.Initialise(new Random(), output);
-            var inputs = new double[20];
-            for (var i = 0; i < inputs.Length; i++)
-                inputs[i] = 0.5;
-            var stopWatch = new Stopwatch();
-
-            stopWatch.Start();
-            // Gets the result every time this loop iterates
-            for (var i = 0; i < calcCount; i++)
-            {
-                output.PopulateAllOutputs(inputs);
-            }
-            stopWatch.Stop();
-
-            _testOutputHelper.WriteLine($"{calcCount} calculations took {stopWatch.ElapsedMilliseconds}ms.");
         }
 
         private Node GenerateWeightedNode(Dictionary<Layer, (double[] layerWeights, double biasWeight)> nodeInformation)
