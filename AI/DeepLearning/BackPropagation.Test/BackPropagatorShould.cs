@@ -1,5 +1,5 @@
 using NeuralNetwork;
-using NeuralNetwork.Data;
+using NeuralNetwork.Models;
 using System;
 using Xunit;
 
@@ -20,19 +20,19 @@ namespace BackPropagation.Test
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
             var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
-            for(int i=0; i<1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 bp.BackPropagate(inputs, targetOutputs);
             }
 
             var outputResults = output.GetResults(inputs);
 
-            Assert.True(outputResults[0] > targetOutputs[0] - 0.05);
-            Assert.True(outputResults[2] > targetOutputs[2] - 0.05);
-            Assert.True(outputResults[4] > targetOutputs[4] - 0.05);
+            Assert.True(outputResults[0] > 0.95);
+            Assert.True(outputResults[2] > 0.95);
+            Assert.True(outputResults[4] > 0.95);
 
-            Assert.True(outputResults[1] < targetOutputs[1] + 0.05);
-            Assert.True(outputResults[3] < targetOutputs[3] + 0.05);
+            Assert.True(outputResults[1] < 0.05);
+            Assert.True(outputResults[3] < 0.05);
         }
 
         [Fact]
@@ -50,19 +50,19 @@ namespace BackPropagation.Test
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
             var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 bp.BackPropagate(inputs, targetOutputs);
             }
 
             var outputResults = output.GetResults(inputs);
 
-            Assert.True(outputResults[0] > targetOutputs[0] - 0.05);
-            Assert.True(outputResults[2] > targetOutputs[2] - 0.05);
-            Assert.True(outputResults[4] > targetOutputs[4] - 0.05);
+            Assert.True(outputResults[0] > 0.95);
+            Assert.True(outputResults[2] > 0.95);
+            Assert.True(outputResults[4] > 0.95);
 
-            Assert.True(outputResults[1] < targetOutputs[1] + 0.05);
-            Assert.True(outputResults[3] < targetOutputs[3] + 0.05);
+            Assert.True(outputResults[1] < 0.05);
+            Assert.True(outputResults[3] < 0.05);
         }
     }
 }

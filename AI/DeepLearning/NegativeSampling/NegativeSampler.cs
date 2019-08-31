@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NeuralNetwork;
-using NeuralNetwork.Data;
+using NeuralNetwork.Models;
 
 namespace NegativeSampling
 {

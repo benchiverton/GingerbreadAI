@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AI.Calculations;
+using System;
 using System.Collections.Generic;
 
-namespace NeuralNetwork.Data
+namespace NeuralNetwork.Models
 {
     [Serializable]
     public class Node
@@ -14,12 +15,12 @@ namespace NeuralNetwork.Data
         /// <summary>
         ///     The bias weights, with reference to the layer the value is mapped from
         /// </summary>
-        public Dictionary<Layer, Weight> BiasWeights;
+        public Dictionary<Layer, Weight> BiasWeights { get; set; }
 
         /// <summary>
         ///     The output of the node from the last results calculation.
         /// </summary>
-        public double Output { get; set; }
+        public double Output { get; set; } = 0;
 
         public Node()
         {
@@ -44,11 +45,19 @@ namespace NeuralNetwork.Data
             }
         }
 
-        public Node(Dictionary<Node, Weight> weights, Dictionary<Layer, Weight> biasWeights, double output)
+        public void PopulateOutput()
         {
-            Weights = weights;
-            BiasWeights = biasWeights;
-            Output = output;
+            var output = 0d;
+            foreach (var previousNodeWeight in Weights)
+            {
+                output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
+            }
+            foreach (var previousLayerWeight in BiasWeights)
+            {
+                output += previousLayerWeight.Value.Value;
+            }
+
+            Output = NetworkCalculations.LogisticFunction(output);
         }
     }
 }

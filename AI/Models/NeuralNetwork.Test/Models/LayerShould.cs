@@ -1,15 +1,21 @@
-namespace NeuralNetwork.Test.Library
+namespace NeuralNetwork.Test.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using Data;
     using Exceptions;
-    using NeuralNetwork;
+    using NeuralNetwork.Models;
     using Xunit;
+    using Xunit.Abstractions;
 
-    public class NetworkLayerShould
+    public class LayerShould
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public LayerShould(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void ThrowAnExceptionWhenInputIsInvalid()
         {
@@ -18,7 +24,7 @@ namespace NeuralNetwork.Test.Library
             var outputGroup = new Layer("Output Group", 10, new[] { inputGroup });
 
             var inputs = new double[5];
-            Assert.Throws<NeuralNetworkException>(() => outputGroup.PopulateResults(inputs));
+            Assert.Throws<NeuralNetworkException>(() => outputGroup.PopulateAllOutputs(inputs));
         }
 
         [Fact]
@@ -51,7 +57,7 @@ namespace NeuralNetwork.Test.Library
                 PreviousLayers = new[] { innerLayer }
             };
 
-            outputLayer.PopulateResults(new[] { 0.5 });
+            outputLayer.PopulateAllOutputs(new[] { 0.5 });
 
             // checking that the values calculated in the inner node are correct
             var innerResult = innerLayer.Nodes[0].Output;
@@ -91,7 +97,7 @@ namespace NeuralNetwork.Test.Library
                 PreviousLayers = new[] { innerLayer }
             };
 
-            outputLayer.PopulateResult(0, 0, 0.5);
+            outputLayer.PopulateIndexedOutputs(0, 0, 0.5);
 
             // checking that the values calculated in the inner node are correct
             var innerResult = innerLayer.Nodes[0].Output;
@@ -146,7 +152,7 @@ namespace NeuralNetwork.Test.Library
                 PreviousLayers = new[] { innerLayer1, innerLayer2 }
             };
 
-            outputLayer.PopulateResults(new[] { 0.5 });
+            outputLayer.PopulateAllOutputs(new[] { 0.5 });
 
             // checking that the values calculated in the inner1 node are correct
             var innerResult1 = innerLayer1.Nodes[0].Output;
@@ -201,7 +207,7 @@ namespace NeuralNetwork.Test.Library
                 PreviousLayers = new[] { innerLayer }
             };
 
-            output.PopulateResults(new[] { 41.0, 43.0 });
+            output.PopulateAllOutputs(new[] { 41.0, 43.0 });
 
             Assert.Equal(Math.Round(innerLayer.Nodes[0].Output, 8), Math.Round(0.978751677288986, 8));
             Assert.Equal(Math.Round(innerLayer.Nodes[1].Output, 8), Math.Round(0.99742672684619, 8));
@@ -210,39 +216,10 @@ namespace NeuralNetwork.Test.Library
             Assert.Equal(Math.Round(output.Nodes[1].Output, 8), Math.Round(0.699525372246435, 8));
         }
 
-        /// <summary>
-        ///     Test to check the efficiency of the GetResult() method (the time taken should be as small as possible).
-        ///     Should only be run during debugging.
-        /// </summary>
-        [Fact(Skip = "Debug only")]
-        public void CalculateResultsEfficiently()
-        {
-            const int calcCount = 5000;
-            var group = new Layer("Input", 20, new Layer[0]);
-            var inner1 = new Layer("Inner1", 100, new[] { group });
-            var inner2 = new Layer("Inner2", 100, new[] { group });
-            var output = new Layer("Output", 20, new[] { inner1, inner2 });
-            LayerInitialiser.Initialise(new Random(), output);
-            var inputs = new double[20];
-            for (var i = 0; i < inputs.Length; i++)
-                inputs[i] = 0.5;
-            var stopWatch = new Stopwatch();
-
-            stopWatch.Start();
-            // Gets the result every time this loop iterates
-            for (var i = 0; i < calcCount; i++)
-            {
-                output.PopulateResults(inputs);
-            }
-            stopWatch.Stop();
-
-            Console.WriteLine($"{calcCount} calculations took {stopWatch.ElapsedMilliseconds}ms.");
-        }
-
         private Node GenerateWeightedNode(Dictionary<Layer, (double[] layerWeights, double biasWeight)> nodeInformation)
         {
-            var w8s = new Dictionary<Node, Weight>();
-            var biasw8s = new Dictionary<Layer, Weight>();
+            var weights = new Dictionary<Node, Weight>();
+            var biasWeights = new Dictionary<Layer, Weight>();
 
             foreach (var nodeLayer in nodeInformation.Keys)
             {
@@ -255,17 +232,16 @@ namespace NeuralNetwork.Test.Library
 
                 for (var i = 0; i < data.layerWeights.Length; i++)
                 {
-                    w8s.Add(nodeLayer.Nodes[i], new Weight(data.layerWeights[i]));
+                    weights.Add(nodeLayer.Nodes[i], new Weight(data.layerWeights[i]));
                 }
 
-                biasw8s.Add(nodeLayer, new Weight(data.biasWeight));
+                biasWeights.Add(nodeLayer, new Weight(data.biasWeight));
             }
 
             return new Node
             {
-                Weights = w8s,
-                BiasWeights = biasw8s,
-                Output = 0
+                Weights = weights,
+                BiasWeights = biasWeights
             };
         }
     }

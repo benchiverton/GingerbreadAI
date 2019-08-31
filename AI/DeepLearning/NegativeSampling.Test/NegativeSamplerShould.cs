@@ -1,5 +1,5 @@
 using NeuralNetwork;
-using NeuralNetwork.Data;
+using NeuralNetwork.Models;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -19,7 +19,7 @@ namespace NegativeSampling.Test
 
             var ns = new NegativeSampler(output, 0.25);
 
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; i < 2000; i++)
             {
                 ns.NegativeSample(0, 0, false);
                 ns.NegativeSample(1, 1, false);
@@ -48,7 +48,7 @@ namespace NegativeSampling.Test
 
             var ns = new NegativeSampler(output, 0.25);
 
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; i < 2000; i++)
             {
                 ns.NegativeSample(0, 0, false);
                 ns.NegativeSample(1, 1, false);
@@ -75,7 +75,7 @@ namespace NegativeSampling.Test
 
             var ns = new NegativeSampler(output, 0.25);
 
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; i < 2000; i++)
             {
                 ns.NegativeSample(0, 2, true);
                 ns.NegativeSample(1, 2, true);
@@ -102,7 +102,7 @@ namespace NegativeSampling.Test
 
             var ns = new NegativeSampler(output, 0.25);
 
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; i < 2000; i++)
             {
                 ns.NegativeSample(2, 0, true);
                 ns.NegativeSample(2, 1, true);
@@ -130,7 +130,7 @@ namespace NegativeSampling.Test
 
             var ns = new NegativeSampler(output, 0.25);
 
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; i < 2000; i++)
             {
                 ns.NegativeSample(2, 0, true);
                 ns.NegativeSample(2, 1, true);
@@ -172,7 +172,7 @@ namespace NegativeSampling.Test
 
             var initialHiddenWeights = new Dictionary<Node, Weight>[h1.Nodes.Length];
             var initialOutputWeights = new Dictionary<Node, Weight>[output.Nodes.Length];
-            for (int i = 0; i < h1.Nodes.Length; i++)
+            for (var i = 0; i < h1.Nodes.Length; i++)
             {
                 var dict = new Dictionary<Node, Weight>();
                 for (var j = 0; j < input.Nodes.Length; j++)
@@ -181,7 +181,7 @@ namespace NegativeSampling.Test
                 }
                 initialHiddenWeights[i] = dict;
             }
-            for (int i = 0; i < output.Nodes.Length; i++)
+            for (var i = 0; i < output.Nodes.Length; i++)
             {
                 var dict = new Dictionary<Node, Weight>();
                 for (var j = 0; j < h4.Nodes.Length; j++)
@@ -193,12 +193,12 @@ namespace NegativeSampling.Test
 
             var ns = new NegativeSampler(output, 0.25);
 
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; i < 2000; i++)
             {
                 ns.NegativeSample(4, 4, true);
             }
 
-            for (int i = 0; i < h1.Nodes.Length; i++)
+            for (var i = 0; i < h1.Nodes.Length; i++)
             {
                 for (var j = 0; j < input.Nodes.Length; j++)
                 {
@@ -212,7 +212,7 @@ namespace NegativeSampling.Test
                     }
                 }
             }
-            for (int i = 0; i < output.Nodes.Length; i++)
+            for (var i = 0; i < output.Nodes.Length; i++)
             {
                 for (var j = 0; j < h4.Nodes.Length; j++)
                 {
