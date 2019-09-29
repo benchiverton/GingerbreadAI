@@ -3,9 +3,9 @@ using NeuralNetwork.Models;
 using System;
 using Xunit;
 
-namespace BackPropagation.Test
+namespace Backpropagation.Test
 {
-    public class BackPropagatorShould
+    public class BackpropagatorShould
     {
         [Fact]
         public void TrainBasicNetworksSortofWell()
@@ -16,13 +16,13 @@ namespace BackPropagation.Test
 
             LayerInitialiser.Initialise(new Random(), output);
 
-            var bp = new BackPropagator(output, 0.25);
+            var bp = new Backpropagator(output, 0.25);
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
             var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
             for (var i = 0; i < 1000; i++)
             {
-                bp.BackPropagate(inputs, targetOutputs);
+                bp.Backpropagate(inputs, targetOutputs);
             }
 
             var outputResults = output.GetResults(inputs);
@@ -46,13 +46,13 @@ namespace BackPropagation.Test
 
             LayerInitialiser.Initialise(new Random(), output);
 
-            var bp = new BackPropagator(output, 0.25);
+            var bp = new Backpropagator(output, 0.25);
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
             var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
             for (var i = 0; i < 1000; i++)
             {
-                bp.BackPropagate(inputs, targetOutputs);
+                bp.Backpropagate(inputs, targetOutputs);
             }
 
             var outputResults = output.GetResults(inputs);

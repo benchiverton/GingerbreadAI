@@ -1,4 +1,4 @@
-﻿namespace BackPropagation
+﻿namespace Backpropagation
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     using NeuralNetwork;
     using NeuralNetwork.Models;
 
-    public class BackPropagator
+    public class Backpropagator
     {
         private readonly Layer _outputLayer;
         private readonly Func<double, double> _learningRateModifier;
@@ -16,7 +16,7 @@
 
         private double _learningRate;
 
-        public BackPropagator(Layer outputLayer, double learningRate, Func<double, double> learningAction = null, double momentum = 0)
+        public Backpropagator(Layer outputLayer, double learningRate, Func<double, double> learningAction = null, double momentum = 0)
         {
             _outputLayer = outputLayer;
             _learningRate = learningRate;
@@ -26,7 +26,7 @@
             _momentumDeltaHolder = outputLayer.CloneWithNodeReferences();
         }
 
-        public void BackPropagate(double[] inputs, double?[] targetOutputs)
+        public void Backpropagate(double[] inputs, double?[] targetOutputs)
         {
             var currentOutputs = _outputLayer.GetResults(inputs);
 

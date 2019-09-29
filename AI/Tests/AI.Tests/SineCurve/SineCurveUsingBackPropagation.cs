@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using BackPropagation;
+using Backpropagation;
 using NeuralNetwork;
 
 namespace AI.Tests.SineCurve
@@ -12,18 +12,18 @@ namespace AI.Tests.SineCurve
     using NeuralNetwork.Models;
     using Xunit.Abstractions;
 
-    public class SineCurveUsingBackPropagation
+    public class SineCurveUsingBackpropagation
     {
-        private const string ResultsDirectory = nameof(SineCurveUsingBackPropagation);
+        private const string ResultsDirectory = nameof(SineCurveUsingBackpropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public SineCurveUsingBackPropagation(ITestOutputHelper testOutputHelper)
+        public SineCurveUsingBackpropagation(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
 
         [RunnableInDebugOnly]
-        public void ApproximateSineCurveUsingBackPropagation()
+        public void ApproximateSineCurveUsingBackpropagation()
         {
             var input = new Layer("Input", 1, new Layer[0]);
             var inner1 = new Layer("Inner1", 20, new[] { input });
@@ -67,7 +67,7 @@ namespace AI.Tests.SineCurve
         {
             var rand = new Random();
             var output = outputLayer.CloneWithNodeAndWeightReferences();
-            var backpropagator = new BackPropagator(output, 0.1, LearningRateModifier, 0.9);
+            var backpropagator = new Backpropagator(output, 0.1, LearningRateModifier, 0.9);
             for (var i = 0; i < 100000; i++)
             {
                 if(i % 1000 == 0){
@@ -77,7 +77,7 @@ namespace AI.Tests.SineCurve
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = rand.NextDouble();
-                backpropagator.BackPropagate(new[] { trial }, new double?[] { Calculation(trial) });
+                backpropagator.Backpropagate(new[] { trial }, new double?[] { Calculation(trial) });
             }
         }
 

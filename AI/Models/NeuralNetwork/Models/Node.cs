@@ -24,7 +24,6 @@ namespace NeuralNetwork.Models
 
         public Node()
         {
-            // default constructor
         }
 
         public Node(IReadOnlyList<Layer> nodeGroupPrev)

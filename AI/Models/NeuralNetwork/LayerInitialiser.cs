@@ -11,8 +11,6 @@
         /// <summary>
         ///     Initialises each Node in Nodes with random weights.
         /// </summary>
-        /// <param name="rand"></param>
-        /// <param name="nodeGroup"></param>
         public static void Initialise(Random rand, Layer nodeGroup)
         {
             foreach (var node in nodeGroup.Nodes)
@@ -28,8 +26,6 @@
         /// <summary>
         ///     Initialises a Node with random weights (using He-et-al Initialization).
         /// </summary>
-        /// <param name="rand"></param>
-        /// <param name="node"></param>
         private static void Initialise(Random rand, Node node)
         {
             if (node == null) return;
