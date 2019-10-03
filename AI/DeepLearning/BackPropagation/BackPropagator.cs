@@ -30,6 +30,18 @@
         {
             var currentOutputs = _outputLayer.GetResults(inputs);
 
+            DoBackpropagation(currentOutputs, targetOutputs);
+        }
+
+        public void Backpropagate(Dictionary<Layer, double[]> inputs, double?[] targetOutputs)
+        {
+            var currentOutputs = _outputLayer.GetResults(inputs);
+
+            DoBackpropagation(currentOutputs, targetOutputs);
+        }
+
+        private void DoBackpropagation(double[] currentOutputs, double?[] targetOutputs)
+        {
             var backwardsPassDeltas = UpdateOutputLayer(_outputLayer, currentOutputs, targetOutputs);
 
             for (var i = 0; i < _outputLayer.PreviousLayers.Length; i++)

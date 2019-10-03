@@ -14,6 +14,12 @@
             return layer.Nodes.Select(n => n.Output).ToArray();
         }
 
+        public static double[] GetResults(this Layer layer, Dictionary<Layer, double[]> inputs)
+        {
+            layer.PopulateAllOutputs(inputs);
+            return layer.Nodes.Select(n => n.Output).ToArray();
+        }
+
         public static double GetResult(this Layer layer, int inputIndex, int outputIndex, double inputValue = 1)
         {
             layer.PopulateIndexedOutputs(inputIndex, outputIndex, inputValue);
