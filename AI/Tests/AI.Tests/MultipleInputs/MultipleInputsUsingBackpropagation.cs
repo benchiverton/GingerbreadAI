@@ -5,13 +5,9 @@ using Xunit.Abstractions;
 
 namespace AI.Tests.MultipleInputs
 {
-    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Backpropagation;
-    using Calculations.Statistics;
 
     public class MultipleInputsUsingBackpropagation
     {
@@ -30,8 +26,9 @@ namespace AI.Tests.MultipleInputs
             var input2 = new Layer("input2", 1, new Layer[0]);
             var inner = new Layer("Inner", 20, new[] { input1, input2 });
             var outputLayer = new Layer("Output", 1, new[] { inner });
-            LayerInitialiser.Initialise(new Random(), outputLayer);
+            outputLayer.Initialise(new Random());
             _testOutputHelper.WriteLine(outputLayer.ToString(true));
+
             var actualResults = new double[6, 6];
             for (var i = 0; i < 6; i++)
             {
@@ -53,20 +50,23 @@ namespace AI.Tests.MultipleInputs
                 }
             }
 
-            var rand = new Random();
-            var backpropagator = new Backpropagator(outputLayer, 0.1, LearningRateModifier, 0.9);
             var inputDict = new Dictionary<Layer, double[]>()
             {
                 {input1, new[] { (double)0 }},
                 {input2, new[] { (double)0 }}
             };
+
+            var learningRate = 0.1;
+            var rand = new Random();
             for (var i = 0; i < 100000; i++)
             {
                 var inputValue1 = rand.NextDouble();
                 var inputValue2 = rand.NextDouble();
                 inputDict[input1][0] = inputValue1;
                 inputDict[input2][0] = inputValue2;
-                backpropagator.Backpropagate(inputDict, new double?[] { Calculation(inputValue1, inputValue2) });
+                outputLayer.Backpropagate(inputDict, new double?[] { Calculation(inputValue1, inputValue2) }, learningRate);
+
+                ModifyLearningRate(ref learningRate);
             }
 
             var finalResults = new double[6, 6];
@@ -104,8 +104,10 @@ namespace AI.Tests.MultipleInputs
             }
         }
 
-        private static double LearningRateModifier(double rate)
-            => rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
+        private static void ModifyLearningRate(ref double rate)
+        {
+            rate = rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
+        }
 
         private static double Calculation(double input1, double input2)
             => (input1 + input2) / 2;

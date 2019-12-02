@@ -30,7 +30,7 @@
         [Fact]
         public void DeepCopyCorrectly()
         {
-            LayerInitialiser.Initialise(new Random(), _output);
+            _output.Initialise(new Random());
             _testOutputHelper.WriteLine(_output.ToString(true));
 
             var copiedOutput = _output.DeepCopy();

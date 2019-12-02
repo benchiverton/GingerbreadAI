@@ -6,7 +6,7 @@ using Xunit;
 
 namespace NegativeSampling.Test
 {
-    public class NegativeSamplerShould
+    public class NegativeSamplingShould
     {
         [Fact]
         public void TrainBasicNetworksSortofWell()
@@ -15,17 +15,16 @@ namespace NegativeSampling.Test
             var h1 = new Layer("hidden", 10, new Layer[] { input });
             var output = new Layer("output", 5, new Layer[] { h1 });
 
-            LayerInitialiser.Initialise(new Random(), h1);
+            output.Initialise(new Random());
 
-            var ns = new NegativeSampler(output, 0.25);
-
+            var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                ns.NegativeSample(0, 0, false);
-                ns.NegativeSample(1, 1, false);
-                ns.NegativeSample(2, 2, true);
-                ns.NegativeSample(3, 3, false);
-                ns.NegativeSample(4, 4, false);
+                output.NegativeSample(0, 0, learningRate, false);
+                output.NegativeSample(1, 1, learningRate, false);
+                output.NegativeSample(2, 2, learningRate, true);
+                output.NegativeSample(3, 3, learningRate, false);
+                output.NegativeSample(4, 4, learningRate, false);
             }
 
             Assert.True(output.GetResult(0, 0) < 0.05);
@@ -44,17 +43,16 @@ namespace NegativeSampling.Test
             var h3 = new Layer("hidden3", 10, new Layer[] { h1, h2 });
             var output = new Layer("output", 5, new Layer[] { h3 });
 
-            LayerInitialiser.Initialise(new Random(), h3);
+            output.Initialise(new Random());
 
-            var ns = new NegativeSampler(output, 0.25);
-
+            var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                ns.NegativeSample(0, 0, false);
-                ns.NegativeSample(1, 1, false);
-                ns.NegativeSample(2, 2, true);
-                ns.NegativeSample(3, 3, false);
-                ns.NegativeSample(4, 4, false);
+                output.NegativeSample(0, 0, learningRate, false);
+                output.NegativeSample(1, 1, learningRate, false);
+                output.NegativeSample(2, 2, learningRate, true);
+                output.NegativeSample(3, 3, learningRate, false);
+                output.NegativeSample(4, 4, learningRate, false);
             }
 
             Assert.True(output.GetResult(0, 0) < 0.05);
@@ -71,17 +69,16 @@ namespace NegativeSampling.Test
             var h1 = new Layer("hidden1", 50, new Layer[] { input });
             var output = new Layer("output", 100, new Layer[] { h1 });
 
-            LayerInitialiser.Initialise(new Random(), h1);
+            output.Initialise(new Random());
 
-            var ns = new NegativeSampler(output, 0.25);
-
+            var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                ns.NegativeSample(0, 2, true);
-                ns.NegativeSample(1, 2, true);
-                ns.NegativeSample(2, 2, false);
-                ns.NegativeSample(3, 2, false);
-                ns.NegativeSample(4, 2, false);
+                output.NegativeSample(0, 2, learningRate, true);
+                output.NegativeSample(1, 2, learningRate, true);
+                output.NegativeSample(2, 2, learningRate, false);
+                output.NegativeSample(3, 2, learningRate, false);
+                output.NegativeSample(4, 2, learningRate, false);
             }
 
             Assert.True(output.GetResult(0, 2) > 0.95);
@@ -98,17 +95,16 @@ namespace NegativeSampling.Test
             var h1 = new Layer("hidden1", 50, new Layer[] { input });
             var output = new Layer("output", 100, new Layer[] { h1 });
 
-            LayerInitialiser.Initialise(new Random(), h1);
+            output.Initialise(new Random());
 
-            var ns = new NegativeSampler(output, 0.25);
-
+            var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                ns.NegativeSample(2, 0, true);
-                ns.NegativeSample(2, 1, true);
-                ns.NegativeSample(2, 2, false);
-                ns.NegativeSample(2, 3, false);
-                ns.NegativeSample(2, 4, false);
+                output.NegativeSample(2, 0, learningRate, true);
+                output.NegativeSample(2, 1, learningRate, true);
+                output.NegativeSample(2, 2, learningRate, false);
+                output.NegativeSample(2, 3, learningRate, false);
+                output.NegativeSample(2, 4, learningRate, false);
             }
 
             Assert.True(output.GetResult(2, 0) > 0.95);
@@ -126,23 +122,22 @@ namespace NegativeSampling.Test
             var h1 = new Layer("hidden1", 50, new Layer[] { input });
             var output = new Layer("output", 100, new Layer[] { h1 });
 
-            LayerInitialiser.Initialise(new Random(), h1);
+            output.Initialise(new Random());
 
-            var ns = new NegativeSampler(output, 0.25);
-
+            var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                ns.NegativeSample(2, 0, true);
-                ns.NegativeSample(2, 1, true);
-                ns.NegativeSample(2, 2, false);
-                ns.NegativeSample(2, 3, false);
-                ns.NegativeSample(2, 4, false);
+                output.NegativeSample(2, 0, learningRate, true);
+                output.NegativeSample(2, 1, learningRate, true);
+                output.NegativeSample(2, 2, learningRate, false);
+                output.NegativeSample(2, 3, learningRate, false);
+                output.NegativeSample(2, 4, learningRate, false);
 
-                ns.NegativeSample(3, 0, false);
-                ns.NegativeSample(3, 1, false);
-                ns.NegativeSample(3, 2, true);
-                ns.NegativeSample(3, 3, true);
-                ns.NegativeSample(3, 4, true);
+                output.NegativeSample(3, 0, learningRate, false);
+                output.NegativeSample(3, 1, learningRate, false);
+                output.NegativeSample(3, 2, learningRate, true);
+                output.NegativeSample(3, 3, learningRate, true);
+                output.NegativeSample(3, 4, learningRate, true);
             }
 
             Assert.True(output.GetResult(2, 0) > 0.95);
@@ -168,7 +163,7 @@ namespace NegativeSampling.Test
             var h4 = new Layer("hidden4", 10, new Layer[] { h2, h3 });
             var output = new Layer("output", 10, new Layer[] { h4 });
 
-            LayerInitialiser.Initialise(new Random(), h4);
+            output.Initialise(new Random());
 
             var initialHiddenWeights = new Dictionary<Node, Weight>[h1.Nodes.Length];
             var initialOutputWeights = new Dictionary<Node, Weight>[output.Nodes.Length];
@@ -191,11 +186,10 @@ namespace NegativeSampling.Test
                 initialOutputWeights[i] = dict;
             }
 
-            var ns = new NegativeSampler(output, 0.25);
-
+            var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                ns.NegativeSample(4, 4, true);
+                output.NegativeSample(4, 4, learningRate, true);
             }
 
             for (var i = 0; i < h1.Nodes.Length; i++)
