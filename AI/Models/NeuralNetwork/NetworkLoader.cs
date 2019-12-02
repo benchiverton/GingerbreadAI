@@ -10,12 +10,14 @@
         {
             using (var byteStream = File.OpenRead(location))
             {
-                var memoryStream = new MemoryStream();
-                byteStream.CopyTo(memoryStream);
-                memoryStream.Position = 0;
+                using (var memoryStream = new MemoryStream())
+                {
+                    byteStream.CopyTo(memoryStream);
+                    memoryStream.Position = 0;
 
-                var formatter = new BinaryFormatter();
-                return (Layer)formatter.Deserialize(memoryStream);
+                    var formatter = new BinaryFormatter();
+                    return (Layer)formatter.Deserialize(memoryStream);
+                }
             }
         }
     }
