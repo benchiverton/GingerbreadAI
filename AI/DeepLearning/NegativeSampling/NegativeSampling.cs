@@ -1,64 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NeuralNetwork;
 using NeuralNetwork.Models;
 
 namespace NegativeSampling
 {
-    public class NegativeSampler
-    {
-        private readonly Layer _outputLayer;
-        private readonly Func<double, double> _learningRateModifier;
-
-        private double _learningRate;
-
-        public NegativeSampler(Layer outputLayer, double learningRate, Func<double, double> learningRateModifier = null)
+    public static class NegativeSampling
+    {        
+        public static void NegativeSample(this Layer outputLayer, int inputIndex, int outputIndex, double learningRate, bool isPositiveTarget)
         {
-            _outputLayer = outputLayer;
-            _learningRate = learningRate;
-            _learningRateModifier = learningRateModifier;
-        }
-
-        public void NegativeSample(int inputIndex, int outputIndex, bool isPositiveTarget)
-        {
-            var currentOutput = _outputLayer.GetResult(inputIndex, outputIndex);
+            var currentOutput = outputLayer.GetResult(inputIndex, outputIndex);
             var targetOutput = isPositiveTarget ? 1 : 0;
 
-            var deltas = NegativeSampleOutput(_outputLayer, currentOutput, targetOutput, outputIndex);
+            var deltas = NegativeSampleOutput(outputLayer, currentOutput, targetOutput, outputIndex, learningRate);
 
-            foreach (var previousLayer in _outputLayer.PreviousLayers)
+            foreach (var previousLayer in outputLayer.PreviousLayers)
             {
                 foreach (var previousPreviousLayer in previousLayer.PreviousLayers)
                 {
                     RecurseNegativeSample(previousLayer, previousPreviousLayer, deltas, inputIndex);
                 }
             }
-
-            if (_learningRateModifier != null)
-            {
-                _learningRate = _learningRateModifier(_learningRate);
-            }
         }
 
-        private Dictionary<Node, double> NegativeSampleOutput(Layer outputLayer, double currentOutput, double targetOutput, int outputIndex)
+        private static Dictionary<Node, double> NegativeSampleOutput(Layer outputLayer, double currentOutput, double targetOutput, int outputIndex, double learningRate)
         {
             var outputNode = outputLayer.Nodes[outputIndex];
 
             var delta = targetOutput - currentOutput;
             foreach (var previousNode in outputNode.Weights.Keys)
             {
-                UpdateNodeWeight(outputNode, previousNode, delta * _learningRate);
+                UpdateNodeWeight(outputNode, previousNode, delta * learningRate);
             }
             foreach (var previousBiasLayer in outputNode.BiasWeights.Keys)
             {
-                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta * _learningRate);
+                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta * learningRate);
             }
 
             return new Dictionary<Node, double> { { outputNode, delta } };
         }
 
-        private void NegativeSampleInput(Layer layer, Layer inputLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
+        private static void NegativeSampleInput(Layer layer, Layer inputLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
         {
             var sumDeltaWeights = (double)0;
             foreach (var backPassDelta in backwardsPassDeltas)
@@ -75,7 +57,7 @@ namespace NegativeSampling
             }
         }
 
-        private void RecurseNegativeSample(Layer layer, Layer previousLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
+        private static void RecurseNegativeSample(Layer layer, Layer previousLayer, Dictionary<Node, double> backwardsPassDeltas, int inputIndex)
         {
             if (!previousLayer.PreviousLayers.Any())
             {
@@ -111,13 +93,13 @@ namespace NegativeSampling
             }
         }
 
-        private void UpdateNodeWeight(Node node, Node prevNode, double delta)
+        private static void UpdateNodeWeight(Node node, Node prevNode, double delta)
         {
             var change = delta * prevNode.Output;
             node.Weights[prevNode].Value += change;
         }
 
-        private void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta)
+        private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta)
         {
             var change = delta;
             node.BiasWeights[prevLayer].Value += change;
