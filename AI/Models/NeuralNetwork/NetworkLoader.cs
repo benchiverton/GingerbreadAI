@@ -8,17 +8,14 @@
     {
         public static Layer LoadNetwork(string location)
         {
-            using (var byteStream = File.OpenRead(location))
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    byteStream.CopyTo(memoryStream);
-                    memoryStream.Position = 0;
+            var byteStream = File.OpenRead(location);
 
-                    var formatter = new BinaryFormatter();
-                    return (Layer)formatter.Deserialize(memoryStream);
-                }
-            }
+            var memoryStream = new MemoryStream();
+            byteStream.CopyTo(memoryStream);
+            memoryStream.Position = 0;
+
+            var formatter = new BinaryFormatter();
+            return (Layer)formatter.Deserialize(memoryStream);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace NeuralNetwork.Models
 {
-    // This class is a yikes from me
+    // I know, I dislike this code too
     [Serializable]
     public class Weight
     {

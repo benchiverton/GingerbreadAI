@@ -5,18 +5,18 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using Backpropagation;
+    using BackPropagation;
     using Calculations.Statistics;
     using NeuralNetwork;
     using NeuralNetwork.Models;
     using Xunit.Abstractions;
 
-    public class CurveUsingMultithreadBackpropagation
+    public class CurveUsingMultiThreadBackPropagation
     {
-        private const string ResultsDirectory = nameof(CurveUsingMultithreadBackpropagation);
+        private const string ResultsDirectory = nameof(CurveUsingMultiThreadBackPropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public CurveUsingMultithreadBackpropagation(ITestOutputHelper testOutputHelper)
+        public CurveUsingMultiThreadBackPropagation(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -28,7 +28,7 @@
             var inner1 = new Layer("Inner1", 20, new[] { input });
             var inner2 = new Layer("Inner1", 20, new[] { inner1 });
             var outputLayer = new Layer("Output", 1, new[] { inner1, inner2 });
-            outputLayer.Initialise(new Random());
+            LayerInitialiser.Initialise(new Random(), outputLayer);
             _testOutputHelper.WriteLine(outputLayer.ToString(true));
             var accuracyResults = new List<double>();
             var initialResults = new double[100];
@@ -68,9 +68,7 @@
         {
             var rand = new Random();
             var output = outputLayer.CloneWithNodeAndWeightReferences();
-            var momentum = Momentum.GenerateMomentum(output, 0.9);
-            var learningRate = 0.25;
-
+            var backpropagator = new BackPropagator(output, 0.1, LearningRateModifier, 0.9);
             for (var i = 0; i < 10000; i++)
             {
                 if (i % 100 == 0)
@@ -81,8 +79,7 @@
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = (rand.NextDouble() / 4) + ((double)currentThread / (double)threadCount);
-                output.Backpropagate(new[] { trial }, new double?[] { Calculation(trial) }, learningRate, momentum);
-                ModifyLearningRate(ref learningRate);
+                backpropagator.BackPropagate(new[] { trial }, new double?[] { Calculation(trial) });
             }
         }
 
@@ -94,10 +91,8 @@
             }
         }
 
-        private static void ModifyLearningRate(ref double rate)
-        {
-            rate = rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
-        }
+        private static double LearningRateModifier(double rate)
+            => rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
 
         private static double Calculation(double input)
             => input * input;

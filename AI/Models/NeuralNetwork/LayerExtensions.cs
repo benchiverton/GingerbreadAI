@@ -1,37 +1,14 @@
 ﻿namespace NeuralNetwork
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
-    using AI.Calculations;
     using NeuralNetwork.Models;
 
     public static class LayerExtensions
     {
-        /// <summary>
-        ///     Initialises each Node in the layer with random weights.
-        /// </summary>
-        public static void Initialise(this Layer layer, Random rand)
-        {
-            foreach (var node in layer.Nodes)
-            {
-                node.Initialise(rand);
-            }
-            foreach (var nodeGroupPrev in layer.PreviousLayers)
-            {
-                nodeGroupPrev.Initialise(rand);
-            }
-        }
-
         public static double[] GetResults(this Layer layer, double[] inputs)
-        {
-            layer.PopulateAllOutputs(inputs);
-            return layer.Nodes.Select(n => n.Output).ToArray();
-        }
-
-        public static double[] GetResults(this Layer layer, Dictionary<Layer, double[]> inputs)
         {
             layer.PopulateAllOutputs(inputs);
             return layer.Nodes.Select(n => n.Output).ToArray();
@@ -79,26 +56,7 @@
         }
 
         #region Private Methods
-
-
-        /// <summary>
-        ///     Initialises a Node with random weights (using He-et-al Initialization).
-        /// </summary>
-        private static void Initialise(this Node node, Random rand)
-        {
-            if (node == null) return;
-            var feedingNodes = node.Weights.Count;
-            foreach (var prevNode in node.Weights.Keys.ToList())
-            {
-                node.Weights[prevNode].Value = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
-            }
-            var biasWeightKeys = new List<Layer>(node.BiasWeights.Keys.ToList());
-            foreach (var biasWeightKey in biasWeightKeys)
-            {
-                node.BiasWeights[biasWeightKey].Value = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
-            }
-        }
-
+        
         private static Layer RecurseCloneWithNodeReferences(Layer layer)
         {
             var newLayer = new Layer

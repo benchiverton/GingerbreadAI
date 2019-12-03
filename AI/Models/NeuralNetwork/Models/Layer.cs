@@ -3,7 +3,6 @@ using System.Text;
 
 namespace NeuralNetwork.Models
 {
-    using System.Collections.Generic;
     using System.Linq;
     using AI.Calculations;
     using Exceptions;
@@ -28,6 +27,7 @@ namespace NeuralNetwork.Models
 
         public Layer()
         {
+            // default constructor
         }
 
         public Layer(string name, int nodeCount, Layer[] previousGroups)
@@ -45,18 +45,7 @@ namespace NeuralNetwork.Models
         {
             if (!PreviousLayers.Any())
             {
-                PopulateInputLayersOutputs(inputs);
-                return;
-            }
-
-            PopulateOutputs(inputs);
-        }
-
-        public void PopulateAllOutputs(Dictionary<Layer, double[]> inputs)
-        {
-            if (!PreviousLayers.Any())
-            {
-                PopulateInputLayersOutputs(inputs[this]);
+                PopulateInputLayersOutputs( inputs);
                 return;
             }
 
@@ -71,21 +60,6 @@ namespace NeuralNetwork.Models
             }
 
             Nodes[outputIndex].PopulateOutput();
-        }
-
-        public void PopulateListWithInputLayers(List<Layer> inputLayerList)
-        {
-            if (!PreviousLayers.Any())
-            {
-                inputLayerList.Add(this);
-            }
-            else
-            {
-                foreach (var previousLayer in PreviousLayers)
-                {
-                    previousLayer.PopulateListWithInputLayers(inputLayerList);
-                }
-            }
         }
 
         public string ToString(bool recurse = false, int layer = 0)
@@ -128,23 +102,11 @@ namespace NeuralNetwork.Models
         {
             foreach (var prevLayer in PreviousLayers)
             {
+                // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
                 prevLayer.PopulateAllOutputs(inputs);
             }
 
-            foreach (var node in Nodes)
-            {
-                node.PopulateOutput();
-            }
-        }
-
-        private void PopulateOutputs(Dictionary<Layer, double[]> inputs)
-        {
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.PopulateAllOutputs(inputs);
-            }
-
-            foreach (var node in Nodes)
+            foreach(var node in Nodes)
             {
                 node.PopulateOutput();
             }
@@ -181,7 +143,7 @@ namespace NeuralNetwork.Models
                 }
             }
 
-            foreach (var node in layer.Nodes)
+            foreach(var node in layer.Nodes)
             {
                 node.PopulateOutput();
             }

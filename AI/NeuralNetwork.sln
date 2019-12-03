@@ -9,9 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeepLearning", "DeepLearnin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{C66B5861-DACD-4D98-9BAE-C23BC85B94C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backpropagation", "DeepLearning\BackPropagation\Backpropagation.csproj", "{568C290C-5197-48C3-9E37-2EC88ADF6F5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackPropagation", "DeepLearning\BackPropagation\BackPropagation.csproj", "{568C290C-5197-48C3-9E37-2EC88ADF6F5A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backpropagation.Test", "DeepLearning\BackPropagation.Test\Backpropagation.Test.csproj", "{0C8C98BA-D8B4-466F-8862-A4BC29BBEBEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackPropagation.Test", "DeepLearning\BackPropagation.Test\BackPropagation.Test.csproj", "{0C8C98BA-D8B4-466F-8862-A4BC29BBEBEE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.Calculations", "Libraries\AI.Calculations\AI.Calculations.csproj", "{418C7B67-4261-4A8E-AAE6-7A060B32883C}"
 EndProject

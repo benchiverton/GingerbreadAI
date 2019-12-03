@@ -3,9 +3,9 @@ using NeuralNetwork.Models;
 using System;
 using Xunit;
 
-namespace Backpropagation.Test
+namespace BackPropagation.Test
 {
-    public class BackpropagationShould
+    public class BackPropagatorShould
     {
         [Fact]
         public void TrainBasicNetworksSortofWell()
@@ -14,14 +14,15 @@ namespace Backpropagation.Test
             var h1 = new Layer("hidden", 10, new Layer[] { input });
             var output = new Layer("output", 5, new Layer[] { h1 });
 
-            output.Initialise(new Random());
+            LayerInitialiser.Initialise(new Random(), output);
+
+            var bp = new BackPropagator(output, 0.25);
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
             var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
-            var learningRate = 0.25;
             for (var i = 0; i < 1000; i++)
             {
-                output.Backpropagate(inputs, targetOutputs, learningRate);
+                bp.BackPropagate(inputs, targetOutputs);
             }
 
             var outputResults = output.GetResults(inputs);
@@ -43,14 +44,15 @@ namespace Backpropagation.Test
             var h3 = new Layer("hidden3", 10, new Layer[] { h1, h2 });
             var output = new Layer("output", 5, new Layer[] { h3 });
 
-            output.Initialise(new Random());
+            LayerInitialiser.Initialise(new Random(), output);
+
+            var bp = new BackPropagator(output, 0.25);
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
             var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
-            var learningRate = 0.25;
             for (var i = 0; i < 1000; i++)
             {
-                output.Backpropagate(inputs, targetOutputs, learningRate);
+                bp.BackPropagate(inputs, targetOutputs);
             }
 
             var outputResults = output.GetResults(inputs);
