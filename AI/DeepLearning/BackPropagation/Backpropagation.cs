@@ -8,21 +8,21 @@
 
     public static class Backpropagation
     {
-        public static void Backpropagate(this Layer outputLayer, double[] inputs, double?[] targetOutputs, double learningRate, Momentum momentum = null)
+        public static void Backpropagate(this Layer outputLayer, double[] inputs, double[] targetOutputs, double learningRate, Momentum momentum = null)
         {
             var currentOutputs = outputLayer.GetResults(inputs);
 
             DoBackpropagation(outputLayer, currentOutputs, targetOutputs, learningRate, momentum);
         }
 
-        public static void Backpropagate(this Layer outputLayer, Dictionary<Layer, double[]> inputs, double?[] targetOutputs, double learningRate, Momentum momentum = null)
+        public static void Backpropagate(this Layer outputLayer, Dictionary<Layer, double[]> inputs, double[] targetOutputs, double learningRate, Momentum momentum = null)
         {
             var currentOutputs = outputLayer.GetResults(inputs);
 
             DoBackpropagation(outputLayer, currentOutputs, targetOutputs, learningRate, momentum);
         }
 
-        private static void DoBackpropagation(Layer outputLayer, double[] currentOutputs, double?[] targetOutputs, double learningRate, Momentum momentum)
+        private static void DoBackpropagation(Layer outputLayer, double[] currentOutputs, double[] targetOutputs, double learningRate, Momentum momentum)
         {
             var backwardsPassDeltas = UpdateOutputLayer(outputLayer, currentOutputs, targetOutputs, learningRate, momentum);
 
@@ -69,24 +69,23 @@
             }
         }
 
-        private static Dictionary<Node, double> UpdateOutputLayer(Layer outputLayer, double[] currentOutputs, double?[] targetOutputs, double learningRate, Momentum momentum)
+        private static Dictionary<Node, double> UpdateOutputLayer(Layer outputLayer, double[] currentOutputs, double[] targetOutputs, double learningRate, Momentum momentum)
         {
             var deltas = new Dictionary<Node, double>();
 
             for (var i = 0; i < outputLayer.Nodes.Length; i++)
             {
-                if (!targetOutputs[i].HasValue) continue;
                 var node = outputLayer.Nodes[i];
-                var delta = BackpropagationCalculations.GetDeltaOutput(currentOutputs[i], targetOutputs[i].Value);
+                var delta = LogisticFunctionCalculations.GetDeltaOutput(currentOutputs[i], targetOutputs[i]) * learningRate;
                 deltas.Add(node, delta);
                 foreach (var prevNode in node.Weights.Keys)
                 {
-                    UpdateNodeWeight(node, prevNode, delta * learningRate, momentum, i);
+                    UpdateNodeWeight(node, prevNode, delta, momentum, i);
                 }
 
                 foreach (var prevLayer in node.BiasWeights.Keys)
                 {
-                    UpdateBiasNodeWeight(node, prevLayer, delta * learningRate, momentum, i);
+                    UpdateBiasNodeWeight(node, prevLayer, delta, momentum, i);
                 }
             }
 

@@ -81,7 +81,7 @@
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = (rand.NextDouble() / 4) + ((double)currentThread / (double)threadCount);
-                output.Backpropagate(new[] { trial }, new double?[] { Calculation(trial) }, learningRate, momentum);
+                output.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, learningRate, momentum);
                 ModifyLearningRate(ref learningRate);
             }
         }

@@ -49,7 +49,15 @@ namespace NeuralNetwork.Models
                 return;
             }
 
-            PopulateOutputs(inputs);
+            foreach (var prevLayer in PreviousLayers)
+            {
+                prevLayer.PopulateAllOutputs(inputs);
+            }
+
+            foreach (var node in Nodes)
+            {
+                node.PopulateOutput();
+            }
         }
 
         public void PopulateAllOutputs(Dictionary<Layer, double[]> inputs)
@@ -60,32 +68,28 @@ namespace NeuralNetwork.Models
                 return;
             }
 
-            PopulateOutputs(inputs);
+            foreach (var prevLayer in PreviousLayers)
+            {
+                prevLayer.PopulateAllOutputs(inputs);
+            }
+
+            foreach (var node in Nodes)
+            {
+                node.PopulateOutput();
+            }
         }
 
-        public void PopulateIndexedOutputs(int inputIndex, int outputIndex, double inputValue)
+        /// <summary>
+        ///  Note: does not support multiple inputs
+        /// </summary>
+        public void PopulateIndexedOutput(int inputIndex, int outputIndex, double inputValue)
         {
             foreach (var previousLayer in PreviousLayers)
             {
-                PopulateIndexedOutputs(previousLayer, inputIndex, inputValue);
+                PopulateIndexedOutput(previousLayer, inputIndex, inputValue);
             }
 
             Nodes[outputIndex].PopulateOutput();
-        }
-
-        public void PopulateListWithInputLayers(List<Layer> inputLayerList)
-        {
-            if (!PreviousLayers.Any())
-            {
-                inputLayerList.Add(this);
-            }
-            else
-            {
-                foreach (var previousLayer in PreviousLayers)
-                {
-                    previousLayer.PopulateListWithInputLayers(inputLayerList);
-                }
-            }
         }
 
         public string ToString(bool recurse = false, int layer = 0)
@@ -115,7 +119,9 @@ namespace NeuralNetwork.Models
         private void PopulateInputLayersOutputs(double[] inputs)
         {
             if (Nodes.Length != inputs.Length)
+            {
                 throw new NeuralNetworkException($"Input layer length ({Nodes.Length}) not equal to length of your inputs ({inputs.Length}).");
+            }
 
             var i = 0;
             foreach (var node in Nodes)
@@ -124,33 +130,7 @@ namespace NeuralNetwork.Models
             }
         }
 
-        private void PopulateOutputs(double[] inputs)
-        {
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.PopulateAllOutputs(inputs);
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.PopulateOutput();
-            }
-        }
-
-        private void PopulateOutputs(Dictionary<Layer, double[]> inputs)
-        {
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.PopulateAllOutputs(inputs);
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.PopulateOutput();
-            }
-        }
-
-        private bool PopulateIndexedOutputs(Layer layer, int inputIndex, double inputValue)
+        private bool PopulateIndexedOutput(Layer layer, int inputIndex, double inputValue)
         {
             if (!layer.PreviousLayers.Any())
             {
@@ -158,33 +138,36 @@ namespace NeuralNetwork.Models
                 return true;
             }
 
-            HandleIndexedLayer(layer, inputIndex, inputValue);
-
-            return false;
-        }
-
-        private void HandleIndexedLayer(Layer layer, int inputIndex, double inputValue)
-        {
+            var shouldPopulateAllOutputs = false;
             foreach (var prevLayer in layer.PreviousLayers)
             {
-                // gets the results of the group selected above (the 'previous group'), which are the inputs for this group
-                var isNextToInput = PopulateIndexedOutputs(prevLayer, inputIndex, inputValue);
+                var isNextToInput = PopulateIndexedOutput(prevLayer, inputIndex, inputValue);
 
                 if (isNextToInput)
                 {
+                    var inputNode = prevLayer.Nodes[inputIndex];
                     foreach (var node in layer.Nodes)
                     {
-                        node.Output = node.Weights[prevLayer.Nodes[inputIndex]].Value * prevLayer.Nodes[inputIndex].Output + node.BiasWeights[prevLayer].Value;
+                        node.Output = node.Weights[inputNode].Value * inputNode.Output + node.BiasWeights[prevLayer].Value;
                         node.Output = NetworkCalculations.LogisticFunction(node.Output);
                     }
-                    return;
+                }
+                else
+                {
+                    // if not next to input, all outputs need loading - will break if multiple inputs
+                    shouldPopulateAllOutputs = true;
                 }
             }
 
-            foreach (var node in layer.Nodes)
+            if (shouldPopulateAllOutputs)
             {
-                node.PopulateOutput();
+                foreach (var node in layer.Nodes)
+                {
+                    node.PopulateOutput();
+                }
             }
+
+            return false;
         }
 
         #endregion

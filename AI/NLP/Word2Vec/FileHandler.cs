@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NeuralNetwork.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +11,6 @@ namespace Word2Vec
     {
         private readonly string _trainFile;
         private readonly string _outputFile;
-        public long FileSize { get; }
 
         public FileHandler(string trainFile, string outputFile)
         {
@@ -20,8 +20,12 @@ namespace Word2Vec
             FileSize = new FileInfo(_trainFile).Length;
 
             if (string.IsNullOrEmpty(_outputFile))
+            {
                 throw new Exception("Output file not defined.");
+            }
         }
+
+        public long FileSize { get; }
 
         public void GetWordDictionaryFromFile(WordCollection wordCollection,
             int maxCodeLength)
@@ -29,35 +33,88 @@ namespace Word2Vec
             if (!File.Exists(_trainFile))
                 throw new InvalidOperationException($"Unable to find {_trainFile}");
 
-            using (var fileStream = new FileStream(_trainFile, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(fileStream, Encoding.UTF8))
+            using (var fileStream = new FileStream(_trainFile, FileMode.OpenOrCreate, FileAccess.Read))
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                using (var reader = new StreamReader(fileStream, Encoding.UTF8))
                 {
-                    wordCollection.AddWords(line, maxCodeLength);
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        wordCollection.AddWords(line, maxCodeLength);
 
-                    if (reader.EndOfStream)
-                        break;
+                        if (reader.EndOfStream)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void WriteDescription(WordCollection wordCollection, int numberOfDimensions)
+        {
+            using (var fs = new FileStream(_outputFile, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                fs.Seek(0, SeekOrigin.End);
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    writer.WriteLine(wordCollection.GetNumberOfUniqueWords());
+                    writer.WriteLine(numberOfDimensions);
                 }
             }
         }
 
         public void WriteOutput(WordCollection wordCollection, int numberOfDimensions, float[,] hiddenLayerWeights)
         {
-            using (var fs = new FileStream(_outputFile, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(fs, Encoding.UTF8))
+            using (var fs = new FileStream(_outputFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                writer.WriteLine(wordCollection.GetNumberOfUniqueWords());
-                writer.WriteLine(numberOfDimensions);
-
-                var keys = wordCollection.GetWords().ToArray();
-                for (var a = 0; a < wordCollection.GetNumberOfUniqueWords(); a++)
+                fs.Seek(0, SeekOrigin.End);
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
                 {
-                    var bytes = new List<byte>();
-                    for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
-                        bytes.AddRange(BitConverter.GetBytes(hiddenLayerWeights[a, dimensionIndex]));
-                    writer.WriteLine($"{keys[a]}\t{Convert.ToBase64String(bytes.ToArray())}");
+                    var keys = wordCollection.GetWords().ToArray();
+                    for (var a = 0; a < wordCollection.GetNumberOfUniqueWords(); a++)
+                    {
+                        var bytes = new List<byte>();
+                        for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
+                            bytes.AddRange(BitConverter.GetBytes(hiddenLayerWeights[a, dimensionIndex]));
+                        writer.WriteLine($"{keys[a]}\t{Convert.ToBase64String(bytes.ToArray())}");
+                    }
+                }
+            }
+        }
+
+        public void WriteOutputMatrix(WordCollection wordCollection, Layer neuralNetwork)
+        {
+            using (var fs = new FileStream(_outputFile, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                fs.Seek(0, SeekOrigin.End);
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    var words = wordCollection.GetWords().ToList();
+
+                    var stringBuilder = new StringBuilder();
+
+                    stringBuilder.Append(",");
+                    foreach (var word in words)
+                    {
+                        stringBuilder.Append($"{word},");
+                    }
+                    stringBuilder.AppendLine();
+                    for (var i = 0; i < words.Count; i++)
+                    {
+                        var inputs = new double[words.Count];
+                        inputs[i] = 1;
+                        neuralNetwork.PopulateAllOutputs(inputs);
+
+                        stringBuilder.Append($"{words[i]},");
+                        for (var j = 0; j < words.Count; j++)
+                        {
+                            stringBuilder.Append($"{neuralNetwork.Nodes[j].Output},");
+                        }
+                        stringBuilder.AppendLine();
+                    }
+
+                    writer.WriteLine(stringBuilder.ToString());
                 }
             }
         }

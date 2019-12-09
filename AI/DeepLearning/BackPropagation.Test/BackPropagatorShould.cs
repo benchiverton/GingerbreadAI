@@ -17,7 +17,7 @@ namespace Backpropagation.Test
             output.Initialise(new Random());
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
-            var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
+            var targetOutputs = new double[] { 1, 0, 1, 0, 1 };
             var learningRate = 0.25;
             for (var i = 0; i < 1000; i++)
             {
@@ -46,7 +46,7 @@ namespace Backpropagation.Test
             output.Initialise(new Random());
 
             var inputs = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
-            var targetOutputs = new double?[] { 1, 0, 1, 0, 1 };
+            var targetOutputs = new double[] { 1, 0, 1, 0, 1 };
             var learningRate = 0.25;
             for (var i = 0; i < 1000; i++)
             {

@@ -39,7 +39,7 @@
 
         public static double GetResult(this Layer layer, int inputIndex, int outputIndex, double inputValue = 1)
         {
-            layer.PopulateIndexedOutputs(inputIndex, outputIndex, inputValue);
+            layer.PopulateIndexedOutput(inputIndex, outputIndex, inputValue);
             return layer.Nodes[outputIndex].Output;
         }
 

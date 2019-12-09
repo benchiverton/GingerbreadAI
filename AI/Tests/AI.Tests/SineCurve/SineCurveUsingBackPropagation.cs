@@ -26,9 +26,10 @@ namespace AI.Tests.SineCurve
         public void ApproximateSineCurveUsingBackpropagation()
         {
             var input = new Layer("Input", 1, new Layer[0]);
-            var inner1 = new Layer("Inner1", 10, new[] { input });
-            //var inner2 = new Layer("Inner2", 20, new[] { inner1 });
-            var outputLayer = new Layer("Output", 1, new[] { inner1 });
+            var inner1 = new Layer("Inner1", 5, new[] { input });
+            var inner2 = new Layer("Inner2", 25, new[] { inner1 });
+            var inner3 = new Layer("Inner3", 5, new[] { inner2 });
+            var outputLayer = new Layer("Output", 1, new[] { inner3 });
             _testOutputHelper.WriteLine(outputLayer.ToString(true));
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
@@ -79,7 +80,7 @@ namespace AI.Tests.SineCurve
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = rand.NextDouble();
-                output.Backpropagate(new[] { trial }, new double?[] { Calculation(trial) }, learningRate, momentum);
+                output.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, learningRate, momentum);
                 ModifyLearningRate(ref learningRate);
             }
         }

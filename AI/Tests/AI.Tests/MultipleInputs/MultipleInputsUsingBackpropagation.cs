@@ -64,7 +64,7 @@ namespace AI.Tests.MultipleInputs
                 var inputValue2 = rand.NextDouble();
                 inputDict[input1][0] = inputValue1;
                 inputDict[input2][0] = inputValue2;
-                outputLayer.Backpropagate(inputDict, new double?[] { Calculation(inputValue1, inputValue2) }, learningRate);
+                outputLayer.Backpropagate(inputDict, new double[] { Calculation(inputValue1, inputValue2) }, learningRate);
 
                 ModifyLearningRate(ref learningRate);
             }

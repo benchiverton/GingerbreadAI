@@ -1,7 +1,7 @@
 namespace AI.Calculations {
     using System;
 
-    public static class BackpropagationCalculations {
+    public static class LogisticFunctionCalculations {
         public static double GetDeltaOutput (double actual, double target) {
             return GetErrorDifferential (actual, target) * NetworkCalculations.LogisticFunctionDifferential (actual);
         }

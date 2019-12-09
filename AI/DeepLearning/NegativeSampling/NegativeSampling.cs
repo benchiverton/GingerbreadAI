@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AI.Calculations;
 using NeuralNetwork;
 using NeuralNetwork.Models;
 
 namespace NegativeSampling
 {
     public static class NegativeSampling
-    {        
+    {
         public static void NegativeSample(this Layer outputLayer, int inputIndex, int outputIndex, double learningRate, bool isPositiveTarget)
         {
             var currentOutput = outputLayer.GetResult(inputIndex, outputIndex);
@@ -27,14 +28,14 @@ namespace NegativeSampling
         {
             var outputNode = outputLayer.Nodes[outputIndex];
 
-            var delta = targetOutput - currentOutput;
+            var delta = LogisticFunctionCalculations.GetDeltaOutput(currentOutput, targetOutput) * learningRate;
             foreach (var previousNode in outputNode.Weights.Keys)
             {
-                UpdateNodeWeight(outputNode, previousNode, delta * learningRate);
+                UpdateNodeWeight(outputNode, previousNode, delta);
             }
             foreach (var previousBiasLayer in outputNode.BiasWeights.Keys)
             {
-                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta * learningRate);
+                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta);
             }
 
             return new Dictionary<Node, double> { { outputNode, delta } };
@@ -51,7 +52,7 @@ namespace NegativeSampling
             var inputNode = inputLayer.Nodes[inputIndex];
             foreach (var node in layer.Nodes)
             {
-                var delta = sumDeltaWeights * node.Output;
+                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
                 UpdateNodeWeight(node, inputNode, delta);
                 UpdateBiasNodeWeight(node, inputLayer, delta);
             }
@@ -69,11 +70,12 @@ namespace NegativeSampling
             foreach (var node in layer.Nodes)
             {
                 var sumDeltaWeights = (double)0;
-                foreach (var backPassDelta in backwardsPassDeltas)
+
+                foreach (var backPassNode in backwardsPassDeltas.Keys)
                 {
-                    sumDeltaWeights += backPassDelta.Value * backPassDelta.Key.Weights[node].Value;
+                    sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
                 }
-                var delta = sumDeltaWeights * node.Output;
+                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
                 deltas.Add(node, delta);
 
                 foreach (var prevNode in node.Weights.Keys)
@@ -95,13 +97,13 @@ namespace NegativeSampling
 
         private static void UpdateNodeWeight(Node node, Node prevNode, double delta)
         {
-            var change = delta * prevNode.Output;
+            var change = -(delta * prevNode.Output);
             node.Weights[prevNode].Value += change;
         }
 
         private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta)
         {
-            var change = delta;
+            var change = -delta;
             node.BiasWeights[prevLayer].Value += change;
         }
     }

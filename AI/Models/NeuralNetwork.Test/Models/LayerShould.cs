@@ -68,14 +68,14 @@ namespace NeuralNetwork.Test.Models
         }
 
         [Fact]
-        public void CalculateIndividualBasicResultsCorrectly()
+        public void CalculateIndexedResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer("Input Layer", 1, new Layer[0]);
+            var inputLayer = new Layer("Input Layer", 5, new Layer[0]);
             // Hidden group
             var innerNodeInfo = new Dictionary<Layer, (double[], double)>
             {
-                { inputLayer, (new[] { 0.2 }, 0.7) }
+                { inputLayer, (new[] { 1d, 1d, 0.2, 1d, 1d }, 0.7) }
             };
             var innerNode = GenerateWeightedNode(innerNodeInfo);
             var innerLayer = new Layer
@@ -85,25 +85,35 @@ namespace NeuralNetwork.Test.Models
                 PreviousLayers = new[] { inputLayer }
             };
             // Output group
-            var outputNodeInfo = new Dictionary<Layer, (double[], double)>
+            var outputNodeInfo1 = new Dictionary<Layer, (double[], double)>
+            {
+                { innerLayer, (new[] { 1d }, 0.4) }
+            };
+            var outputNodeInfo2 = new Dictionary<Layer, (double[], double)>
             {
                 { innerLayer, (new[] { 0.9 }, 0.4) }
             };
-            var outputNode = GenerateWeightedNode(outputNodeInfo);
+            var outputNodeInfo3 = new Dictionary<Layer, (double[], double)>
+            {
+                { innerLayer, (new[] { 1d }, 0.4) }
+            };
+            var outputNode1 = GenerateWeightedNode(outputNodeInfo1);
+            var outputNode2 = GenerateWeightedNode(outputNodeInfo2);
+            var outputNode3 = GenerateWeightedNode(outputNodeInfo3);
             var outputLayer = new Layer
             {
                 Name = "Output Layer",
-                Nodes = new[] { outputNode },
+                Nodes = new[] { outputNode1, outputNode2, outputNode3 },
                 PreviousLayers = new[] { innerLayer }
             };
 
-            outputLayer.PopulateIndexedOutputs(0, 0, 0.5);
+            outputLayer.PopulateIndexedOutput(2, 1, 0.5);
 
             // checking that the values calculated in the inner node are correct
             var innerResult = innerLayer.Nodes[0].Output;
             Assert.Equal(Math.Round(0.68997448112, 4), Math.Round(innerResult, 4));
             // checking that the values calculated in the output are correct
-            var result = outputLayer.Nodes[0].Output;
+            var result = outputLayer.Nodes[1].Output;
             Assert.Equal(Math.Round(0.73516286937, 4), Math.Round(result, 4));
         }
 
