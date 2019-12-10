@@ -49,7 +49,7 @@
                 {
                     sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
                 }
-                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
+                var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
                 deltas.Add(node, delta);
 
                 foreach (var prevNode in node.Weights.Keys)
@@ -76,7 +76,7 @@
             for (var i = 0; i < outputLayer.Nodes.Length; i++)
             {
                 var node = outputLayer.Nodes[i];
-                var delta = LogisticFunctionCalculations.GetDeltaOutput(currentOutputs[i], targetOutputs[i]) * learningRate;
+                var delta = LogisticFunction.ComputeDeltaOutput(currentOutputs[i], targetOutputs[i]) * learningRate;
                 deltas.Add(node, delta);
                 foreach (var prevNode in node.Weights.Keys)
                 {

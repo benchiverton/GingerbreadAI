@@ -28,7 +28,7 @@ namespace NegativeSampling
         {
             var outputNode = outputLayer.Nodes[outputIndex];
 
-            var delta = LogisticFunctionCalculations.GetDeltaOutput(currentOutput, targetOutput) * learningRate;
+            var delta = LogisticFunction.ComputeDeltaOutput(currentOutput, targetOutput) * learningRate;
             foreach (var previousNode in outputNode.Weights.Keys)
             {
                 UpdateNodeWeight(outputNode, previousNode, delta);
@@ -52,7 +52,7 @@ namespace NegativeSampling
             var inputNode = inputLayer.Nodes[inputIndex];
             foreach (var node in layer.Nodes)
             {
-                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
+                var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
                 UpdateNodeWeight(node, inputNode, delta);
                 UpdateBiasNodeWeight(node, inputLayer, delta);
             }
@@ -75,7 +75,7 @@ namespace NegativeSampling
                 {
                     sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
                 }
-                var delta = sumDeltaWeights * NetworkCalculations.LogisticFunctionDifferential(node.Output);
+                var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
                 deltas.Add(node, delta);
 
                 foreach (var prevNode in node.Weights.Keys)

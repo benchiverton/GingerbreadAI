@@ -56,7 +56,7 @@ namespace NeuralNetwork.Models
                 output += previousLayerWeight.Value.Value;
             }
 
-            Output = NetworkCalculations.LogisticFunction(output);
+            Output = LogisticFunction.ComputeOutput(output);
         }
     }
 }

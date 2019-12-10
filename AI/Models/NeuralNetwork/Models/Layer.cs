@@ -149,7 +149,7 @@ namespace NeuralNetwork.Models
                     foreach (var node in layer.Nodes)
                     {
                         node.Output = node.Weights[inputNode].Value * inputNode.Output + node.BiasWeights[prevLayer].Value;
-                        node.Output = NetworkCalculations.LogisticFunction(node.Output);
+                        node.Output = LogisticFunction.ComputeOutput(node.Output);
                     }
                 }
                 else
