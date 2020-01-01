@@ -9,7 +9,7 @@ using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
-namespace AI.Integration.Test.SineCurve
+namespace NeuralNetwork.Test.SineCurve
 {
     public class SineCurveUsingBackpropagation
     {

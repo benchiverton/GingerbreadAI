@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DeepLearning.Backpropagation;
 using DeepLearning.NegativeSampling;
 using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
@@ -21,6 +22,8 @@ namespace NLP.Word2Vec
         private readonly int _maxSentenceLength;
         private readonly int _minCount;
         private readonly double _startingAlpha;
+        private readonly bool _useSkipgram;
+        private readonly bool _useCbow;
         private readonly int _negativeSamples;
         private readonly int _windowSize;
         private readonly float _thresholdForOccurrenceOfWords;
@@ -39,6 +42,8 @@ namespace NLP.Word2Vec
             int maxSentenceLength = 10000,
             int minCount = 5,
             float startingAlpha = 0.025f,
+            bool useSkipgram = true,
+            bool useCbow = true,
             int negativeSamples = 5,
             int windowSize = 5,
             float thresholdForOccurrenceOfWords = 1e-3f
@@ -51,6 +56,8 @@ namespace NLP.Word2Vec
             _maxSentenceLength = maxSentenceLength;
             _minCount = minCount;
             _startingAlpha = startingAlpha;
+            _useSkipgram = useSkipgram;
+            _useCbow = useCbow;
             // note: first 'negative sample' is positive
             _negativeSamples = negativeSamples;
             _windowSize = windowSize;
@@ -195,7 +202,10 @@ namespace NLP.Word2Vec
                         continue;
                     }
 
-                    SkipGram(localNetwork, sentencePosition, sentenceLength, sentence, wordIndex.Value, random);
+                    if (_negativeSamples > 0)
+                    {
+                        TrainNetwork(localNetwork, sentencePosition, sentenceLength, sentence, wordIndex.Value, random);
+                    }
 
                     sentencePosition++;
 
@@ -259,6 +269,7 @@ namespace NLP.Word2Vec
                         continue;
                     }
                 }
+
                 sentence[sentenceLength] = (int)wordIndex.Value;
                 sentenceLength++;
                 if (sentenceLength > sentence.Length)
@@ -273,7 +284,7 @@ namespace NLP.Word2Vec
             return false;
         }
 
-        private void SkipGram(Layer neuralNetwork, int sentencePosition, int sentenceLength, int?[] sentence, int indexOfCurrentWord, Random random)
+        private void TrainNetwork(Layer neuralNetwork, int sentencePosition, int sentenceLength, int?[] sentence, int indexOfCurrentWord, Random random)
         {
             var randomWindowPosition = (int)(random.Next() % (uint)_windowSize);
 
@@ -287,12 +298,15 @@ namespace NLP.Word2Vec
                     {
                         var indexOfContextWord = sentence[indexOfCurrentContextWordInSentence];
 
-                        NegativeSampling(neuralNetwork, indexOfCurrentWord, indexOfContextWord.Value, random);
+                        if (indexOfContextWord.HasValue)
+                        {
+                            NegativeSampling(neuralNetwork, indexOfCurrentWord, indexOfContextWord.Value, random);
+                        }
                     }
                 }
             }
         }
-
+        
         private void NegativeSampling(Layer neuralNetwork, int indexOfCurrentWord, int indexOfContextWord, Random random)
         {
             for (var i = 0; i < _negativeSamples; i++)
@@ -309,12 +323,22 @@ namespace NLP.Word2Vec
                     target = _table[random.Next() % TableSize];
                     if (target == indexOfContextWord)
                     {
-                        // do not negativeSamples sample the context word
+                        // do not negative sample the context word
                         continue;
                     }
                     isPositiveSample = false;
                 }
-                neuralNetwork.NegativeSample(indexOfCurrentWord, target, _alpha, isPositiveSample);
+
+                if (_useSkipgram)
+                {
+                    // current -> context
+                    neuralNetwork.NegativeSample(indexOfCurrentWord, target, _alpha, isPositiveSample);
+                }
+                if (_useCbow)
+                {
+                    // context -> current
+                    neuralNetwork.NegativeSample(target, indexOfCurrentWord, _alpha, isPositiveSample);
+                }
             }
         }
     }

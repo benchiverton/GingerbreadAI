@@ -6,7 +6,7 @@ using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
-namespace AI.Integration.Test.MultipleInputs
+namespace NeuralNetwork.Test.MultipleInputs
 {
     public class MultipleInputsUsingBackpropagation
     {

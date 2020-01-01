@@ -78,7 +78,7 @@ namespace NLP.Word2Vec
         {
             var sortedByLowestCount = wordCollection.ToArray();
             var queue = sortedByLowestCount.Select(word => new Node
-                    {Frequency = word.Value.Frequency, WordInfo = word.Value, Word = word.Key})
+                    {Frequency = word.Value.Count, WordInfo = word.Value, Word = word.Key})
                 .OrderBy(y => y.Frequency).ToList();
             return queue;
         }

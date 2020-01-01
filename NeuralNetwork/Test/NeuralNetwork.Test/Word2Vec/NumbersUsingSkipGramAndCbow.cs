@@ -2,11 +2,11 @@
 using System.IO;
 using NLP.Word2Vec;
 
-namespace AI.Integration.Test.Word2Vec
+namespace NeuralNetwork.Test.Word2Vec
 {
-    public class NumbersUsingNegativeSampling
+    public class NumbersUsingSkipGramAndCbow
     {
-        private const string ResultsDirectory = nameof(NumbersUsingNegativeSampling);
+        private const string ResultsDirectory = nameof(NumbersUsingSkipGramAndCbow);
 
         [RunnableInDebugOnly]
         public void Go()
@@ -17,7 +17,7 @@ namespace AI.Integration.Test.Word2Vec
             System.IO.Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
 
             var fileHandler = new FileHandler(inputFile, outputFile);
-            var word2Vec = new Word2VecUsingLibrary(fileHandler, numberOfDimensions: 50, numberOfThreads: 6, numberOfIterations: 1, windowSize: 1, thresholdForOccurrenceOfWords: 0, negativeSamples: 3);
+            var word2Vec = new Word2VecUsingLibrary(fileHandler, numberOfDimensions: 50, numberOfThreads: 6, numberOfIterations: 1, windowSize: 1, thresholdForOccurrenceOfWords: 0);
 
             word2Vec.TrainModel();
         }

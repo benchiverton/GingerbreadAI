@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DeepLearning\DeepLearning.BackPropagation\DeepLearning.Backpropagation.csproj" />
     <ProjectReference Include="..\..\DeepLearning\DeepLearning.NegativeSampling\DeepLearning.NegativeSampling.csproj" />
   </ItemGroup>
 
