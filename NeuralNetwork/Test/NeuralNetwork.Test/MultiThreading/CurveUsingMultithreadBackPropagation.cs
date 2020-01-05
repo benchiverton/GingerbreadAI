@@ -67,7 +67,7 @@ namespace NeuralNetwork.Test.MultiThreading
         private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults, int threadCount, int currentThread)
         {
             var rand = new Random();
-            var output = outputLayer.CloneWithNodeAndWeightReferences();
+            var output = outputLayer.CloneWithSameWeightValueReferences();
             var momentum = Momentum.GenerateMomentum(output, 0.9);
             var learningRate = 0.25;
 

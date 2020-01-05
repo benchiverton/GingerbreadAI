@@ -10,7 +10,7 @@ namespace DeepLearning.Backpropagation
 
         public static Momentum GenerateMomentum(Layer outputLayer, double magnitudeOfMomentum)
         {
-            return new Momentum(outputLayer.CloneWithNodeReferences(), magnitudeOfMomentum);
+            return new Momentum(outputLayer.CloneWithSameWeightKeyReferences(), magnitudeOfMomentum);
         }
 
         public Momentum StepBackwards(int layerIndex)

@@ -156,7 +156,7 @@ namespace NLP.Word2Vec
             var lastWordCount = 0;
             var sentence = new int?[_maxSentenceLength];
             var localIter = _numberOfIterations;
-            var localNetwork = _neuralNetwork.CloneWithNodeAndWeightReferences();
+            var localNetwork = _neuralNetwork.CloneWithSameWeightValueReferences();
 
             var random = new Random();
             var sum = _wordCollection.GetTotalNumberOfWords();

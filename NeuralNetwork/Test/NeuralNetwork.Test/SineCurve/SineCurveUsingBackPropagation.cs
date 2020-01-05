@@ -66,7 +66,7 @@ namespace NeuralNetwork.Test.SineCurve
         private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults)
         {
             var rand = new Random();
-            var output = outputLayer.CloneWithNodeAndWeightReferences();
+            var output = outputLayer.CloneWithSameWeightValueReferences();
             var momentum = Momentum.GenerateMomentum(output, 0.9);
             var learningRate = 0.25;
             for (var i = 0; i < 100000; i++)

@@ -54,15 +54,15 @@ namespace Model.NeuralNetwork
             }
         }
 
-        public static Layer CloneWithNodeReferences(this Layer layer)
+        public static Layer CloneWithSameWeightKeyReferences(this Layer layer)
         {
-            return RecurseCloneWithNodeReferences(layer);
+            return RecurseCloneWithSameWeightKeyReferences(layer);
         }
 
         // Use this when multi-threading the same network
-        public static Layer CloneWithNodeAndWeightReferences(this Layer layer)
+        public static Layer CloneWithSameWeightValueReferences(this Layer layer)
         {
-            return RecurseCloneNewWithWeightReferences(layer);
+            return RecurseCloneWithSameWeightValueReferences(layer);
         }
 
         public static void Save(this Layer layer, string location)
@@ -99,10 +99,11 @@ namespace Model.NeuralNetwork
             }
         }
 
-        private static Layer RecurseCloneWithNodeReferences(Layer layer)
+        private static Layer RecurseCloneWithSameWeightKeyReferences(Layer layer)
         {
             var newLayer = new Layer
             {
+                Name = $"{layer.Name}_CLONE",
                 Nodes = new Node[layer.Nodes.Length],
                 PreviousLayers = new Layer[layer.PreviousLayers.Length]
             };
@@ -130,13 +131,13 @@ namespace Model.NeuralNetwork
 
             for (var i = 0; i < layer.PreviousLayers.Length; i++)
             {
-                newLayer.PreviousLayers[i] = RecurseCloneWithNodeReferences(layer.PreviousLayers[i]);
+                newLayer.PreviousLayers[i] = RecurseCloneWithSameWeightKeyReferences(layer.PreviousLayers[i]);
             }
 
             return newLayer;
         }
 
-        private static Layer RecurseCloneNewWithWeightReferences(Layer layer)
+        private static Layer RecurseCloneWithSameWeightValueReferences(Layer layer)
         {
             if (!layer.PreviousLayers.Any())
             {
@@ -162,7 +163,7 @@ namespace Model.NeuralNetwork
             var clonedPreviousLayers = new List<Layer>();
             foreach (var previousLayer in layer.PreviousLayers)
             {
-                clonedPreviousLayers.Add(RecurseCloneNewWithWeightReferences(previousLayer));
+                clonedPreviousLayers.Add(RecurseCloneWithSameWeightValueReferences(previousLayer));
             }
 
             var newLayer = new Layer()
