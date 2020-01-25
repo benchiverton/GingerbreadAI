@@ -20,10 +20,10 @@ namespace Model.NeuralNetwork.Test
         {
             _testOutputHelper = testOutputHelper;
 
-            _input = new Layer("input", 5, new Layer[0]);
-            _hidden1 = new Layer("hidden1", 10, new[] { _input });
-            _hidden2 = new Layer("hidden2", 15, new[] { _input });
-            _output = new Layer("output", 20, new[] { _hidden1, _hidden2 });
+            _input = new Layer(5, new Layer[0]);
+            _hidden1 = new Layer(10, new[] { _input });
+            _hidden2 = new Layer(15, new[] { _input });
+            _output = new Layer(20, new[] { _hidden1, _hidden2 });
         }
 
         [Fact]
@@ -31,11 +31,10 @@ namespace Model.NeuralNetwork.Test
         {
             _output.Initialise(new Random());
             _output.PopulateAllOutputs(new[] { 0.1, 0.2, 0.3, 0.4, 0.5 });
-            _testOutputHelper.WriteLine(_output.ToString(true));
 
             var copiedOutput = _output.DeepCopy();
-            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Name == "hidden1");
-            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Name == "hidden2");
+            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
+            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 15);
             var copiedInput = copiedHidden1.PreviousLayers.Single();
 
             // input
@@ -92,15 +91,13 @@ namespace Model.NeuralNetwork.Test
 
             _output.Initialise(random);
             _output.PopulateAllOutputs(inputs);
-            _testOutputHelper.WriteLine(_output.ToString(true));
 
             var copiedOutput = _output.CloneWithSameWeightKeyReferences();
             copiedOutput.Initialise(random);
             copiedOutput.PopulateAllOutputs(inputs);
-            _testOutputHelper.WriteLine(copiedOutput.ToString(true));
 
-            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Name == "hidden1_CLONE");
-            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Name == "hidden2_CLONE");
+            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
+            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 15);
             var copiedInput = copiedHidden1.PreviousLayers.Single();
 
             // input
@@ -164,15 +161,13 @@ namespace Model.NeuralNetwork.Test
 
             _output.Initialise(random);
             _output.PopulateAllOutputs(inputs);
-            _testOutputHelper.WriteLine(_output.ToString(true));
 
             var copiedOutput = _output.CloneWithSameWeightValueReferences();
             copiedOutput.Initialise(random);
             copiedOutput.PopulateAllOutputs(inputs);
-            _testOutputHelper.WriteLine(copiedOutput.ToString(true));
 
-            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Name == "hidden1_CLONE");
-            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Name == "hidden2_CLONE");
+            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
+            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 15);
             var copiedInput = copiedHidden1.PreviousLayers.Single();
 
             // input

@@ -24,12 +24,11 @@ namespace NeuralNetwork.Test.MultiThreading
         [RunnableInDebugOnly]
         public void ApproximateCurveUsingMultipleThreads()
         {
-            var input = new Layer("Input", 1, new Layer[0]);
-            var inner1 = new Layer("Inner1", 20, new[] { input });
-            var inner2 = new Layer("Inner1", 20, new[] { inner1 });
-            var outputLayer = new Layer("Output", 1, new[] { inner1, inner2 });
+            var input = new Layer(1, new Layer[0]);
+            var inner1 = new Layer(20, new[] { input });
+            var inner2 = new Layer(20, new[] { inner1 });
+            var outputLayer = new Layer(1, new[] { inner1, inner2 });
             outputLayer.Initialise(new Random());
-            _testOutputHelper.WriteLine(outputLayer.ToString(true));
             var accuracyResults = new List<double>();
             var initialResults = new double[100];
             var finalResults = new double[100];

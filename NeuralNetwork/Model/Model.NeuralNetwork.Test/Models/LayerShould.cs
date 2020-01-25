@@ -1,4 +1,3 @@
-using Model.NeuralNetwork.Exceptions;
 using Model.NeuralNetwork.Models;
 
 namespace Model.NeuralNetwork.Test.Models
@@ -21,18 +20,18 @@ namespace Model.NeuralNetwork.Test.Models
         public void ThrowAnExceptionWhenInputIsInvalid()
         {
             // Input group
-            var inputGroup = new Layer("Input Group", 10, new Layer[0]);
-            var outputGroup = new Layer("Output Group", 10, new[] { inputGroup });
+            var inputGroup = new Layer(10, new Layer[0]);
+            var outputGroup = new Layer(10, new[] { inputGroup });
 
             var inputs = new double[5];
-            Assert.Throws<NeuralNetworkException>(() => outputGroup.PopulateAllOutputs(inputs));
+            Assert.Throws<ArgumentException>(() => outputGroup.PopulateAllOutputs(inputs));
         }
 
         [Fact]
         public void CalculateBasicResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer("Input Layer", 1, new Layer[0]);
+            var inputLayer = new Layer(1, new Layer[0]);
             // Hidden group
             var innerNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -41,7 +40,6 @@ namespace Model.NeuralNetwork.Test.Models
             var innerNode = GenerateWeightedNode(innerNodeInfo);
             var innerLayer = new Layer
             {
-                Name = "Inner Layer",
                 Nodes = new[] { innerNode },
                 PreviousLayers = new[] { inputLayer }
             };
@@ -53,7 +51,6 @@ namespace Model.NeuralNetwork.Test.Models
             var outputNode = GenerateWeightedNode(outputNodeInfo);
             var outputLayer = new Layer
             {
-                Name = "Output Layer",
                 Nodes = new[] { outputNode },
                 PreviousLayers = new[] { innerLayer }
             };
@@ -72,7 +69,7 @@ namespace Model.NeuralNetwork.Test.Models
         public void CalculateIndexedResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer("Input Layer", 5, new Layer[0]);
+            var inputLayer = new Layer(5, new Layer[0]);
             // Hidden group
             var innerNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -81,7 +78,6 @@ namespace Model.NeuralNetwork.Test.Models
             var innerNode = GenerateWeightedNode(innerNodeInfo);
             var innerLayer = new Layer
             {
-                Name = "Inner Layer",
                 Nodes = new[] { innerNode },
                 PreviousLayers = new[] { inputLayer }
             };
@@ -103,7 +99,6 @@ namespace Model.NeuralNetwork.Test.Models
             var outputNode3 = GenerateWeightedNode(outputNodeInfo3);
             var outputLayer = new Layer
             {
-                Name = "Output Layer",
                 Nodes = new[] { outputNode1, outputNode2, outputNode3 },
                 PreviousLayers = new[] { innerLayer }
             };
@@ -122,7 +117,7 @@ namespace Model.NeuralNetwork.Test.Models
         public void CalculateMultipleGroupsResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer("Input Layer", 1, new Layer[0]);
+            var inputLayer = new Layer(1, new Layer[0]);
             // Hidden group 1
             // Hidden group
             var innerNodeInfo1 = new Dictionary<Layer, (double[], double)>
@@ -132,7 +127,6 @@ namespace Model.NeuralNetwork.Test.Models
             var innerNode1 = GenerateWeightedNode(innerNodeInfo1);
             var innerLayer1 = new Layer
             {
-                Name = "Inner Layer 1",
                 Nodes = new[] { innerNode1 },
                 PreviousLayers = new[] { inputLayer }
             };
@@ -145,7 +139,6 @@ namespace Model.NeuralNetwork.Test.Models
             var innerNode2 = GenerateWeightedNode(innerNodeInfo2);
             var innerLayer2 = new Layer
             {
-                Name = "Inner Layer 2",
                 Nodes = new[] { innerNode2 },
                 PreviousLayers = new[] { inputLayer }
             };
@@ -158,7 +151,6 @@ namespace Model.NeuralNetwork.Test.Models
             var outputNode = GenerateWeightedNode(outputNodeInfo);
             var outputLayer = new Layer
             {
-                Name = "Output Layer",
                 Nodes = new[] { outputNode },
                 PreviousLayers = new[] { innerLayer1, innerLayer2 }
             };
@@ -179,7 +171,7 @@ namespace Model.NeuralNetwork.Test.Models
         [Fact]
         public void CalculateMultipleNodesResultCorrectly()
         {
-            var inputLayer = new Layer("Input Group", 2, new Layer[0]);
+            var inputLayer = new Layer(2, new Layer[0]);
             var innerNode1Info = new Dictionary<Layer, (double[], double)>
             {
                 { inputLayer, (new[] { 0.02, 0.07 }, 0) }
@@ -197,7 +189,6 @@ namespace Model.NeuralNetwork.Test.Models
             var innerNode3 = GenerateWeightedNode(innerNode3Info);
             var innerLayer = new Layer
             {
-                Name = "Inner 1",
                 Nodes = new[] { innerNode1, innerNode2, innerNode3 },
                 PreviousLayers = new[] { inputLayer }
             };
@@ -213,7 +204,6 @@ namespace Model.NeuralNetwork.Test.Models
             var outerNode2 = GenerateWeightedNode(outerNode2Info);
             var output = new Layer
             {
-                Name = "Inner 1",
                 Nodes = new[] { outerNode1, outerNode2 },
                 PreviousLayers = new[] { innerLayer }
             };

@@ -21,12 +21,11 @@ namespace NeuralNetwork.Test.MultipleInputs
         [RunnableInDebugOnly]
         public void PredictResultsFromMultipleInputs()
         {
-            var input1 = new Layer("input1", 1, new Layer[0]);
-            var input2 = new Layer("input2", 1, new Layer[0]);
-            var inner = new Layer("Inner", 5, new[] { input1, input2 });
-            var outputLayer = new Layer("Output", 1, new[] { inner });
+            var input1 = new Layer(1, new Layer[0]);
+            var input2 = new Layer(1, new Layer[0]);
+            var inner = new Layer(5, new[] { input1, input2 });
+            var outputLayer = new Layer(1, new[] { inner });
             outputLayer.Initialise(new Random());
-            _testOutputHelper.WriteLine(outputLayer.ToString(true));
 
             var actualResults = new double[6, 6];
             for (var i = 0; i < 6; i++)

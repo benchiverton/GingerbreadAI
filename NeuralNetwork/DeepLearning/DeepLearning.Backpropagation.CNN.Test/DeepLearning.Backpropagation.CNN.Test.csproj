@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,19 +13,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  
+
   <ItemGroup>
-    <Content Include="Data\**\*.*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>  
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\..\DeepLearning\DeepLearning.Backpropagation\DeepLearning.Backpropagation.csproj" />
-    <ProjectReference Include="..\..\DeepLearning\DeepLearning.NegativeSampling\DeepLearning.NegativeSampling.csproj" />
     <ProjectReference Include="..\..\Model\Model.ConvolutionalNeuralNetwork\Model.ConvolutionalNeuralNetwork.csproj" />
-    <ProjectReference Include="..\..\Model\Model.NeuralNetwork\Model.NeuralNetwork.csproj" />
-    <ProjectReference Include="..\..\NLP\NLP.Word2Vec\NLP.Word2Vec.csproj" />
+    <ProjectReference Include="..\DeepLearning.Backpropagation\DeepLearning.Backpropagation.csproj" />
   </ItemGroup>
-  
+
 </Project>

@@ -24,12 +24,11 @@ namespace NeuralNetwork.Test.SineCurve
         [RunnableInDebugOnly]
         public void ApproximateSineCurveUsingBackpropagation()
         {
-            var input = new Layer("Input", 1, new Layer[0]);
-            var inner1 = new Layer("Inner1", 5, new[] { input });
-            var inner2 = new Layer("Inner2", 25, new[] { inner1 });
-            var inner3 = new Layer("Inner3", 5, new[] { inner2 });
-            var outputLayer = new Layer("Output", 1, new[] { inner3 });
-            _testOutputHelper.WriteLine(outputLayer.ToString(true));
+            var input = new Layer(1, new Layer[0]);
+            var inner1 = new Layer(5, new[] { input });
+            var inner2 = new Layer(25, new[] { inner1 });
+            var inner3 = new Layer(5, new[] { inner2 });
+            var outputLayer = new Layer(1, new[] { inner3 });
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
             var initialResults = new double[100];

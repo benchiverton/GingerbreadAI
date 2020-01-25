@@ -103,7 +103,6 @@ namespace Model.NeuralNetwork
         {
             var newLayer = new Layer
             {
-                Name = $"{layer.Name}_CLONE",
                 Nodes = new Node[layer.Nodes.Length],
                 PreviousLayers = new Layer[layer.PreviousLayers.Length]
             };
@@ -143,7 +142,6 @@ namespace Model.NeuralNetwork
             {
                 var newInputLayer = new Layer()
                 {
-                    Name = $"{layer.Name}_CLONE",
                     Nodes = new Node[layer.Nodes.Length],
                     PreviousLayers = new Layer[0]
                 };
@@ -168,7 +166,6 @@ namespace Model.NeuralNetwork
 
             var newLayer = new Layer()
             {
-                Name = $"{layer.Name}_CLONE",
                 PreviousLayers = clonedPreviousLayers.ToArray(),
                 Nodes = new Node[layer.Nodes.Length]
             };

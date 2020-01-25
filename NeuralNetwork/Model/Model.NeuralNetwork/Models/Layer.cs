@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Library.Computations;
-using Model.NeuralNetwork.Exceptions;
 
 namespace Model.NeuralNetwork.Models
 {
@@ -11,17 +9,12 @@ namespace Model.NeuralNetwork.Models
     public class Layer
     {
         /// <summary>
-        ///     The name of the node.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        ///     An array of the nodes within this group.
+        ///     An array of the nodes within this layer.
         /// </summary>
         public Node[] Nodes { get; set; }
 
         /// <summary>
-        ///     An array containing the NodeGroups that feed into this one.
+        ///     An array containing the layers that feed into this one.
         /// </summary>
         public Layer[] PreviousLayers { get; set; }
 
@@ -29,9 +22,8 @@ namespace Model.NeuralNetwork.Models
         {
         }
 
-        public Layer(string name, int nodeCount, Layer[] previousGroups)
+        public Layer(int nodeCount, Layer[] previousGroups)
         {
-            Name = name;
             Nodes = new Node[nodeCount];
             for (var i = 0; i < nodeCount; i++)
             {
@@ -91,27 +83,6 @@ namespace Model.NeuralNetwork.Models
             Nodes[outputIndex].PopulateOutput();
         }
 
-        public string ToString(bool recurse = false, int layer = 0)
-        {
-            var indentation = "";
-            for (var i = 0; i < layer; i++)
-            {
-                indentation += "    ";
-            }
-
-            var s = new StringBuilder($"{indentation}Node Group: {Name}; Node count: {Nodes.Length}\n");
-            s.Append($"{indentation}Previous Groups:\n");
-
-            layer++;
-            foreach (var nodeGroup in PreviousLayers)
-            {
-                s.Append(recurse
-                    ? nodeGroup.ToString(true, layer)
-                    : $"{indentation}Node Group: {nodeGroup.Name}; Node count: {nodeGroup.Nodes.Length}\n");
-            }
-            return s.ToString();
-        }
-
         #region Private methods
 
 
@@ -119,7 +90,7 @@ namespace Model.NeuralNetwork.Models
         {
             if (Nodes.Length != inputs.Length)
             {
-                throw new NeuralNetworkException($"Input layer length ({Nodes.Length}) not equal to length of your inputs ({inputs.Length}).");
+                throw new ArgumentException($"Input layer length ({Nodes.Length}) not equal to length of your inputs ({inputs.Length}).");
             }
 
             var i = 0;

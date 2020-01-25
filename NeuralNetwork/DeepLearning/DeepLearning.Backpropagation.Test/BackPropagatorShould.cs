@@ -10,9 +10,9 @@ namespace DeepLearning.Backpropagation.Test
         [Fact]
         public void TrainBasicNetworksSortofWell()
         {
-            var input = new Layer("input", 5, new Layer[0]);
-            var h1 = new Layer("hidden", 10, new Layer[] { input });
-            var output = new Layer("output", 5, new Layer[] { h1 });
+            var input = new Layer(5, new Layer[0]);
+            var h1 = new Layer(10, new Layer[] { input });
+            var output = new Layer(5, new Layer[] { h1 });
 
             output.Initialise(new Random());
 
@@ -37,11 +37,11 @@ namespace DeepLearning.Backpropagation.Test
         [Fact]
         public void TrainComplexNetworksSortofWell()
         {
-            var input = new Layer("input", 5, new Layer[0]);
-            var h1 = new Layer("hidden1", 10, new Layer[] { input });
-            var h2 = new Layer("hidden2", 10, new Layer[] { input });
-            var h3 = new Layer("hidden3", 10, new Layer[] { h1, h2 });
-            var output = new Layer("output", 5, new Layer[] { h3 });
+            var input = new Layer(5, new Layer[0]);
+            var h1 = new Layer(10, new Layer[] { input });
+            var h2 = new Layer(10, new Layer[] { input });
+            var h3 = new Layer(10, new Layer[] { h1, h2 });
+            var output = new Layer(5, new Layer[] { h3 });
 
             output.Initialise(new Random());
 
