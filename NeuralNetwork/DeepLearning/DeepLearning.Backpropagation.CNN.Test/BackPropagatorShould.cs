@@ -15,9 +15,8 @@ namespace DeepLearning.Backpropagation.CNN.Test
             var r = new Layer(16, new Layer[0]);
             var g = new Layer(16, new Layer[0]);
             var b = new Layer(16, new Layer[0]);
-            var filter1 = new Filter(new[] { r, g, b }, 4, 4, 2);
-            var filter2 = new Filter(new[] { r, g, b }, 4, 4, 3);
-            var output = new Layer(3, new Layer[] { filter1, filter2 });
+            var filter = new Filter(new[] { r, g, b }, 4, 4, 3);
+            var output = new Layer(3, new Layer[] { filter });
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -46,7 +45,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.1);
+                output.Backpropagate(inputs, targetOutputs, 0.5);
             }
 
             var redInput = ResolveInputs(true, false, false);

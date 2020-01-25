@@ -20,7 +20,7 @@ namespace Model.NeuralNetwork.Models
         /// <summary>
         ///     The output of the node from the last results calculation.
         /// </summary>
-        public double Output { get; set; } = 0;
+        public double Output { get; set; }
 
         public Node()
         {

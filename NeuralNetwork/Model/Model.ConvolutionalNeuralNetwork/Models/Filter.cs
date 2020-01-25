@@ -9,7 +9,7 @@ namespace Model.ConvolutionalNeuralNetwork.Models
         {
             PreviousLayers = previousLayers;
             
-            var nodeCount = (prvLayersHeight - filterDimension) * (prvLayersWidth - filterDimension);
+            var nodeCount = (prvLayersHeight - filterDimension + 1) * (prvLayersWidth - filterDimension + 1);
             Nodes = new Node[nodeCount];
 
             for (var i = 0; i < nodeCount; i++)
