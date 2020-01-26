@@ -42,7 +42,9 @@ namespace DeepLearning.Backpropagation.CNN.Test
             // +  -  +      -  +  -
             // -  +  -  OR  +  -  +  (Depending on output weight being +ve/-ve)
             // +  -  +      -  +  -
-            var outputMultiplier = output.Nodes[0].Weights.First().Value.Value > 0 ? 1 : -1;
+            _testOutputHelper.WriteLine($"filter: {string.Join(",", filter.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
+
+            var outputMultiplier = output.Nodes[0].Weights[filter.Nodes[0]].Value > 0 ? 1 : -1;
             Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[0]].Value > 0);
             Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[1]].Value < 0);
             Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[2]].Value > 0);
@@ -52,6 +54,71 @@ namespace DeepLearning.Backpropagation.CNN.Test
             Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[6]].Value > 0);
             Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[7]].Value < 0);
             Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[8]].Value > 0);
+        }
+
+        [Fact]
+        public void TrainFilterToMultipleFeaturesSortOfWell()
+        {
+            var inputLayer = new Layer(9, new Layer[0]);
+            var filter1 = new Filter(new[] { inputLayer }, 3, 3, 3);
+            var filter2 = new Filter(new[] { inputLayer }, 3, 3, 3);
+            var output = new Layer(2, new Layer[] { filter1, filter2 });
+            output.Initialise(new Random());
+            var fullMatch = new double[] { 1, 1, 0, 1, 0, 1, 0, 1, 1 };
+            var inputMatch1 = new double[] { 1, 1, 0, 1, 0, 0, 0, 0, 0 };
+            var inputMatch2 = new double[] { 0, 0, 0, 0, 0, 1, 0, 1, 1 };
+            var inputNoMatch1 = new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1 };
+            var inputNoMatch2 = new double[] { 0, 0, 1, 0, 1, 0, 1, 0, 0 };
+
+            for (var i = 0; i < 10000; i++)
+            {
+                output.Backpropagate(fullMatch, new double[] { 1, 1 }, 0.5);
+                output.Backpropagate(inputMatch1, new double[] { 1, 0 }, 0.5);
+                output.Backpropagate(inputMatch2, new double[] { 0, 1 }, 0.5);
+                output.Backpropagate(inputNoMatch1, new double[] { 0, 0 }, 0.5);
+                output.Backpropagate(inputNoMatch2, new double[] { 0, 0 }, 0.5);
+            }
+
+            // filter weights should look as follows:
+            // +  +  -      -  -  +
+            // +  -  -  OR  -  +  +  (Depending on output weight being +ve/-ve)
+            // -  -  -      +  +  +
+            // and
+            // -  -  -      +  +  +
+            // -  -  +  OR  +  +  -  (Depending on output weight being +ve/-ve)
+            // -  +  +      +  -  -
+            var filterTopLeft = filter1.Nodes[0].Weights[inputLayer.Nodes[1]].Value * filter1.Nodes[0].Weights[inputLayer.Nodes[2]].Value < 0
+                ? filter1
+                : filter2;
+            var filterBottomRight = filterTopLeft != filter1
+                ? filter1
+                : filter2;
+
+            _testOutputHelper.WriteLine($"filter top left: {string.Join(",", filterTopLeft.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
+            _testOutputHelper.WriteLine($"filter bottom right: {string.Join(",", filterBottomRight.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
+
+            // top left
+            var outputMultiplierTopLeft = output.Nodes[0].Weights[filterTopLeft.Nodes[0]].Value > 0 ? 1 : -1;
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[0]].Value > 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[1]].Value > 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[2]].Value < 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[3]].Value > 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[4]].Value < 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[5]].Value < 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[6]].Value < 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[7]].Value < 0);
+            Assert.True(outputMultiplierTopLeft * filterTopLeft.Nodes[0].Weights[inputLayer.Nodes[8]].Value < 0);
+            // bottom right
+            var outputMultiplierBottomRight = output.Nodes[1].Weights[filterBottomRight.Nodes[0]].Value > 0 ? 1 : -1;
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[0]].Value < 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[1]].Value < 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[2]].Value < 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[3]].Value < 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[4]].Value < 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[5]].Value > 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[6]].Value < 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[7]].Value > 0);
+            Assert.True(outputMultiplierBottomRight * filterBottomRight.Nodes[0].Weights[inputLayer.Nodes[8]].Value > 0);
         }
 
         [Fact]
