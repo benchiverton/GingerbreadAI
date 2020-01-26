@@ -9,24 +9,44 @@ namespace Model.ConvolutionalNeuralNetwork.Models
         {
             PreviousLayers = previousLayers;
             
-            var nodeCount = (prvLayersHeight - filterDimension + 1) * (prvLayersWidth - filterDimension + 1);
-            Nodes = new Node[nodeCount];
-
-            for (var i = 0; i < nodeCount; i++)
+            var nodes = new List<Node>();
+            var filterWeightMap = new Dictionary<Layer, Weight[,]>();
+            foreach (var prevLayer in previousLayers)
             {
-                var linkedPrvNodes = new List<Node>();
-                for (var j = 0; j < filterDimension; j++)
+                var filterWeights = new Weight[filterDimension, filterDimension];
+                for (var i = 0; i < filterDimension; i++) // across
                 {
-                    foreach (var layer in previousLayers)
+                    for (var j = 0; j < filterDimension; j++) // down
                     {
-                        for (var k = 0; k < filterDimension; k++)
-                        {
-                            linkedPrvNodes.Add(layer.Nodes[j * prvLayersWidth + k]);
-                        }
+                        filterWeights[j, i] = new Weight(0);
                     }
                 }
-                Nodes[i] = new Node(linkedPrvNodes);
+                filterWeightMap.Add(prevLayer, filterWeights);
             }
+            for (var i = 0; i < prvLayersHeight - filterDimension + 1; i++)
+            {
+                for (var j = 0; j < prvLayersWidth - filterDimension + 1; j++)
+                {
+                    var nodeWeights = new Dictionary<Node, Weight>();
+                    for (var k = 0; k < filterDimension; k++) // across
+                    {
+                        for (var l = 0; l < filterDimension; l++) // down
+                        {
+                            var nodePosition = j + l + (i + k) * prvLayersWidth;
+                            foreach (var prevLayer in previousLayers)
+                            {
+                                nodeWeights.Add(prevLayer.Nodes[nodePosition], filterWeightMap[prevLayer][l, k]);
+                            }
+                        }
+                    }
+                    nodes.Add(new Node
+                    {
+                        Weights = nodeWeights
+                    });
+                }
+            }
+
+            Nodes = nodes.ToArray();
         }
     }
 }

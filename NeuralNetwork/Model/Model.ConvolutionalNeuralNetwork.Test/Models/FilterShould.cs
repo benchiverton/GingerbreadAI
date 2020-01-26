@@ -18,7 +18,6 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Models
         [Fact]
         public void ResolveCorrectNodeReferences()
         {
-            // Emulating the following scenario when iterated
             // inputX:
             // 0  1  2  3  4  5
             // 6  7  8  9  10 11

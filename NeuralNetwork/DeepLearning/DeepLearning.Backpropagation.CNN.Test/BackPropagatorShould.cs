@@ -1,22 +1,69 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace DeepLearning.Backpropagation.CNN.Test
 {
     public class BackpropagationShould
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public BackpropagationShould(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
+        [Fact]
+        public void TrainFilterToFeatureSortOfWell()
+        {
+            var inputLayer = new Layer(9, new Layer[0]);
+            var filter = new Filter(new[] { inputLayer }, 3, 3, 3);
+            var output = new Layer(1, new Layer[] { filter });
+            output.Initialise(new Random());
+            var inputMatch = new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1 };
+            var inputNoMatch1 = new double[] { 0, 1, 0, 1, 0, 1, 0, 1, 0 };
+            var inputNoMatch2 = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            var inputNoMatch3 = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            for (var i = 0; i < 10000; i++)
+            {
+                output.Backpropagate(inputMatch, new double[] { 1 }, 0.5);
+                output.Backpropagate(inputNoMatch1, new double[] { 0 }, 0.5);
+                output.Backpropagate(inputNoMatch2, new double[] { 0 }, 0.5);
+                output.Backpropagate(inputNoMatch3, new double[] { 0 }, 0.5);
+            }
+
+            // filter weights should look as follows:
+            // +  -  +      -  +  -
+            // -  +  -  OR  +  -  +  (Depending on output weight being +ve/-ve)
+            // +  -  +      -  +  -
+            var outputMultiplier = output.Nodes[0].Weights.First().Value.Value > 0 ? 1 : -1;
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[0]].Value > 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[1]].Value < 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[2]].Value > 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[3]].Value < 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[4]].Value > 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[5]].Value < 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[6]].Value > 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[7]].Value < 0);
+            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[8]].Value > 0);
+        }
+
         [Fact]
         public void TrainConvolutionalNetworksSortofWellRgb()
         {
             var r = new Layer(16, new Layer[0]);
             var g = new Layer(16, new Layer[0]);
             var b = new Layer(16, new Layer[0]);
-            var filter = new Filter(new[] { r, g, b }, 4, 4, 3);
-            var output = new Layer(3, new Layer[] { filter });
+            var filter1 = new Filter(new[] { r, g, b }, 4, 4, 3);
+            var filter2 = new Filter(new[] { r, g, b }, 4, 4, 3);
+            var filter3 = new Filter(new[] { r, g, b }, 4, 4, 3);
+            var output = new Layer(3, new Layer[] { filter1, filter2, filter3 });
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -48,6 +95,10 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 output.Backpropagate(inputs, targetOutputs, 0.5);
             }
 
+            // each filter should pick up r/b/g differently
+            _testOutputHelper.WriteLine($"filter 1: {string.Join(",", filter1.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
+            _testOutputHelper.WriteLine($"filter 2: {string.Join(",", filter2.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
+            _testOutputHelper.WriteLine($"filter 3: {string.Join(",", filter3.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
             var redInput = ResolveInputs(true, false, false);
             output.PopulateAllOutputs(redInput);
             Assert.True(output.Nodes[0].Output > 0.95);
