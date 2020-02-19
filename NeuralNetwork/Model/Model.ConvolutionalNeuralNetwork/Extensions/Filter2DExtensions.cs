@@ -11,9 +11,9 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
             var nodes = new List<Node>();
 
             var (height, width) = (filter.PreviousLayers[0] as Layer2D).Dimensions;
-            for (var i = 0; i < height - filter.Dimension - poolingDimension + 2; i++)
+            for (var i = 0; i < height - filter.Dimension - poolingDimension + 2; i += poolingDimension)
             {
-                for (var j = 0; j < width - filter.Dimension - poolingDimension + 2; j++)
+                for (var j = 0; j < width - filter.Dimension - poolingDimension + 2; j += poolingDimension)
                 {
                     var nodeWeights = new Dictionary<Node, Weight>();
                     for (var k = 0; k < poolingDimension; k++) // across

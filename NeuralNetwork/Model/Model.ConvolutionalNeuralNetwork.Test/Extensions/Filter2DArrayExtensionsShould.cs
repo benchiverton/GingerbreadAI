@@ -27,6 +27,7 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
 
             filter.AddPooling(2);
 
+            // TODO: fix
             var node = Assert.Single(filter.Nodes);
             Assert.Equal(4, node.Weights.Count);
             foreach (var nodeKey in node.Weights.Keys)

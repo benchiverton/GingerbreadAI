@@ -30,9 +30,9 @@ namespace NeuralNetwork.Test.CNN
         [RunnableInDebugOnly]
         public void PredictCatVsDog()
         {
-            var inputR = new Layer2D((100, 100), new Layer[0]);
-            var inputG = new Layer2D((100, 100), new Layer[0]);
-            var inputB = new Layer2D((100, 100), new Layer[0]);
+            var inputR = new Layer2D((200, 200), new Layer[0]);
+            var inputG = new Layer2D((200, 200), new Layer[0]);
+            var inputB = new Layer2D((200, 200), new Layer[0]);
             var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, 3);
             filters.AddPooling(3);
             var stepDownLayer = new Layer(32, filters.ToArray());
@@ -88,17 +88,17 @@ namespace NeuralNetwork.Test.CNN
             {
                 var image = new Bitmap(file);
 
-                var red = new double[10000];
-                var blue = new double[10000];
-                var green = new double[10000];
-                for (var i = 0; i < 100; i++)
+                var red = new double[40000];
+                var blue = new double[40000];
+                var green = new double[40000];
+                for (var i = 0; i < 200; i++)
                 {
-                    for (var j = 0; j < 100; j++)
+                    for (var j = 0; j < 200; j++)
                     {
-                        var pixel = image.GetPixel(i * image.Width / 100, j * image.Height / 100);
-                        red[j * 100 + i] = pixel.R;
-                        blue[j * 100 + i] = pixel.G;
-                        green[j * 100 + i] = pixel.B;
+                        var pixel = image.GetPixel(i * image.Width / 200, j * image.Height / 200);
+                        red[j * 200 + i] = pixel.R;
+                        blue[j * 200 + i] = pixel.G;
+                        green[j * 200 + i] = pixel.B;
                     }
                 }
 
