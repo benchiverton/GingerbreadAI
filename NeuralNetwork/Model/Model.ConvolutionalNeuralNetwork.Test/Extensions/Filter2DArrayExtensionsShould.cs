@@ -25,9 +25,9 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
             var input = new Layer2D((3,3), new Layer[0]);
             var filter = new Filter2D(new [] { input }, 2);
 
-            var pooling = new Pool2D(filter, 2);
+            filter.AddPooling(2);
 
-            var node = Assert.Single(pooling.Nodes);
+            var node = Assert.Single(filter.Nodes);
             Assert.Equal(4, node.Weights.Count);
             foreach (var nodeKey in node.Weights.Keys)
             {

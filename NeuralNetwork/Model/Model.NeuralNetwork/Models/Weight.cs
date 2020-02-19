@@ -10,6 +10,6 @@ namespace Model.NeuralNetwork.Models
             Value = value;
         }
 
-        public virtual double Value { get; set; }
+        public double Value { get; set; }
     }
 }

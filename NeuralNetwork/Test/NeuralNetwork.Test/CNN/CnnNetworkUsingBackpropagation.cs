@@ -10,6 +10,7 @@ using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.CNN
@@ -33,8 +34,8 @@ namespace NeuralNetwork.Test.CNN
             var inputG = new Layer2D((100, 100), new Layer[0]);
             var inputB = new Layer2D((100, 100), new Layer[0]);
             var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, 3);
-            var pooling = filters.AddPooling(3);
-            var stepDownLayer = new Layer(32, pooling.ToArray());
+            filters.AddPooling(3);
+            var stepDownLayer = new Layer(32, filters.ToArray());
             stepDownLayer.Initialise(new Random());
             var output = new Layer(2, new[] { stepDownLayer });
 

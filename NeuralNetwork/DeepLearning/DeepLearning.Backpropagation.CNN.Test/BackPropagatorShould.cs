@@ -256,11 +256,14 @@ namespace DeepLearning.Backpropagation.CNN.Test
             var r = new Layer2D((4, 4), new Layer[0]);
             var g = new Layer2D((4, 4), new Layer[0]);
             var b = new Layer2D((4, 4), new Layer[0]);
-            var filter1 = new Filter2D(new[] { r, g, b }, 2);
-            var filter2 = new Filter2D(new[] { r, g, b }, 2);
-            var filter3 = new Filter2D(new[] { r, g, b }, 2);
-            var pooling = (new[] { filter1, filter2, filter3 }).AddPooling(2);
-            var output = new Layer(3, pooling.ToArray());
+            var filters = new[]
+            {
+                new Filter2D(new[] {r, g, b}, 2),
+                new Filter2D(new[] {r, g, b}, 2),
+                new Filter2D(new[] {r, g, b}, 2)
+            };
+            filters.AddPooling(2);
+            var output = new Layer(3, filters);
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -292,10 +295,6 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 output.Backpropagate(inputs, targetOutputs, 0.5);
             }
 
-            // each filter should pick up r/b/g differently
-            _testOutputHelper.WriteLine($"filter 1: {string.Join(",", filter1.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
-            _testOutputHelper.WriteLine($"filter 2: {string.Join(",", filter2.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
-            _testOutputHelper.WriteLine($"filter 3: {string.Join(",", filter3.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
             var redInput = ResolveInputs(true, false, false);
             output.PopulateAllOutputs(redInput);
             Assert.True(output.Nodes[0].Output > 0.95);
