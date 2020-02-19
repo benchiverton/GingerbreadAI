@@ -45,7 +45,9 @@ namespace DeepLearning.Backpropagation
             {
                 var node = layer.Nodes[i];
                 var sumDeltaWeights = backwardsPassDeltas.Keys.Sum(
-                    backPassNode => backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value
+                    backPassNode => backPassNode.Weights.TryGetValue(node, out var backPassWeight)
+                                        ? backwardsPassDeltas[backPassNode] * backPassWeight.Value
+                                        : 0
                 );
                 var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
                 deltas.Add(node, delta);

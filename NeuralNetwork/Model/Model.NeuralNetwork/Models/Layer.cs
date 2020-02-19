@@ -5,7 +5,6 @@ using Library.Computations;
 
 namespace Model.NeuralNetwork.Models
 {
-    [Serializable]
     public class Layer
     {
         /// <summary>

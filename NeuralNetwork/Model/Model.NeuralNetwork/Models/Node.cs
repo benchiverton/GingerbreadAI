@@ -4,7 +4,6 @@ using Library.Computations;
 
 namespace Model.NeuralNetwork.Models
 {
-    [Serializable]
     public class Node
     {
         /// <summary>

@@ -2,15 +2,14 @@ using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
-using Enumerable = System.Linq.Enumerable;
 
 namespace Model.ConvolutionalNeuralNetwork.Test.Models
 {
-    public class FilterShould
+    public class Filter2DShould
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public FilterShould(ITestOutputHelper testOutputHelper)
+        public Filter2DShould(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -28,20 +27,20 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Models
             // X  X  X  O  O  O
             // X  X  X  O  O  O
             // O  O  O  O  O  O
-            var input1 = new Layer(24, new Layer[0]);
-            var input2 = new Layer(24, new Layer[0]);
-            var input3 = new Layer(24, new Layer[0]);
+            var input1 = new Layer2D((4, 6), new Layer[0]);
+            var input2 = new Layer2D((4, 6), new Layer[0]);
+            var input3 = new Layer2D((4, 6), new Layer[0]);
 
-            var filter = new Filter(new[] { input1, input2, input3 }, 4, 6, 3);
+            var filter = new Filter2D(new[] { input1, input2, input3 }, 3);
 
             Assert.Equal(8, filter.Nodes.Length);
             for (var i = 0; i < 3; i++)
             {
                 for (var j = 0; j < 3; j++)
                 {
-                    Assert.Contains(input1.Nodes[6 * i + j], Enumerable.ToList(filter.Nodes[0].Weights.Keys));
-                    Assert.Contains(input2.Nodes[6 * i + j], Enumerable.ToList(filter.Nodes[0].Weights.Keys));
-                    Assert.Contains(input3.Nodes[6 * i + j], Enumerable.ToList(filter.Nodes[0].Weights.Keys));
+                    Assert.Contains(input1.Nodes[6 * i + j], filter.Nodes[0].Weights.Keys);
+                    Assert.Contains(input2.Nodes[6 * i + j], filter.Nodes[0].Weights.Keys);
+                    Assert.Contains(input3.Nodes[6 * i + j], filter.Nodes[0].Weights.Keys);
                 }
             }
         }
