@@ -250,7 +250,6 @@ namespace DeepLearning.Backpropagation.CNN.Test
             Assert.True(output.Nodes[2].Output > 0.95);
         }
 
-
         [Fact]
         public void TrainConvolutionalNetworksWithFilterSortofWellRgb()
         {

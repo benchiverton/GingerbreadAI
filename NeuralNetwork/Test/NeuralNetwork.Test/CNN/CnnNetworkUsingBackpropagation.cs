@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using DeepLearning.Backpropagation;
 using Model.ConvolutionalNeuralNetwork.Extensions;
@@ -33,15 +35,16 @@ namespace NeuralNetwork.Test.CNN
             var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, 3);
             var pooling = filters.AddPooling(3);
             var stepDownLayer = new Layer(32, pooling.ToArray());
+            stepDownLayer.Initialise(new Random());
             var output = new Layer(2, new[] { stepDownLayer });
 
             var trainingDataCat = GetImageData("cat", TrainingDataDir, inputR, inputG, inputB).GetEnumerator();
             var trainingDataDog = GetImageData("dog", TrainingDataDir, inputR, inputG, inputB).GetEnumerator();
-            do
+            while (trainingDataCat.MoveNext() && trainingDataDog.MoveNext())
             {
                 output.Backpropagate(trainingDataCat.Current, new[] { 1d, 0d }, 0.1);
                 output.Backpropagate(trainingDataDog.Current, new[] { 0d, 1d }, 0.1);
-            } while (trainingDataCat.MoveNext() && trainingDataDog.MoveNext());
+            }
 
             var correctCatResults = 0;
             var correctDogResults = 0;
@@ -80,16 +83,31 @@ namespace NeuralNetwork.Test.CNN
         // 0, 1 => dog
         private IEnumerable<Dictionary<Layer, double[]>> GetImageData(string filePrefix, string fileDir, Layer r, Layer g, Layer b)
         {
-            var image = Image.FromFile($"{filePrefix}{fileDir}");
-
-            //image.get
-
-            yield return new Dictionary<Layer, double[]>()
+            foreach (var file in Directory.EnumerateFileSystemEntries(fileDir, $"{filePrefix}*"))
             {
-                [r] = new double[0],
-                [g] = new double[0],
-                [b] = new double[0],
-            };
+                var image = new Bitmap(file);
+
+                var red = new double[10000];
+                var blue = new double[10000];
+                var green = new double[10000];
+                for (var i = 0; i < 100; i++)
+                {
+                    for (var j = 0; j < 100; j++)
+                    {
+                        var pixel = image.GetPixel(i * image.Width / 100, j * image.Height / 100);
+                        red[j * 100 + i] = pixel.R;
+                        blue[j * 100 + i] = pixel.G;
+                        green[j * 100 + i] = pixel.B;
+                    }
+                }
+
+                yield return new Dictionary<Layer, double[]>()
+                {
+                    [r] = red,
+                    [g] = green,
+                    [b] = blue,
+                };
+            }
         }
     }
 }
