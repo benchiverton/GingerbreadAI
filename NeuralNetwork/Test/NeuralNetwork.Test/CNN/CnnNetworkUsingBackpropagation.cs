@@ -27,7 +27,7 @@ namespace NeuralNetwork.Test.CNN
             _testOutputHelper = testOutputHelper;
         }
 
-        [RunnableInDebugOnly]
+        [Fact]
         public void PredictCatVsDog()
         {
             var inputR = new Layer2D((200, 200), new Layer[0]);
