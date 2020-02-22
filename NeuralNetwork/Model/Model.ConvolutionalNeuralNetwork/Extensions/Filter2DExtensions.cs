@@ -26,11 +26,11 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
                             {
                                 if (!nodeWeights.ContainsKey(previousNode))
                                 {
-                                    nodeWeights.Add(previousNode, new Pooled2DWeight(poolingDimension));
+                                    nodeWeights.Add(previousNode, new PooledWeight2D(poolingDimension));
                                 }
                                 else
                                 {
-                                    (nodeWeights[previousNode] as Pooled2DWeight).IncreaseOccurrences();
+                                    (nodeWeights[previousNode] as PooledWeight2D).IncreaseOccurrences();
                                 }
                             }
                         }

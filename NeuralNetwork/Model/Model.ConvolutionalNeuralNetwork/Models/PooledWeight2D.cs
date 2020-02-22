@@ -2,9 +2,9 @@
 
 namespace Model.ConvolutionalNeuralNetwork.Models
 {
-    public class Pooled2DWeight : Weight
+    public class PooledWeight2D : Weight
     {
-        public Pooled2DWeight(int dimensions) : base(0)
+        public PooledWeight2D(int dimensions) : base(0)
         {
             _dimensions = dimensions;
             _occurrences = 1;
