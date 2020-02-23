@@ -51,14 +51,14 @@ namespace DeepLearning.Backpropagation
                 var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
                 deltas.Add(node, delta);
 
-                foreach (var prevNode in node.Weights.Keys)
+                foreach (var weight in node.Weights)
                 {
-                    UpdateNodeWeight(node, prevNode, delta, momentum, i);
+                    UpdateNodeWeight(node, weight.Key, weight.Value, delta, momentum, i);
                 }
 
-                foreach (var prevLayer in node.BiasWeights.Keys)
+                foreach (var biasWeight in node.BiasWeights)
                 {
-                    UpdateBiasNodeWeight(node, prevLayer, delta, momentum, i);
+                    UpdateBiasNodeWeight(node, biasWeight.Key, biasWeight.Value, delta, momentum, i);
                 }
             }
 
@@ -77,32 +77,32 @@ namespace DeepLearning.Backpropagation
                 var node = outputLayer.Nodes[i];
                 var delta = LogisticFunction.ComputeDeltaOutput(currentOutputs[i], targetOutputs[i]) * learningRate;
                 deltas.Add(node, delta);
-                foreach (var prevNode in node.Weights.Keys)
+                foreach (var weight in node.Weights)
                 {
-                    UpdateNodeWeight(node, prevNode, delta, momentum, i);
+                    UpdateNodeWeight(node, weight.Key, weight.Value, delta, momentum, i);
                 }
 
-                foreach (var prevLayer in node.BiasWeights.Keys)
+                foreach (var biasWeight in node.BiasWeights)
                 {
-                    UpdateBiasNodeWeight(node, prevLayer, delta, momentum, i);
+                    UpdateBiasNodeWeight(node, biasWeight.Key, biasWeight.Value, delta, momentum, i);
                 }
             }
 
             return deltas;
         }
 
-        private static void UpdateNodeWeight(Node node, Node prevNode, double delta, Momentum momentum, int nodeIndex)
+        private static void UpdateNodeWeight(Node node, Node prevNode, Weight weight, double delta, Momentum momentum, int nodeIndex)
         {
             var change = -(delta * prevNode.Output);
-            node.Weights[prevNode].Value += change;
+            weight.Value += change;
 
             momentum?.ApplyMomentum(node, prevNode, change, nodeIndex);
         }
 
-        private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta, Momentum momentum, int nodeIndex)
+        private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, Weight weight, double delta, Momentum momentum, int nodeIndex)
         {
             var change = -delta;
-            node.BiasWeights[prevLayer].Value += change;
+            weight.Value += change;
 
             momentum?.ApplyBiasMomentum(node, prevLayer, change, nodeIndex);
         }

@@ -29,13 +29,13 @@ namespace DeepLearning.NegativeSampling
             var outputNode = outputLayer.Nodes[outputIndex];
 
             var delta = LogisticFunction.ComputeDeltaOutput(currentOutput, targetOutput) * learningRate;
-            foreach (var previousNode in outputNode.Weights.Keys)
+            foreach (var weight in outputNode.Weights)
             {
-                UpdateNodeWeight(outputNode, previousNode, delta);
+                UpdateNodeWeight(outputNode, weight.Key, weight.Value, delta);
             }
-            foreach (var previousBiasLayer in outputNode.BiasWeights.Keys)
+            foreach (var biasWeight in outputNode.BiasWeights)
             {
-                UpdateBiasNodeWeight(outputNode, previousBiasLayer, delta);
+                UpdateBiasNodeWeight(outputNode, biasWeight.Key, biasWeight.Value, delta);
             }
 
             return new Dictionary<Node, double> { { outputNode, delta } };
@@ -53,8 +53,8 @@ namespace DeepLearning.NegativeSampling
             foreach (var node in layer.Nodes)
             {
                 var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
-                UpdateNodeWeight(node, inputNode, delta);
-                UpdateBiasNodeWeight(node, inputLayer, delta);
+                UpdateNodeWeight(node, inputNode, node.Weights[inputNode], delta);
+                UpdateBiasNodeWeight(node, inputLayer, node.BiasWeights[inputLayer], delta);
             }
         }
 
@@ -78,14 +78,14 @@ namespace DeepLearning.NegativeSampling
                 var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
                 deltas.Add(node, delta);
 
-                foreach (var prevNode in node.Weights.Keys)
+                foreach (var weight in node.Weights)
                 {
-                    UpdateNodeWeight(node, prevNode, delta);
+                    UpdateNodeWeight(node, weight.Key, weight.Value, delta);
                 }
 
-                foreach (var prevLayer in node.BiasWeights.Keys)
+                foreach (var biasWeight in node.BiasWeights)
                 {
-                    UpdateBiasNodeWeight(node, prevLayer, delta);
+                    UpdateBiasNodeWeight(node, biasWeight.Key, biasWeight.Value, delta);
                 }
             }
 
@@ -95,16 +95,16 @@ namespace DeepLearning.NegativeSampling
             }
         }
 
-        private static void UpdateNodeWeight(Node node, Node prevNode, double delta)
+        private static void UpdateNodeWeight(Node node, Node prevNode, Weight prevNodeWeight, double delta)
         {
             var change = -(delta * prevNode.Output);
-            node.Weights[prevNode].Value += change;
+            prevNodeWeight.Value += change;
         }
 
-        private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, double delta)
+        private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, Weight prevLayerWeight, double delta)
         {
             var change = -delta;
-            node.BiasWeights[prevLayer].Value += change;
+            prevLayerWeight.Value += change;
         }
     }
 }
