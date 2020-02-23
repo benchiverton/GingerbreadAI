@@ -18,20 +18,22 @@ namespace DeepLearning.Backpropagation
             return new Momentum(_momentumDeltaHolder.PreviousLayers[layerIndex], _magnitudeOfMomentum);
         }
 
-        public void ApplyMomentum(Node node, Node prevNode, double change, int nodeIndex)
+        public void ApplyMomentum(Node prevNode, Weight prevNodeWeight, double change, int nodeIndex)
         {
             var momentumNode = _momentumDeltaHolder.Nodes[nodeIndex];
+            var momentumWeight = momentumNode.Weights[prevNode];
 
-            node.Weights[prevNode].Value += _magnitudeOfMomentum * momentumNode.Weights[prevNode].Value;
-            momentumNode.Weights[prevNode].Value = change + _magnitudeOfMomentum * momentumNode.Weights[prevNode].Value;
+            prevNodeWeight.Value += _magnitudeOfMomentum * momentumWeight.Value;
+            momentumWeight.Value = change + _magnitudeOfMomentum * momentumWeight.Value;
         }
 
-        public void ApplyBiasMomentum(Node node, Layer prevLayer, double change, int nodeIndex)
+        public void ApplyBiasMomentum(Layer prevLayer, Weight prevLayerWeight, double change, int nodeIndex)
         {
             var momentumNode = _momentumDeltaHolder.Nodes[nodeIndex];
+            var momentumWeight = momentumNode.BiasWeights[prevLayer];
 
-            node.BiasWeights[prevLayer].Value += _magnitudeOfMomentum * momentumNode.BiasWeights[prevLayer].Value;
-            momentumNode.BiasWeights[prevLayer].Value = change + _magnitudeOfMomentum * momentumNode.BiasWeights[prevLayer].Value;
+            prevLayerWeight.Value += _magnitudeOfMomentum * momentumWeight.Value;
+            momentumWeight.Value = change + _magnitudeOfMomentum * momentumWeight.Value;
         }
 
         private Momentum(Layer momentumDeltaHolder, double magnitudeOfMomentum)

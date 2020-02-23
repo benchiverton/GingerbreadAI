@@ -53,12 +53,12 @@ namespace DeepLearning.Backpropagation
 
                 foreach (var weight in node.Weights)
                 {
-                    UpdateNodeWeight(node, weight.Key, weight.Value, delta, momentum, i);
+                    UpdateNodeWeight(weight.Key, weight.Value, delta, momentum, i);
                 }
 
                 foreach (var biasWeight in node.BiasWeights)
                 {
-                    UpdateBiasNodeWeight(node, biasWeight.Key, biasWeight.Value, delta, momentum, i);
+                    UpdateBiasNodeWeight(biasWeight.Key, biasWeight.Value, delta, momentum, i);
                 }
             }
 
@@ -79,32 +79,32 @@ namespace DeepLearning.Backpropagation
                 deltas.Add(node, delta);
                 foreach (var weight in node.Weights)
                 {
-                    UpdateNodeWeight(node, weight.Key, weight.Value, delta, momentum, i);
+                    UpdateNodeWeight(weight.Key, weight.Value, delta, momentum, i);
                 }
 
                 foreach (var biasWeight in node.BiasWeights)
                 {
-                    UpdateBiasNodeWeight(node, biasWeight.Key, biasWeight.Value, delta, momentum, i);
+                    UpdateBiasNodeWeight(biasWeight.Key, biasWeight.Value, delta, momentum, i);
                 }
             }
 
             return deltas;
         }
 
-        private static void UpdateNodeWeight(Node node, Node prevNode, Weight weight, double delta, Momentum momentum, int nodeIndex)
+        private static void UpdateNodeWeight(Node prevNode, Weight prevNodeWeight, double delta, Momentum momentum, int nodeIndex)
         {
             var change = -(delta * prevNode.Output);
-            weight.Value += change;
+            prevNodeWeight.Value += change;
 
-            momentum?.ApplyMomentum(node, prevNode, change, nodeIndex);
+            momentum?.ApplyMomentum(prevNode, prevNodeWeight, change, nodeIndex);
         }
 
-        private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, Weight weight, double delta, Momentum momentum, int nodeIndex)
+        private static void UpdateBiasNodeWeight(Layer prevLayer, Weight prevLayerWeight, double delta, Momentum momentum, int nodeIndex)
         {
             var change = -delta;
-            weight.Value += change;
+            prevLayerWeight.Value += change;
 
-            momentum?.ApplyBiasMomentum(node, prevLayer, change, nodeIndex);
+            momentum?.ApplyBiasMomentum(prevLayer, prevLayerWeight, change, nodeIndex);
         }
     }
 }
