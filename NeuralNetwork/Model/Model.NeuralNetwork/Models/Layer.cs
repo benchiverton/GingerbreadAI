@@ -24,11 +24,12 @@ namespace Model.NeuralNetwork.Models
         public Layer(int nodeCount, Layer[] previousGroups)
         {
             Nodes = new Node[nodeCount];
+            PreviousLayers = previousGroups;
+
             for (var i = 0; i < nodeCount; i++)
             {
                 Nodes[i] = new Node(previousGroups);
             }
-            PreviousLayers = previousGroups;
         }
 
         public void PopulateAllOutputs(double[] inputs)

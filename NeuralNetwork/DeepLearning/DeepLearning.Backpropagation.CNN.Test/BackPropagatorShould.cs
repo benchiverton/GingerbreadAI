@@ -264,6 +264,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
             };
             filters.AddPooling(2);
             var output = new Layer(3, filters);
+            var momentum = Momentum.GenerateMomentum(output, 0.9);
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -292,7 +293,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.5);
+                output.Backpropagate(inputs, targetOutputs, 0.1, momentum);
             }
 
             var redInput = ResolveInputs(true, false, false);

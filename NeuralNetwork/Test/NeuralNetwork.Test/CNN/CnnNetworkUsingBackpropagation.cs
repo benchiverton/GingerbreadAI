@@ -30,23 +30,23 @@ namespace NeuralNetwork.Test.CNN
         [RunnableInDebugOnly]
         public void PredictCatVsDog()
         {
-            var inputR = new Layer2D((101, 101), new Layer[0]);
-            var inputG = new Layer2D((101, 101), new Layer[0]);
-            var inputB = new Layer2D((101, 101), new Layer[0]);
+            var inputR = new Layer2D((100, 100), new Layer[0]);
+            var inputG = new Layer2D((100, 100), new Layer[0]);
+            var inputB = new Layer2D((100, 100), new Layer[0]);
             var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, 3);
-            filters.AddPooling(3);
+            filters.AddPooling(2);
             var stepDownLayer = new Layer(32, filters.ToArray());
-            stepDownLayer.Initialise(new Random());
-            var output = new Layer(2, new[] { stepDownLayer });
+            var output = new Layer(1, new[] { stepDownLayer });
             var momentum = Momentum.GenerateMomentum(output, 0.9);
+            output.Initialise(new Random());
 
             var trainingDataCat = GetImageData("cat", TrainingDataDir, inputR, inputG, inputB).GetEnumerator();
             var trainingDataDog = GetImageData("dog", TrainingDataDir, inputR, inputG, inputB).GetEnumerator();
             var i = 0;
             while (trainingDataCat.MoveNext() && trainingDataDog.MoveNext() && i < 1000)
             {
-                output.Backpropagate(trainingDataCat.Current, new[] { 1d, 0d }, 0.1, momentum);
-                output.Backpropagate(trainingDataDog.Current, new[] { 0d, 1d }, 0.1, momentum);
+                output.Backpropagate(trainingDataCat.Current, new[] { 1d }, 0.1, momentum);
+                output.Backpropagate(trainingDataDog.Current, new[] { 0d }, 0.1, momentum);
                 i++;
             }
 
@@ -56,8 +56,9 @@ namespace NeuralNetwork.Test.CNN
             var incorrectDogResults = 0;
             foreach (var testCatData in GetImageData("cat", TestDataDir, inputR, inputG, inputB))
             {
+                if (correctCatResults + incorrectCatResults > 500) continue;
                 output.PopulateAllOutputs(testCatData);
-                if (output.Nodes[0].Output > output.Nodes[1].Output)
+                if (output.Nodes[0].Output > 0.5)
                 {
                     correctCatResults++;
                 }
@@ -68,8 +69,9 @@ namespace NeuralNetwork.Test.CNN
             }
             foreach (var testDogData in GetImageData("dog", TestDataDir, inputR, inputG, inputB))
             {
+                if (correctDogResults + incorrectDogResults > 500) continue;
                 output.PopulateAllOutputs(testDogData);
-                if (output.Nodes[0].Output > output.Nodes[1].Output)
+                if (output.Nodes[0].Output < 0.5)
                 {
                     correctDogResults++;
                 }
@@ -78,8 +80,8 @@ namespace NeuralNetwork.Test.CNN
                     incorrectDogResults++;
                 }
             }
-            _testOutputHelper.WriteLine($"Cat accuracy: {(double)correctCatResults / correctCatResults + incorrectCatResults}");
-            _testOutputHelper.WriteLine($"Dog accuracy: {(double)correctDogResults / correctDogResults + incorrectDogResults}");
+            _testOutputHelper.WriteLine($"Cat accuracy: {(double)correctCatResults / (correctCatResults + incorrectCatResults)}");
+            _testOutputHelper.WriteLine($"Dog accuracy: {(double)correctDogResults / (correctDogResults + incorrectDogResults)}");
             // assert that it can now resolve cat vs dog with other data
         }
 
@@ -91,17 +93,17 @@ namespace NeuralNetwork.Test.CNN
             {
                 var image = new Bitmap(file);
 
-                var red = new double[10201];
-                var blue = new double[10201];
-                var green = new double[10201];
-                for (var i = 0; i < 101; i++)
+                var red = new double[10000];
+                var blue = new double[10000];
+                var green = new double[10000];
+                for (var i = 0; i < 100; i++)
                 {
-                    for (var j = 0; j < 101; j++)
+                    for (var j = 0; j < 100; j++)
                     {
-                        var pixel = image.GetPixel(i * image.Width / 101, j * image.Height / 101);
-                        red[j * 101 + i] = pixel.R;
-                        blue[j * 101 + i] = pixel.G;
-                        green[j * 101 + i] = pixel.B;
+                        var pixel = image.GetPixel(i * image.Width / 100, j * image.Height / 100);
+                        red[j * 100 + i] = pixel.R / 256d;
+                        blue[j * 100 + i] = pixel.G / 256d;
+                        green[j * 100 + i] = pixel.B / 256d;
                     }
                 }
 
