@@ -11,14 +11,14 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
             var nodes = new List<Node>();
 
             var (height, width) = (filter.PreviousLayers[0] as Layer2D).Dimensions;
-            for (var i = 0; i < height - filter.Dimension - poolingDimension + 2; i += poolingDimension)
+            for (var i = 0; i < height - filter.Dimension - poolingDimension + 2; i += poolingDimension) // down
             {
-                for (var j = 0; j < width - filter.Dimension - poolingDimension + 2; j += poolingDimension)
+                for (var j = 0; j < width - filter.Dimension - poolingDimension + 2; j += poolingDimension) // across
                 {
                     var nodeWeights = new Dictionary<Node, Weight>();
-                    for (var k = 0; k < poolingDimension; k++) // across
+                    for (var k = 0; k < poolingDimension; k++) // down
                     {
-                        for (var l = 0; l < poolingDimension; l++) // down
+                        for (var l = 0; l < poolingDimension; l++) // across
                         {
                             var nodePosition = j + l + (i + k) * (width - filter.Dimension + 1);
                             var filterNode = filter.Nodes[nodePosition];

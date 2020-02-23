@@ -2,7 +2,6 @@
 
 namespace Model.NeuralNetwork.Models
 {
-    // This class is a yikes from me
     public class Weight
     {
         public Weight(double value)
@@ -10,6 +9,6 @@ namespace Model.NeuralNetwork.Models
             Value = value;
         }
 
-        public double Value { get; set; }
+        public virtual double Value { get; set; }
     }
 }

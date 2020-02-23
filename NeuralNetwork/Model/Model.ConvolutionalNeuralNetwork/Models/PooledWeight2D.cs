@@ -16,7 +16,7 @@ namespace Model.ConvolutionalNeuralNetwork.Models
         private double _magnitude;
         private double _value;
 
-        public new double Value { get => _value * _magnitude; set => _value = value; }
+        public override double Value { get => _value * _magnitude; set => _value = value; }
 
         public void IncreaseOccurrences()
         {

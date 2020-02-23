@@ -26,7 +26,7 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
             // 1,2,4,5 + 2,3,4,6 + 4,5,7,8 + 5,6,8,9
             var input = new Layer2D((3, 3), new Layer[0]);
             var filter = new Filter2D(new[] { input }, 2);
-            // Expected Weights: 
+            // Expected _magnitudes: 
             // 0.25: 1,3,7,9
             // 0.50: 2,4,6,8
             // 1.00: 5
@@ -47,17 +47,13 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
 
             var node = Assert.Single(filter.Nodes);
             Assert.Equal(9, node.Weights.Count);
-            var enumerator = node.Weights.GetEnumerator();
-            var i = 0;
-            while (enumerator.MoveNext())
+            for (var i = 0; i < input.Nodes.Length; i++)
             {
-                Assert.Contains(enumerator.Current.Key, input.Nodes);
-                // so that we can assert the _magnitude is correctly set
-                enumerator.Current.Value.Value = 1;
-                Assert.Equal(expectedWeights[i], enumerator.Current.Value.Value);
-                i++;
+                var associatedWeight = node.Weights.First(w => w.Key == input.Nodes[i]);
+                // set weight so that we can assert the _magnitude is correctly set
+                associatedWeight.Value.Value = 1;
+                Assert.Equal(expectedWeights[i], associatedWeight.Value.Value);
             }
-            enumerator.Dispose();
         }
     }
 }

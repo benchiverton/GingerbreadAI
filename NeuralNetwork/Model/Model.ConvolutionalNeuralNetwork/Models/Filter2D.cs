@@ -18,23 +18,23 @@ namespace Model.ConvolutionalNeuralNetwork.Models
             foreach (var prevLayer in previousLayers)
             {
                 var filterWeights = new Weight[Dimension, Dimension];
-                for (var i = 0; i < Dimension; i++) // across
+                for (var i = 0; i < Dimension; i++) // down
                 {
-                    for (var j = 0; j < Dimension; j++) // down
+                    for (var j = 0; j < Dimension; j++) // across
                     {
                         filterWeights[j, i] = new Weight(0);
                     }
                 }
                 filterWeightMap.Add(prevLayer, filterWeights);
             }
-            for (var i = 0; i < height - Dimension + 1; i++)
+            for (var i = 0; i < height - Dimension + 1; i++) // down
             {
-                for (var j = 0; j < width - Dimension + 1; j++)
+                for (var j = 0; j < width - Dimension + 1; j++) // across
                 {
                     var nodeWeights = new Dictionary<Node, Weight>();
-                    for (var k = 0; k < Dimension; k++) // across
+                    for (var k = 0; k < Dimension; k++) // down
                     {
-                        for (var l = 0; l < Dimension; l++) // down
+                        for (var l = 0; l < Dimension; l++) // across
                         {
                             var nodePosition = j + l + (i + k) * width;
                             foreach (var prevLayer in previousLayers)
