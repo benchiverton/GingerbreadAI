@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork.Models;
@@ -49,10 +48,10 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
             Assert.Equal(9, node.Weights.Count);
             for (var i = 0; i < input.Nodes.Length; i++)
             {
-                var associatedWeight = node.Weights.First(w => w.Key == input.Nodes[i]);
+                var (_, weight) = node.Weights.First(w => w.Key == input.Nodes[i]);
                 // set weight so that we can assert the _magnitude is correctly set
-                associatedWeight.Value.Value = 1;
-                Assert.Equal(expectedWeights[i], associatedWeight.Value.Value);
+                weight.Value = 1;
+                Assert.Equal(expectedWeights[i], weight.Value);
             }
         }
     }
