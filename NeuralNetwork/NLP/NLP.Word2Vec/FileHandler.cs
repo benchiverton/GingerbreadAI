@@ -103,7 +103,7 @@ namespace NLP.Word2Vec
                     {
                         var inputs = new double[words.Count];
                         inputs[i] = 1;
-                        neuralNetwork.PopulateAllOutputs(inputs);
+                        neuralNetwork.CalculateOutputs(inputs);
 
                         stringBuilder.Append($"{words[i]},");
                         for (var j = 0; j < words.Count; j++)

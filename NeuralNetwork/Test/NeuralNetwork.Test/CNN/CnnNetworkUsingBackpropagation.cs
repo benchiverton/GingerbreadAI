@@ -57,7 +57,7 @@ namespace NeuralNetwork.Test.CNN
             foreach (var testCatData in GetImageData("cat", TestDataDir, inputR, inputG, inputB))
             {
                 if (correctCatResults + incorrectCatResults > 500) continue;
-                output.PopulateAllOutputs(testCatData);
+                output.CalculateOutputs(testCatData);
                 if (output.Nodes[0].Output > 0.5)
                 {
                     correctCatResults++;
@@ -70,7 +70,7 @@ namespace NeuralNetwork.Test.CNN
             foreach (var testDogData in GetImageData("dog", TestDataDir, inputR, inputG, inputB))
             {
                 if (correctDogResults + incorrectDogResults > 500) continue;
-                output.PopulateAllOutputs(testDogData);
+                output.CalculateOutputs(testDogData);
                 if (output.Nodes[0].Output < 0.5)
                 {
                     correctDogResults++;
@@ -82,11 +82,8 @@ namespace NeuralNetwork.Test.CNN
             }
             _testOutputHelper.WriteLine($"Cat accuracy: {(double)correctCatResults / (correctCatResults + incorrectCatResults)}");
             _testOutputHelper.WriteLine($"Dog accuracy: {(double)correctDogResults / (correctDogResults + incorrectDogResults)}");
-            // assert that it can now resolve cat vs dog with other data
         }
 
-        // 1, 0 => cat
-        // 0, 1 => dog
         private IEnumerable<Dictionary<Layer, double[]>> GetImageData(string filePrefix, string fileDir, Layer r, Layer g, Layer b)
         {
             foreach (var file in Directory.EnumerateFileSystemEntries(fileDir, $"{filePrefix}*"))

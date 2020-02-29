@@ -49,7 +49,7 @@ namespace Model.NeuralNetwork.Models
             }
         }
 
-        public void PopulateOutput()
+        public void CalculateOutput()
         {
             var output = 0d;
             foreach (var previousNodeWeight in Weights)

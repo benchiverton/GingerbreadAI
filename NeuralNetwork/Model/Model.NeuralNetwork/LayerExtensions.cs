@@ -27,19 +27,19 @@ namespace Model.NeuralNetwork
 
         public static double[] GetResults(this Layer layer, double[] inputs)
         {
-            layer.PopulateAllOutputs(inputs);
+            layer.CalculateOutputs(inputs);
             return layer.Nodes.Select(n => n.Output).ToArray();
         }
 
         public static double[] GetResults(this Layer layer, Dictionary<Layer, double[]> inputs)
         {
-            layer.PopulateAllOutputs(inputs);
+            layer.CalculateOutputs(inputs);
             return layer.Nodes.Select(n => n.Output).ToArray();
         }
 
         public static double GetResult(this Layer layer, int inputIndex, int outputIndex, double inputValue = 1)
         {
-            layer.PopulateIndexedOutput(inputIndex, outputIndex, inputValue);
+            layer.CalculateIndexedOutput(inputIndex, outputIndex, inputValue);
             return layer.Nodes[outputIndex].Output;
         }
 

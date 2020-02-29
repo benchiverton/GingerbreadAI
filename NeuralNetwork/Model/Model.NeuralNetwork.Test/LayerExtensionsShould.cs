@@ -30,7 +30,7 @@ namespace Model.NeuralNetwork.Test
         public void DeepCopyCorrectly()
         {
             _output.Initialise(new Random());
-            _output.PopulateAllOutputs(new[] { 0.1, 0.2, 0.3, 0.4, 0.5 });
+            _output.CalculateOutputs(new[] { 0.1, 0.2, 0.3, 0.4, 0.5 });
 
             var copiedOutput = _output.DeepCopy();
             var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
@@ -90,11 +90,11 @@ namespace Model.NeuralNetwork.Test
             var inputs = new[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
 
             _output.Initialise(random);
-            _output.PopulateAllOutputs(inputs);
+            _output.CalculateOutputs(inputs);
 
             var copiedOutput = _output.CloneWithSameWeightKeyReferences();
             copiedOutput.Initialise(random);
-            copiedOutput.PopulateAllOutputs(inputs);
+            copiedOutput.CalculateOutputs(inputs);
 
             var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
             var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 15);
@@ -160,11 +160,11 @@ namespace Model.NeuralNetwork.Test
             var inputs = new[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
 
             _output.Initialise(random);
-            _output.PopulateAllOutputs(inputs);
+            _output.CalculateOutputs(inputs);
 
             var copiedOutput = _output.CloneWithSameWeightValueReferences();
             copiedOutput.Initialise(random);
-            copiedOutput.PopulateAllOutputs(inputs);
+            copiedOutput.CalculateOutputs(inputs);
 
             var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
             var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 15);

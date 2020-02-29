@@ -24,7 +24,7 @@ namespace Model.NeuralNetwork.Test.Models
             var outputGroup = new Layer(10, new[] { inputGroup });
 
             var inputs = new double[5];
-            Assert.Throws<ArgumentException>(() => outputGroup.PopulateAllOutputs(inputs));
+            Assert.Throws<ArgumentException>(() => outputGroup.CalculateOutputs(inputs));
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Model.NeuralNetwork.Test.Models
                 PreviousLayers = new[] { innerLayer }
             };
 
-            outputLayer.PopulateAllOutputs(new[] { 0.5 });
+            outputLayer.CalculateOutputs(new[] { 0.5 });
 
             // checking that the values calculated in the inner node are correct
             var innerResult = innerLayer.Nodes[0].Output;
@@ -103,7 +103,7 @@ namespace Model.NeuralNetwork.Test.Models
                 PreviousLayers = new[] { innerLayer }
             };
 
-            outputLayer.PopulateIndexedOutput(2, 1, 0.5);
+            outputLayer.CalculateIndexedOutput(2, 1, 0.5);
 
             // checking that the values calculated in the inner node are correct
             var innerResult = innerLayer.Nodes[0].Output;
@@ -155,7 +155,7 @@ namespace Model.NeuralNetwork.Test.Models
                 PreviousLayers = new[] { innerLayer1, innerLayer2 }
             };
 
-            outputLayer.PopulateAllOutputs(new[] { 0.5 });
+            outputLayer.CalculateOutputs(new[] { 0.5 });
 
             // checking that the values calculated in the inner1 node are correct
             var innerResult1 = innerLayer1.Nodes[0].Output;
@@ -208,7 +208,7 @@ namespace Model.NeuralNetwork.Test.Models
                 PreviousLayers = new[] { innerLayer }
             };
 
-            output.PopulateAllOutputs(new[] { 41.0, 43.0 });
+            output.CalculateOutputs(new[] { 41.0, 43.0 });
 
             Assert.Equal(Math.Round(innerLayer.Nodes[0].Output, 8), Math.Round(0.978751677288986, 8));
             Assert.Equal(Math.Round(innerLayer.Nodes[1].Output, 8), Math.Round(0.99742672684619, 8));

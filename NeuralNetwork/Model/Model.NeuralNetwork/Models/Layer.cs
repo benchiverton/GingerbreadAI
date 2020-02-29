@@ -32,75 +32,75 @@ namespace Model.NeuralNetwork.Models
             }
         }
 
-        public void PopulateAllOutputs(double[] inputs)
+        public void CalculateOutputs(double[] inputs)
         {
             if (!PreviousLayers.Any())
             {
-                PopulateInputLayersOutputs(inputs);
+                SetOutputs(inputs);
                 return;
             }
 
             foreach (var prevLayer in PreviousLayers)
             {
-                prevLayer.PopulateAllOutputs(inputs);
+                prevLayer.CalculateOutputs(inputs);
             }
 
             foreach (var node in Nodes)
             {
-                node.PopulateOutput();
+                node.CalculateOutput();
             }
         }
 
-        public void PopulateAllOutputs(Dictionary<Layer, double[]> inputs)
+        public void CalculateOutputs(Dictionary<Layer, double[]> inputs)
         {
             if (!PreviousLayers.Any())
             {
-                PopulateInputLayersOutputs(inputs[this]);
+                SetOutputs(inputs[this]);
                 return;
             }
 
             foreach (var prevLayer in PreviousLayers)
             {
-                prevLayer.PopulateAllOutputs(inputs);
+                prevLayer.CalculateOutputs(inputs);
             }
 
             foreach (var node in Nodes)
             {
-                node.PopulateOutput();
+                node.CalculateOutput();
             }
         }
 
         /// <summary>
         ///  Note: does not support multiple inputs
         /// </summary>
-        public void PopulateIndexedOutput(int inputIndex, int outputIndex, double inputValue)
+        public void CalculateIndexedOutput(int inputIndex, int outputIndex, double inputValue)
         {
             foreach (var previousLayer in PreviousLayers)
             {
-                PopulateIndexedOutput(previousLayer, inputIndex, inputValue);
+                CalculateIndexedOutput(previousLayer, inputIndex, inputValue);
             }
 
-            Nodes[outputIndex].PopulateOutput();
+            Nodes[outputIndex].CalculateOutput();
         }
 
         #region Private methods
 
 
-        private void PopulateInputLayersOutputs(double[] inputs)
+        private void SetOutputs(double[] outputs)
         {
-            if (Nodes.Length != inputs.Length)
+            if (Nodes.Length != outputs.Length)
             {
-                throw new ArgumentException($"Input layer length ({Nodes.Length}) not equal to length of your inputs ({inputs.Length}).");
+                throw new ArgumentException($"Layer length ({Nodes.Length}) not equal to length of your output array ({outputs.Length}).");
             }
 
             var i = 0;
             foreach (var node in Nodes)
             {
-                node.Output = inputs[i++];
+                node.Output = outputs[i++];
             }
         }
 
-        private bool PopulateIndexedOutput(Layer layer, int inputIndex, double inputValue)
+        private bool CalculateIndexedOutput(Layer layer, int inputIndex, double inputValue)
         {
             if (!layer.PreviousLayers.Any())
             {
@@ -111,7 +111,7 @@ namespace Model.NeuralNetwork.Models
             var shouldPopulateAllOutputs = false;
             foreach (var prevLayer in layer.PreviousLayers)
             {
-                var isNextToInput = PopulateIndexedOutput(prevLayer, inputIndex, inputValue);
+                var isNextToInput = CalculateIndexedOutput(prevLayer, inputIndex, inputValue);
 
                 if (isNextToInput)
                 {
@@ -133,7 +133,7 @@ namespace Model.NeuralNetwork.Models
             {
                 foreach (var node in layer.Nodes)
                 {
-                    node.PopulateOutput();
+                    node.CalculateOutput();
                 }
             }
 
