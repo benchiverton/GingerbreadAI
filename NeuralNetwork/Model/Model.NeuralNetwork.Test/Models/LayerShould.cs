@@ -1,3 +1,5 @@
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 
 namespace Model.NeuralNetwork.Test.Models
@@ -20,8 +22,8 @@ namespace Model.NeuralNetwork.Test.Models
         public void ThrowAnExceptionWhenInputIsInvalid()
         {
             // Input group
-            var inputGroup = new Layer(10, new Layer[0]);
-            var outputGroup = new Layer(10, new[] { inputGroup });
+            var inputGroup = new Layer(10, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            var outputGroup = new Layer(10, new[] { inputGroup }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
 
             var inputs = new double[5];
             Assert.Throws<ArgumentException>(() => outputGroup.CalculateOutputs(inputs));
@@ -31,7 +33,7 @@ namespace Model.NeuralNetwork.Test.Models
         public void CalculateBasicResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer(1, new Layer[0]);
+            var inputLayer = new Layer(1, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             // Hidden group
             var innerNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -41,7 +43,8 @@ namespace Model.NeuralNetwork.Test.Models
             var innerLayer = new Layer
             {
                 Nodes = new[] { innerNode },
-                PreviousLayers = new[] { inputLayer }
+                PreviousLayers = new[] { inputLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
             // Output group
             var outputNodeInfo = new Dictionary<Layer, (double[], double)>
@@ -52,7 +55,8 @@ namespace Model.NeuralNetwork.Test.Models
             var outputLayer = new Layer
             {
                 Nodes = new[] { outputNode },
-                PreviousLayers = new[] { innerLayer }
+                PreviousLayers = new[] { innerLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
 
             outputLayer.CalculateOutputs(new[] { 0.5 });
@@ -69,7 +73,7 @@ namespace Model.NeuralNetwork.Test.Models
         public void CalculateIndexedResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer(5, new Layer[0]);
+            var inputLayer = new Layer(5, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             // Hidden group
             var innerNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -79,7 +83,8 @@ namespace Model.NeuralNetwork.Test.Models
             var innerLayer = new Layer
             {
                 Nodes = new[] { innerNode },
-                PreviousLayers = new[] { inputLayer }
+                PreviousLayers = new[] { inputLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
             // Output group
             var outputNodeInfo1 = new Dictionary<Layer, (double[], double)>
@@ -100,7 +105,8 @@ namespace Model.NeuralNetwork.Test.Models
             var outputLayer = new Layer
             {
                 Nodes = new[] { outputNode1, outputNode2, outputNode3 },
-                PreviousLayers = new[] { innerLayer }
+                PreviousLayers = new[] { innerLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
 
             outputLayer.CalculateIndexedOutput(2, 1, 0.5);
@@ -117,7 +123,7 @@ namespace Model.NeuralNetwork.Test.Models
         public void CalculateMultipleGroupsResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer(1, new Layer[0]);
+            var inputLayer = new Layer(1, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             // Hidden group 1
             // Hidden group
             var innerNodeInfo1 = new Dictionary<Layer, (double[], double)>
@@ -128,7 +134,8 @@ namespace Model.NeuralNetwork.Test.Models
             var innerLayer1 = new Layer
             {
                 Nodes = new[] { innerNode1 },
-                PreviousLayers = new[] { inputLayer }
+                PreviousLayers = new[] { inputLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
             // Hidden group 2
             // Hidden group
@@ -140,7 +147,8 @@ namespace Model.NeuralNetwork.Test.Models
             var innerLayer2 = new Layer
             {
                 Nodes = new[] { innerNode2 },
-                PreviousLayers = new[] { inputLayer }
+                PreviousLayers = new[] { inputLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
             // Output group
             var outputNodeInfo = new Dictionary<Layer, (double[], double)>
@@ -152,7 +160,8 @@ namespace Model.NeuralNetwork.Test.Models
             var outputLayer = new Layer
             {
                 Nodes = new[] { outputNode },
-                PreviousLayers = new[] { innerLayer1, innerLayer2 }
+                PreviousLayers = new[] { innerLayer1, innerLayer2 },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
 
             outputLayer.CalculateOutputs(new[] { 0.5 });
@@ -171,7 +180,7 @@ namespace Model.NeuralNetwork.Test.Models
         [Fact]
         public void CalculateMultipleNodesResultCorrectly()
         {
-            var inputLayer = new Layer(2, new Layer[0]);
+            var inputLayer = new Layer(2, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             var innerNode1Info = new Dictionary<Layer, (double[], double)>
             {
                 { inputLayer, (new[] { 0.02, 0.07 }, 0) }
@@ -190,7 +199,8 @@ namespace Model.NeuralNetwork.Test.Models
             var innerLayer = new Layer
             {
                 Nodes = new[] { innerNode1, innerNode2, innerNode3 },
-                PreviousLayers = new[] { inputLayer }
+                PreviousLayers = new[] { inputLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
             var outerNode1Info = new Dictionary<Layer, (double[], double)>
             {
@@ -205,7 +215,8 @@ namespace Model.NeuralNetwork.Test.Models
             var output = new Layer
             {
                 Nodes = new[] { outerNode1, outerNode2 },
-                PreviousLayers = new[] { innerLayer }
+                PreviousLayers = new[] { innerLayer },
+                ActivationFunctionType = ActivationFunctionType.Sigmoid
             };
 
             output.CalculateOutputs(new[] { 41.0, 43.0 });

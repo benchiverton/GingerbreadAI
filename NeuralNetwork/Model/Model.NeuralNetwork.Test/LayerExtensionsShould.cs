@@ -1,4 +1,6 @@
-﻿using Model.NeuralNetwork.Models;
+﻿using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
+using Model.NeuralNetwork.Models;
 
 namespace Model.NeuralNetwork.Test
 {
@@ -20,10 +22,10 @@ namespace Model.NeuralNetwork.Test
         {
             _testOutputHelper = testOutputHelper;
 
-            _input = new Layer(5, new Layer[0]);
-            _hidden1 = new Layer(10, new[] { _input });
-            _hidden2 = new Layer(15, new[] { _input });
-            _output = new Layer(20, new[] { _hidden1, _hidden2 });
+            _input = new Layer(5, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
+            _hidden1 = new Layer(10, new[] { _input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
+            _hidden2 = new Layer(15, new[] { _input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
+            _output = new Layer(20, new[] { _hidden1, _hidden2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
         }
 
         //[Fact]
@@ -101,12 +103,16 @@ namespace Model.NeuralNetwork.Test
             var copiedInput = copiedHidden1.PreviousLayers.Single();
 
             // input
+            Assert.Equal(_input.ActivationFunctionType, copiedInput.ActivationFunctionType);
+            Assert.Equal(_input.InitialisationFunctionType, copiedInput.InitialisationFunctionType);
             for (var i = 0; i < _input.Nodes.Length; i++)
             {
                 // inputs will be equal (as we supply them!)
                 Assert.Equal(_input.Nodes[i].Output, copiedInput.Nodes[i].Output);
             }
             // hidden 1
+            Assert.Equal(_hidden1.ActivationFunctionType, copiedHidden1.ActivationFunctionType);
+            Assert.Equal(_hidden1.InitialisationFunctionType, copiedHidden1.InitialisationFunctionType);
             for (var i = 0; i < _hidden1.Nodes.Length; i++)
             {
                 Assert.NotEqual(_hidden1.Nodes[i].Output, copiedHidden1.Nodes[i].Output);
@@ -122,6 +128,8 @@ namespace Model.NeuralNetwork.Test
                 }
             }
             // hidden 2
+            Assert.Equal(_hidden2.ActivationFunctionType, copiedHidden2.ActivationFunctionType);
+            Assert.Equal(_hidden2.InitialisationFunctionType, copiedHidden2.InitialisationFunctionType);
             for (var i = 0; i < _hidden2.Nodes.Length; i++)
             {
                 Assert.NotEqual(_hidden2.Nodes[i].Output, copiedHidden2.Nodes[i].Output);
@@ -137,6 +145,8 @@ namespace Model.NeuralNetwork.Test
                 }
             }
             // output
+            Assert.Equal(_output.ActivationFunctionType, copiedOutput.ActivationFunctionType);
+            Assert.Equal(_output.InitialisationFunctionType, copiedOutput.InitialisationFunctionType);
             for (var i = 0; i < _output.Nodes.Length; i++)
             {
                 Assert.NotEqual(_output.Nodes[i].Output, copiedOutput.Nodes[i].Output);

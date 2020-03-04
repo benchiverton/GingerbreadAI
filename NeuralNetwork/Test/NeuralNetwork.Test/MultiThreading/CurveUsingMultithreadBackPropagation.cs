@@ -7,6 +7,8 @@ using DeepLearning.Backpropagation;
 using DeepLearning.Backpropagation.Extensions;
 using Library.Computations.Statistics;
 using Model.NeuralNetwork;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
@@ -25,10 +27,10 @@ namespace NeuralNetwork.Test.MultiThreading
         [RunnableInDebugOnly]
         public void ApproximateCurveUsingMultipleThreads()
         {
-            var input = new Layer(1, new Layer[0]);
-            var inner1 = new Layer(20, new[] { input });
-            var inner2 = new Layer(20, new[] { inner1 });
-            var outputLayer = new Layer(1, new[] { inner1, inner2 });
+            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inner1 = new Layer(20, new[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inner2 = new Layer(20, new[] { inner1 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var outputLayer = new Layer(1, new[] { inner1, inner2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
             var initialResults = new double[100];

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Library.Computations;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 
 namespace Model.NeuralNetwork.Models
 {
@@ -17,12 +18,44 @@ namespace Model.NeuralNetwork.Models
         /// </summary>
         public Layer[] PreviousLayers { get; set; }
 
-        public Layer()
+        private ActivationFunctionType _activationFunctionType;
+        public ActivationFunctionType ActivationFunctionType
         {
+            get => _activationFunctionType;
+            set
+            {
+                _activationFunctionType = value;
+                (ActivationFunction, ActivationFunctionDifferential) = ActivationFunctionResolver.ResolveActivationFunctions(value);
+            }
+        }
+        public Func<double, double> ActivationFunction { get; private set; }
+        public Func<double, double> ActivationFunctionDifferential { get; private set; }
+
+
+        private InitialisationFunctionType _initialisationFunctionType;
+        public InitialisationFunctionType InitialisationFunctionType
+        {
+            get => _initialisationFunctionType;
+            set
+            {
+                _initialisationFunctionType = value;
+                InitialisationFunction = InitialisationFunctionResolver.ResolveInitialisationFunctions(value);
+            }
+        }
+        public Func<Random, int, double> InitialisationFunction { get; private set; }
+
+        public Layer(
+            ActivationFunctionType activationFunctionType = ActivationFunctionType.RELU,
+            InitialisationFunctionType initialisationFunctionType = InitialisationFunctionType.HeEtAl)
+        {
+            ActivationFunctionType = activationFunctionType;
+            InitialisationFunctionType = initialisationFunctionType;
         }
 
-        public Layer(int nodeCount, Layer[] previousGroups)
+        public Layer(int nodeCount, Layer[] previousGroups, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionType)
         {
+            ActivationFunctionType = activationFunctionType;
+            InitialisationFunctionType = initialisationFunctionType;
             Nodes = new Node[nodeCount];
             PreviousLayers = previousGroups;
 
@@ -47,7 +80,7 @@ namespace Model.NeuralNetwork.Models
 
             foreach (var node in Nodes)
             {
-                node.CalculateOutput();
+                node.CalculateOutput(ActivationFunction);
             }
         }
 
@@ -66,7 +99,7 @@ namespace Model.NeuralNetwork.Models
 
             foreach (var node in Nodes)
             {
-                node.CalculateOutput();
+                node.CalculateOutput(ActivationFunction);
             }
         }
 
@@ -80,7 +113,7 @@ namespace Model.NeuralNetwork.Models
                 CalculateIndexedOutput(previousLayer, inputIndex, inputValue);
             }
 
-            Nodes[outputIndex].CalculateOutput();
+            Nodes[outputIndex].CalculateOutput(ActivationFunction);
         }
 
         #region Private methods
@@ -118,8 +151,7 @@ namespace Model.NeuralNetwork.Models
                     var inputNode = prevLayer.Nodes[inputIndex];
                     foreach (var node in layer.Nodes)
                     {
-                        node.Output = node.Weights[inputNode].Value * inputNode.Output + node.BiasWeights[prevLayer].Value;
-                        node.Output = LogisticFunction.ComputeOutput(node.Output);
+                        node.Output = ActivationFunction(node.Weights[inputNode].Value * inputNode.Output + node.BiasWeights[prevLayer].Value);
                     }
                 }
                 else
@@ -133,7 +165,7 @@ namespace Model.NeuralNetwork.Models
             {
                 foreach (var node in layer.Nodes)
                 {
-                    node.CalculateOutput();
+                    node.CalculateOutput(ActivationFunction);
                 }
             }
 

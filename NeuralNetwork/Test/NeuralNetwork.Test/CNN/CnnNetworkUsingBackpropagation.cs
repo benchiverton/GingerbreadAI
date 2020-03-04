@@ -8,6 +8,8 @@ using DeepLearning.Backpropagation.Extensions;
 using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
@@ -29,13 +31,13 @@ namespace NeuralNetwork.Test.CNN
         [RunnableInDebugOnly]
         public void PredictCatVsDog()
         {
-            var inputR = new Layer2D((100, 100), new Layer[0]);
-            var inputG = new Layer2D((100, 100), new Layer[0]);
-            var inputB = new Layer2D((100, 100), new Layer[0]);
-            var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, 3);
+            var inputR = new Layer2D((100, 100), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inputG = new Layer2D((100, 100), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inputB = new Layer2D((100, 100), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, 3, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             filters.AddPooling(2);
-            var stepDownLayer = new Layer(32, filters.ToArray());
-            var output = new Layer(1, new[] { stepDownLayer });
+            var stepDownLayer = new Layer(32, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var output = new Layer(1, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             var momentum = output.GenerateMomentum();
             output.Initialise(new Random());
 

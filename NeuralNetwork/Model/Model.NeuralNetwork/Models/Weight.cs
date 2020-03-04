@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Model.NeuralNetwork.Models
+﻿namespace Model.NeuralNetwork.Models
 {
     public class Weight
     {

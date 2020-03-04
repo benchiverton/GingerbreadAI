@@ -1,5 +1,4 @@
 ﻿using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork.Models;
 
 namespace Model.ConvolutionalNeuralNetwork.Extensions
 {

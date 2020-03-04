@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Library.Computations;
 using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
 
@@ -28,7 +27,9 @@ namespace DeepLearning.NegativeSampling
         {
             var outputNode = outputLayer.Nodes[outputIndex];
 
-            var delta = LogisticFunction.ComputeDeltaOutput(currentOutput, targetOutput) * learningRate;
+            var delta = (currentOutput - targetOutput)
+                        * outputLayer.ActivationFunctionDifferential(currentOutput)
+                        * learningRate;
             foreach (var weight in outputNode.Weights)
             {
                 UpdateNodeWeight(outputNode, weight.Key, weight.Value, delta);
@@ -52,7 +53,7 @@ namespace DeepLearning.NegativeSampling
             var inputNode = inputLayer.Nodes[inputIndex];
             foreach (var node in layer.Nodes)
             {
-                var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
+                var delta = sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
                 UpdateNodeWeight(node, inputNode, node.Weights[inputNode], delta);
                 UpdateBiasNodeWeight(node, inputLayer, node.BiasWeights[inputLayer], delta);
             }
@@ -75,7 +76,7 @@ namespace DeepLearning.NegativeSampling
                 {
                     sumDeltaWeights += backwardsPassDeltas[backPassNode] * backPassNode.Weights[node].Value;
                 }
-                var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
+                var delta = sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
                 deltas.Add(node, delta);
 
                 foreach (var weight in node.Weights)

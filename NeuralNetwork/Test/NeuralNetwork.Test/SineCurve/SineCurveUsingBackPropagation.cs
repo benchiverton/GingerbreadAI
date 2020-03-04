@@ -7,6 +7,8 @@ using DeepLearning.Backpropagation;
 using DeepLearning.Backpropagation.Extensions;
 using Library.Computations.Statistics;
 using Model.NeuralNetwork;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
@@ -25,9 +27,9 @@ namespace NeuralNetwork.Test.SineCurve
         [RunnableInDebugOnly]
         public void ApproximateSineCurveUsingBackpropagation()
         {
-            var input = new Layer(1, new Layer[0]);
-            var inner1 = new Layer(6, new[] { input });
-            var outputLayer = new Layer(1, new[] { inner1 });
+            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inner1 = new Layer(6, new[] { input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var outputLayer = new Layer(1, new[] { inner1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
             var initialResults = new double[100];

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Library.Computations;
 
 namespace Model.NeuralNetwork.Models
 {
@@ -42,12 +41,12 @@ namespace Model.NeuralNetwork.Models
             }
         }
 
-        public void CalculateOutput()
+        public void CalculateOutput(Func<double, double> activationFunction)
         {
             var output = Weights.Sum(previousNodeWeight => previousNodeWeight.Key.Output * previousNodeWeight.Value.Value) 
                          + BiasWeights.Sum(previousLayerWeight => previousLayerWeight.Value.Value);
 
-            Output = LogisticFunction.ComputeOutput(output);
+            Output = activationFunction.Invoke(output);
         }
     }
 }

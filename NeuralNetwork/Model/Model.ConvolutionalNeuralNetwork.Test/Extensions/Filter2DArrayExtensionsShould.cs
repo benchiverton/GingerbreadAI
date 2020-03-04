@@ -2,6 +2,8 @@
 using System.Linq;
 using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit;
 
@@ -23,8 +25,8 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
             //
             // Pooling:
             // 1,2,4,5 + 2,3,4,6 + 4,5,7,8 + 5,6,8,9
-            var input = new Layer2D((3, 3), new Layer[0]);
-            var filter = new Filter2D(new[] { input }, 2);
+            var input = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter = new Filter2D(new[] { input }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             // Expected _magnitudes: 
             // 0.25: 1,3,7,9
             // 0.50: 2,4,6,8

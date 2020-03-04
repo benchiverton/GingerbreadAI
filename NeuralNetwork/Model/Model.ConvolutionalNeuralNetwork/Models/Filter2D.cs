@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 
 namespace Model.ConvolutionalNeuralNetwork.Models
 {
     public class Filter2D : Layer2D
     {
-        public Filter2D(Layer2D[] previousLayers, int filterDimension) : base((filterDimension, filterDimension), previousLayers)
+        public Filter2D(Layer2D[] previousLayers, int filterDimension, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionTyp) 
+            : base((filterDimension, filterDimension), previousLayers, activationFunctionType, initialisationFunctionTyp)
         {
+            ActivationFunctionType = ActivationFunctionType.RELU;
+            InitialisationFunctionType = InitialisationFunctionType.Uniform;
+
             var filterWeightMap = new Dictionary<Layer, Weight[,]>();
             foreach (var prevLayer in previousLayers)
             {

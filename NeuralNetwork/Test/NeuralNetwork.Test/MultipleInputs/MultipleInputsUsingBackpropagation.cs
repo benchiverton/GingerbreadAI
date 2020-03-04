@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using DeepLearning.Backpropagation;
 using Model.NeuralNetwork;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
@@ -21,10 +23,10 @@ namespace NeuralNetwork.Test.MultipleInputs
         [RunnableInDebugOnly]
         public void PredictResultsFromMultipleInputs()
         {
-            var input1 = new Layer(1, new Layer[0]);
-            var input2 = new Layer(1, new Layer[0]);
-            var inner = new Layer(5, new[] { input1, input2 });
-            var outputLayer = new Layer(1, new[] { inner });
+            var input1 = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input2 = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inner = new Layer(5, new[] { input1, input2 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var outputLayer = new Layer(1, new[] { inner }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             outputLayer.Initialise(new Random());
 
             var actualResults = new double[6, 6];

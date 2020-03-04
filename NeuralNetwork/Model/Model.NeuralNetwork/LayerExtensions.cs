@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using Library.Computations;
 using Model.NeuralNetwork.Models;
 
 namespace Model.NeuralNetwork
@@ -17,7 +16,7 @@ namespace Model.NeuralNetwork
         {
             foreach (var node in layer.Nodes)
             {
-                node.Initialise(rand);
+                node.Initialise(rand, layer.InitialisationFunction);
             }
             foreach (var nodeGroupPrev in layer.PreviousLayers)
             {
@@ -76,21 +75,18 @@ namespace Model.NeuralNetwork
         #region Private Methods
 
 
-        /// <summary>
-        ///     Initialises a Node with random weights (using He-et-al Initialization).
-        /// </summary>
-        private static void Initialise(this Node node, Random rand)
+        private static void Initialise(this Node node, Random rand, Func<Random, int, double>  initialisationFunction)
         {
             if (node == null) return;
             var feedingNodes = node.Weights.Count;
             foreach (var prevNode in node.Weights.Keys.ToList())
             {
-                node.Weights[prevNode].Value = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
+                node.Weights[prevNode].Value = initialisationFunction.Invoke(rand, feedingNodes);
             }
             var biasWeightKeys = new List<Layer>(node.BiasWeights.Keys.ToList());
             foreach (var biasWeightKey in biasWeightKeys)
             {
-                node.BiasWeights[biasWeightKey].Value = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
+                node.BiasWeights[biasWeightKey].Value = initialisationFunction.Invoke(rand, feedingNodes);
             }
         }
 
@@ -101,7 +97,9 @@ namespace Model.NeuralNetwork
                 var newInputLayer = new Layer()
                 {
                     Nodes = new Node[layer.Nodes.Length],
-                    PreviousLayers = new Layer[0]
+                    PreviousLayers = new Layer[0],
+                    ActivationFunctionType = layer.ActivationFunctionType,
+                    InitialisationFunctionType = layer.InitialisationFunctionType
                 };
 
                 for (var i = 0; i < layer.Nodes.Length; i++)
@@ -125,7 +123,9 @@ namespace Model.NeuralNetwork
             var newLayer = new Layer()
             {
                 PreviousLayers = clonedPreviousLayers.ToArray(),
-                Nodes = new Node[layer.Nodes.Length]
+                Nodes = new Node[layer.Nodes.Length],
+                ActivationFunctionType = layer.ActivationFunctionType,
+                InitialisationFunctionType = layer.InitialisationFunctionType
             };
 
             for (var i = 0; i < layer.Nodes.Length; i++)

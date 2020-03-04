@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Library.Computations;
 using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
 
@@ -49,7 +48,7 @@ namespace DeepLearning.Backpropagation
                     backwardsPassDelta => backwardsPassDelta.Key.Weights.TryGetValue(node, out var backPassWeight)
                         ? backwardsPassDelta.Value * backPassWeight.Value
                         : 0d);
-                var delta = sumDeltaWeights * LogisticFunction.ComputeDifferentialGivenOutput(node.Output);
+                var delta = sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
                 deltas.Add(node, delta);
 
                 foreach (var weight in node.Weights)
@@ -77,7 +76,9 @@ namespace DeepLearning.Backpropagation
             {
                 var node = outputLayer.Nodes[i];
                 var momentumNode = momentum?.Nodes[i];
-                var delta = LogisticFunction.ComputeDeltaOutput(currentOutputs[i], targetOutputs[i]) * learningRate;
+                var delta = (currentOutputs[i] - targetOutputs[i]) 
+                            * outputLayer.ActivationFunctionDifferential(currentOutputs[i]) 
+                            * learningRate;
                 deltas.Add(node, delta);
                 foreach (var weight in node.Weights)
                 {
