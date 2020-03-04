@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DeepLearning.Backpropagation;
+using DeepLearning.Backpropagation.Extensions;
 using Library.Computations.Statistics;
 using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
@@ -25,10 +26,8 @@ namespace NeuralNetwork.Test.SineCurve
         public void ApproximateSineCurveUsingBackpropagation()
         {
             var input = new Layer(1, new Layer[0]);
-            var inner1 = new Layer(5, new[] { input });
-            var inner2 = new Layer(25, new[] { inner1 });
-            var inner3 = new Layer(5, new[] { inner2 });
-            var outputLayer = new Layer(1, new[] { inner3 });
+            var inner1 = new Layer(6, new[] { input });
+            var outputLayer = new Layer(1, new[] { inner1 });
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
             var initialResults = new double[100];
@@ -65,20 +64,20 @@ namespace NeuralNetwork.Test.SineCurve
         private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults)
         {
             var rand = new Random();
-            var output = outputLayer.CloneWithSameWeightValueReferences();
-            var momentum = Momentum.GenerateMomentum(output, 0.9);
             var learningRate = 0.25;
+            outputLayer = outputLayer.CloneWithSameWeightValueReferences();
+            var momentum = outputLayer.GenerateMomentum();
             for (var i = 0; i < 100000; i++)
             {
                 if (i % 1000 == 0)
                 {
                     var currentResults = new double[inputs.Length];
-                    SetResults(inputs, output, currentResults);
+                    SetResults(inputs, outputLayer, currentResults);
                     accuracyResults.Add(AccuracyStatistics.CalculateKolmogorovStatistic(
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = rand.NextDouble();
-                output.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, learningRate, momentum);
+                outputLayer.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, learningRate, momentum, 0.9);
                 ModifyLearningRate(ref learningRate);
             }
         }

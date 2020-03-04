@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using DeepLearning.Backpropagation;
+using DeepLearning.Backpropagation.Extensions;
 using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork;
@@ -27,7 +26,7 @@ namespace NeuralNetwork.Test.CNN
             _testOutputHelper = testOutputHelper;
         }
 
-        [RunnableInDebugOnly]
+        [Fact]
         public void PredictCatVsDog()
         {
             var inputR = new Layer2D((100, 100), new Layer[0]);
@@ -37,7 +36,7 @@ namespace NeuralNetwork.Test.CNN
             filters.AddPooling(2);
             var stepDownLayer = new Layer(32, filters.ToArray());
             var output = new Layer(1, new[] { stepDownLayer });
-            var momentum = Momentum.GenerateMomentum(output, 0.9);
+            var momentum = output.GenerateMomentum();
             output.Initialise(new Random());
 
             var trainingDataCat = GetImageData("cat", TrainingDataDir, inputR, inputG, inputB).GetEnumerator();
@@ -45,8 +44,8 @@ namespace NeuralNetwork.Test.CNN
             var i = 0;
             while (trainingDataCat.MoveNext() && trainingDataDog.MoveNext() && i < 1000)
             {
-                output.Backpropagate(trainingDataCat.Current, new[] { 1d }, 0.1, momentum);
-                output.Backpropagate(trainingDataDog.Current, new[] { 0d }, 0.1, momentum);
+                output.Backpropagate(trainingDataCat.Current, new[] { 1d }, 0.1, momentum, 0.9);
+                output.Backpropagate(trainingDataDog.Current, new[] { 0d }, 0.1, momentum, 0.9);
                 i++;
             }
 

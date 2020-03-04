@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Library.Computations;
 
 namespace Model.NeuralNetwork.Models
@@ -41,25 +42,10 @@ namespace Model.NeuralNetwork.Models
             }
         }
 
-        public Node(IReadOnlyList<Node> previousNodes)
-        {
-            foreach (var node in previousNodes)
-            {
-                Weights.Add(node, new Weight(0));
-            }
-        }
-
         public void CalculateOutput()
         {
-            var output = 0d;
-            foreach (var previousNodeWeight in Weights)
-            {
-                output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
-            }
-            foreach (var previousLayerWeight in BiasWeights)
-            {
-                output += previousLayerWeight.Value.Value;
-            }
+            var output = Weights.Sum(previousNodeWeight => previousNodeWeight.Key.Output * previousNodeWeight.Value.Value) 
+                         + BiasWeights.Sum(previousLayerWeight => previousLayerWeight.Value.Value);
 
             Output = LogisticFunction.ComputeOutput(output);
         }

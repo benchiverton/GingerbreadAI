@@ -54,11 +54,6 @@ namespace Model.NeuralNetwork
             }
         }
 
-        public static Layer CloneWithSameWeightKeyReferences(this Layer layer)
-        {
-            return RecurseCloneWithSameWeightKeyReferences(layer);
-        }
-
         // Use this when multi-threading the same network
         public static Layer CloneWithSameWeightValueReferences(this Layer layer)
         {
@@ -97,43 +92,6 @@ namespace Model.NeuralNetwork
             {
                 node.BiasWeights[biasWeightKey].Value = NetworkCalculations.GetWeightedInitialisation(rand, feedingNodes);
             }
-        }
-
-        private static Layer RecurseCloneWithSameWeightKeyReferences(Layer layer)
-        {
-            var newLayer = new Layer
-            {
-                Nodes = new Node[layer.Nodes.Length],
-                PreviousLayers = new Layer[layer.PreviousLayers.Length]
-            };
-
-            for (var i = 0; i < layer.Nodes.Length; i++)
-            {
-                var newNode = new Node
-                {
-                    Weights = new Dictionary<Node, Weight>(),
-                    BiasWeights = new Dictionary<Layer, Weight>()
-                };
-
-                foreach (var weightKey in layer.Nodes[i].Weights.Keys)
-                {
-                    newNode.Weights.Add(weightKey, new Weight(0));
-                }
-
-                foreach (var biasWeightKey in layer.Nodes[i].BiasWeights.Keys)
-                {
-                    newNode.BiasWeights.Add(biasWeightKey, new Weight(0));
-                }
-
-                newLayer.Nodes[i] = newNode;
-            }
-
-            for (var i = 0; i < layer.PreviousLayers.Length; i++)
-            {
-                newLayer.PreviousLayers[i] = RecurseCloneWithSameWeightKeyReferences(layer.PreviousLayers[i]);
-            }
-
-            return newLayer;
         }
 
         private static Layer RecurseCloneWithSameWeightValueReferences(Layer layer)

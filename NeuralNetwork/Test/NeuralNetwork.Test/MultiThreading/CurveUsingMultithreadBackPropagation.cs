@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DeepLearning.Backpropagation;
+using DeepLearning.Backpropagation.Extensions;
 using Library.Computations.Statistics;
 using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
@@ -67,7 +68,7 @@ namespace NeuralNetwork.Test.MultiThreading
         {
             var rand = new Random();
             var output = outputLayer.CloneWithSameWeightValueReferences();
-            var momentum = Momentum.GenerateMomentum(output, 0.9);
+            var momentum = output.GenerateMomentum();
             var learningRate = 0.25;
 
             for (var i = 0; i < 10000; i++)
