@@ -10,12 +10,12 @@ using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.NN
 {
-    public class MultipleInputsUsingBackpropagation
+    public class CurveFrom2DInputUsingBackpropagation
     {
-        private const string ResultsDirectory = nameof(MultipleInputsUsingBackpropagation);
+        private const string ResultsDirectory = nameof(CurveFrom2DInputUsingBackpropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public MultipleInputsUsingBackpropagation(ITestOutputHelper testOutputHelper)
+        public CurveFrom2DInputUsingBackpropagation(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }

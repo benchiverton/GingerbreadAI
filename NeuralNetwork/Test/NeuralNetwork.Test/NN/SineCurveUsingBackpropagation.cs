@@ -13,12 +13,12 @@ using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.NN
 {
-    public class SineCurveUsingBackPropagation_old
+    public class SineCurveUsingBackpropagation
     {
-        private const string ResultsDirectory = nameof(SineCurveUsingBackPropagation_old);
+        private const string ResultsDirectory = nameof(SineCurveUsingBackpropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public SineCurveUsingBackPropagation_old(ITestOutputHelper testOutputHelper)
+        public SineCurveUsingBackpropagation(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
