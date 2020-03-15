@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using DeepLearning.Backpropagation;
 using DeepLearning.Backpropagation.Extensions;
 using Library.Computations.Statistics;
@@ -14,12 +13,12 @@ using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.NN
 {
-    public class SineCurveUsingBackpropagation
+    public class SineCurveUsingBackPropagation_old
     {
-        private const string ResultsDirectory = nameof(SineCurveUsingBackpropagation);
+        private const string ResultsDirectory = nameof(SineCurveUsingBackPropagation_old);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public SineCurveUsingBackpropagation(ITestOutputHelper testOutputHelper)
+        public SineCurveUsingBackPropagation_old(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -45,11 +44,25 @@ namespace NeuralNetwork.Test.NN
             }
 
             outputLayer.Initialise(new Random());
-            Parallel.For(0, 4, x => TrainNetwork(outputLayer, inputs, accuracyResults));
+            var rand = new Random();
+            var momentum = outputLayer.GenerateMomentum();
+            for (var i = 0; i < 100000; i++)
+            {
+                if (i % 1000 == 0)
+                {
+                    var currentResults = new double[inputs.Length];
+                    SetResults(inputs, outputLayer, currentResults);
+                    accuracyResults.Add(AccuracyStatistics.CalculateKolmogorovStatistic(
+                        currentResults, inputs.Select(Calculation).ToArray()));
+                }
+                var trial = rand.NextDouble();
+                outputLayer.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, 0.1, momentum, 0.9);
+            }
+
             SetResults(inputs, outputLayer, finalResults);
 
             var suffix = DateTime.Now.Ticks;
-            System.IO.Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
+            Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
             using (var file = new System.IO.StreamWriter($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{suffix}.csv", false))
             {
                 file.WriteLine(string.Join(",", inputs.ToArray()));
@@ -63,25 +76,6 @@ namespace NeuralNetwork.Test.NN
             }
         }
 
-        private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults)
-        {
-            var rand = new Random();
-            outputLayer = outputLayer.CloneWithSameWeightValueReferences();
-            var momentum = outputLayer.GenerateMomentum();
-            for (var i = 0; i < 50000; i++)
-            {
-                if (i % 1000 == 0)
-                {
-                    var currentResults = new double[inputs.Length];
-                    SetResults(inputs, outputLayer, currentResults);
-                    accuracyResults.Add(AccuracyStatistics.CalculateKolmogorovStatistic(
-                        currentResults, inputs.Select(Calculation).ToArray()));
-                }
-                var trial = rand.NextDouble();
-                outputLayer.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, 0.1, momentum, 0.9);
-            }
-        }
-
         private void SetResults(double[] inputs, Layer output, double[] targetArray)
         {
             for (var i = 0; i < inputs.Length; i++)
@@ -90,7 +84,6 @@ namespace NeuralNetwork.Test.NN
             }
         }
 
-        private static double Calculation(double input)
-            => 0.5 * Math.Sin(3 * Math.PI * input) + 0.5;
+        private static double Calculation(double input) => 0.5 * Math.Sin(3 * Math.PI * input) + 0.5;
     }
 }

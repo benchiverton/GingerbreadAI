@@ -10,6 +10,10 @@ namespace Model.NeuralNetwork.ActivationFunctions
             Func<double, double> activationFunctionDifferential;
             switch (activationFunctionType)
             {
+                case ActivationFunctionType.Linear:
+                    activationFunction = input => input;
+                    activationFunctionDifferential = _ => 1;
+                    break;
                 case ActivationFunctionType.RELU:
                     activationFunction = input => input > 0 ? input : 0;
                     activationFunctionDifferential = output => output > 0 ? 1 : 0;

@@ -28,7 +28,7 @@ namespace NeuralNetwork.Test.NN
         public void ApproximateCurveUsingMultipleThreads()
         {
             var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var inner = new Layer(20, new[] { input }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
+            var inner = new Layer(20, new[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeEtAl);
             var outputLayer = new Layer(1, new[] { inner }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
@@ -64,13 +64,11 @@ namespace NeuralNetwork.Test.NN
             }
         }
 
-        // ignore how inaccurate the accuracy results could be if this is ran in parallel :^)
         private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults, int threadCount, int currentThread)
         {
             var rand = new Random();
             var output = outputLayer.CloneWithSameWeightValueReferences();
             var momentum = output.GenerateMomentum();
-            var learningRate = 0.25;
 
             for (var i = 0; i < 10000; i++)
             {
@@ -81,9 +79,8 @@ namespace NeuralNetwork.Test.NN
                     accuracyResults.Add(AccuracyStatistics.CalculateKolmogorovStatistic(
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
-                var trial = (rand.NextDouble() / 4) + ((double)currentThread / (double)threadCount);
-                output.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, learningRate, momentum);
-                ModifyLearningRate(ref learningRate);
+                var trial = rand.NextDouble() / 4 + ((double)currentThread + 1) / threadCount;
+                output.Backpropagate(new[] { trial }, new [] { Calculation(trial) }, 0.01, momentum, 0.9);
             }
         }
 
@@ -95,12 +92,6 @@ namespace NeuralNetwork.Test.NN
             }
         }
 
-        private static void ModifyLearningRate(ref double rate)
-        {
-            rate = rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
-        }
-
-        private static double Calculation(double input)
-            => input * input;
+        private static double Calculation(double input) => input * input;
     }
 }

@@ -2,8 +2,9 @@
 {
     public enum ActivationFunctionType
     {
-        RELU = 1,
-        Sigmoid = 2,
-        Tanh = 3
+        Linear = 1,
+        RELU = 2,
+        Sigmoid = 3,
+        Tanh = 4,
     }
 }
