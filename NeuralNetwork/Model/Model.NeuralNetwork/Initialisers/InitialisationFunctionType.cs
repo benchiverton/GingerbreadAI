@@ -6,6 +6,6 @@
         Random = 1,
         RandomPositive = 2,
         Uniform = 3,
-        HeEtAl = 4
+        HeEtAl = 4,
     }
 }

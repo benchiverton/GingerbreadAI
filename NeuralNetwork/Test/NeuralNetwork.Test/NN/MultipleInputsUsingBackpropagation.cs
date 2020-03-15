@@ -8,7 +8,7 @@ using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
-namespace NeuralNetwork.Test.MultipleInputs
+namespace NeuralNetwork.Test.NN
 {
     public class MultipleInputsUsingBackpropagation
     {

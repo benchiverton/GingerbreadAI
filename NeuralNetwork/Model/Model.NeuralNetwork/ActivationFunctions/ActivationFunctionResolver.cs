@@ -18,6 +18,10 @@ namespace Model.NeuralNetwork.ActivationFunctions
                     activationFunction = input => 1 / (1 + Math.Pow(Math.E, -input));
                     activationFunctionDifferential = output => output * (1 - output);
                     break;
+                case ActivationFunctionType.Tanh:
+                    activationFunction = input => (Math.Pow(Math.E, 2 * input) - 1) / (Math.Pow(Math.E, 2 * input) + 1);
+                    activationFunctionDifferential = output => 1 - Math.Pow(output, 2);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(
                         nameof(activationFunctionType),

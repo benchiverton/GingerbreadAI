@@ -12,7 +12,7 @@ using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
-namespace NeuralNetwork.Test.SineCurve
+namespace NeuralNetwork.Test.NN
 {
     public class SineCurveUsingBackpropagation
     {
@@ -27,10 +27,10 @@ namespace NeuralNetwork.Test.SineCurve
         [RunnableInDebugOnly]
         public void ApproximateSineCurveUsingBackpropagation()
         {
-            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var inner1 = new Layer(6, new[] { input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            var outputLayer = new Layer(1, new[] { inner1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            outputLayer.Initialise(new Random());
+            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var inner1 = new Layer(10, new[] { input }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
+            var inner2 = new Layer(10, new[] { inner1 }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
+            var outputLayer = new Layer(1, new[] { inner2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             var accuracyResults = new List<double>();
             var initialResults = new double[100];
             var finalResults = new double[100];
@@ -44,6 +44,7 @@ namespace NeuralNetwork.Test.SineCurve
                 initialResults[i] = outputLayer.GetResults(new[] { inputs[i] })[0];
             }
 
+            outputLayer.Initialise(new Random());
             Parallel.For(0, 4, x => TrainNetwork(outputLayer, inputs, accuracyResults));
             SetResults(inputs, outputLayer, finalResults);
 
@@ -62,14 +63,12 @@ namespace NeuralNetwork.Test.SineCurve
             }
         }
 
-        // ignore how inaccurate the accuracy results could be if this is ran in parallel :^)
         private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults)
         {
             var rand = new Random();
-            var learningRate = 0.25;
             outputLayer = outputLayer.CloneWithSameWeightValueReferences();
             var momentum = outputLayer.GenerateMomentum();
-            for (var i = 0; i < 100000; i++)
+            for (var i = 0; i < 50000; i++)
             {
                 if (i % 1000 == 0)
                 {
@@ -79,8 +78,7 @@ namespace NeuralNetwork.Test.SineCurve
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = rand.NextDouble();
-                outputLayer.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, learningRate, momentum, 0.9);
-                ModifyLearningRate(ref learningRate);
+                outputLayer.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, 0.1, momentum, 0.9);
             }
         }
 
@@ -90,11 +88,6 @@ namespace NeuralNetwork.Test.SineCurve
             {
                 targetArray[i] = output.GetResults(new[] { inputs[i] })[0];
             }
-        }
-
-        private static void ModifyLearningRate(ref double rate)
-        {
-            rate = rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
         }
 
         private static double Calculation(double input)

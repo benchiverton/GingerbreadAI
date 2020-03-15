@@ -12,7 +12,7 @@ using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
-namespace NeuralNetwork.Test.MultiThreading
+namespace NeuralNetwork.Test.NN
 {
     public class CurveUsingMultithreadBackpropagation
     {
@@ -27,10 +27,9 @@ namespace NeuralNetwork.Test.MultiThreading
         [RunnableInDebugOnly]
         public void ApproximateCurveUsingMultipleThreads()
         {
-            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var inner1 = new Layer(20, new[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var inner2 = new Layer(20, new[] { inner1 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var outputLayer = new Layer(1, new[] { inner1, inner2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var inner = new Layer(20, new[] { input }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
+            var outputLayer = new Layer(1, new[] { inner }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
             var initialResults = new double[100];
