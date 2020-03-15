@@ -8,7 +8,7 @@ using Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace DeepLearning.Backpropagation.CNN.Test.Extensions
+namespace DeepLearning.Backpropagation.Test.Extensions
 {
     public class LayerExtensionsShould
     {

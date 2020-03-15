@@ -13,11 +13,11 @@ using Xunit.Abstractions;
 
 namespace DeepLearning.Backpropagation.CNN.Test
 {
-    public class BackpropagationShould
+    public class BackPropagatorWith2DNetworkShould
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public BackpropagationShould(ITestOutputHelper testOutputHelper)
+        public BackPropagatorWith2DNetworkShould(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -26,7 +26,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
         public void TrainFilterToFeatureSortOfWell()
         {
             var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter = new Filter2D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var output = new Layer(1, new Layer[] { filter }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.Initialise(new Random());
             var inputMatch = new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1 };
@@ -64,8 +64,8 @@ namespace DeepLearning.Backpropagation.CNN.Test
         public void TrainFilterToMultipleFeaturesSortOfWell()
         {
             var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter1 = new Filter2D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter2 = new Filter2D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter1 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter2 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var output = new Layer(2, new Layer[] { filter1, filter2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.Initialise(new Random());
             var fullMatch = new double[] { 1, 1, 0, 1, 0, 1, 0, 1, 1 };
@@ -84,7 +84,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
             }
 
             output.CalculateOutputs(inputMatch2);
-            
+
             _testOutputHelper.WriteLine($"filter 1: {string.Join(",", filter1.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
             _testOutputHelper.WriteLine($"filter 2: {string.Join(",", filter2.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
 
@@ -112,9 +112,9 @@ namespace DeepLearning.Backpropagation.CNN.Test
             var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter1 = new Filter2D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter2 = new Filter2D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter3 = new Filter2D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter1 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter2 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter3 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var output = new Layer(3, new Layer[] { filter1, filter2, filter3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
@@ -176,9 +176,9 @@ namespace DeepLearning.Backpropagation.CNN.Test
             var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var filters = new[]
             {
-                new Filter2D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
-                new Filter2D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
-                new Filter2D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform)
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform)
             };
             filters.AddPooling(2);
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);

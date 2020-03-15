@@ -34,7 +34,7 @@ namespace NeuralNetwork.Test.CNN
             var inputR = new Layer2D((100, 100), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var inputG = new Layer2D((100, 100), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var inputB = new Layer2D((100, 100), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, 3, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filters = (new[] { inputR, inputG, inputB }).Add2DConvolutionalLayer(32, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             filters.AddPooling(2);
             var stepDownLayer = new Layer(32, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var output = new Layer(1, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);

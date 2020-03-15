@@ -4,15 +4,15 @@ using Model.NeuralNetwork.Models;
 
 namespace Model.ConvolutionalNeuralNetwork.Models
 {
-    public class Layer2D : Layer
+    public class Layer1D : Layer
     {
-        public (int height, int width) Shape { get; }
+        public int Size { get; }
 
-        public Layer2D((int height, int width) shape, Layer[] previousGroups, 
+        public Layer1D(int size, Layer[] previousGroups, 
             ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionType)
-        : base(shape.height * shape.width, previousGroups, activationFunctionType, initialisationFunctionType)
+        : base(size, previousGroups, activationFunctionType, initialisationFunctionType)
         {
-            Shape = shape;
+            Size = size;
         }
     }
 }

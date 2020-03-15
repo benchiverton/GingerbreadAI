@@ -4,15 +4,15 @@ using Model.NeuralNetwork.Initialisers;
 
 namespace Model.ConvolutionalNeuralNetwork.Extensions
 {
-    public static class Layer2DArrayExtensions
+    public static class Layer1DArrayExtensions
     {
-        public static Filter2D[] Add2DConvolutionalLayer(this Layer2D[] inputs, int filterCount, (int height, int width) filterShape, 
+        public static Filter1D[] Add2DConvolutionalLayer(this Layer1D[] inputs, int filterCount, int filterSize,
             ActivationFunctionType activationFunction, InitialisationFunctionType initialisationFunction)
         {
-            var filters = new Filter2D[filterCount];
+            var filters = new Filter1D[filterCount];
             for (var i = 0; i < filterCount; i++)
             {
-                filters[i] = new Filter2D(inputs, filterShape, activationFunction, initialisationFunction);
+                filters[i] = new Filter1D(inputs, filterSize, activationFunction, initialisationFunction);
             }
             return filters;
         }

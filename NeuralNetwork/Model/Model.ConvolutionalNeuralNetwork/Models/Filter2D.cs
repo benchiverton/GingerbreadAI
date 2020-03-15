@@ -7,19 +7,16 @@ namespace Model.ConvolutionalNeuralNetwork.Models
 {
     public class Filter2D : Layer2D
     {
-        public Filter2D(Layer2D[] previousLayers, int filterDimension, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionTyp) 
-            : base((filterDimension, filterDimension), previousLayers, activationFunctionType, initialisationFunctionTyp)
+        public Filter2D(Layer2D[] previousLayers, (int height, int width) filterShape, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionTyp) 
+            : base(filterShape, previousLayers, activationFunctionType, initialisationFunctionTyp)
         {
-            ActivationFunctionType = ActivationFunctionType.RELU;
-            InitialisationFunctionType = InitialisationFunctionType.Uniform;
-
             var filterWeightMap = new Dictionary<Layer, Weight[,]>();
             foreach (var prevLayer in previousLayers)
             {
-                var filterWeights = new Weight[Dimensions.width, Dimensions.height];
-                for (var i = 0; i < Dimensions.height; i++) // down
+                var filterWeights = new Weight[Shape.width, Shape.height];
+                for (var i = 0; i < Shape.height; i++) // down
                 {
-                    for (var j = 0; j < Dimensions.height; j++) // across
+                    for (var j = 0; j < Shape.height; j++) // across
                     {
                         filterWeights[j, i] = new Weight(0);
                     }
@@ -27,16 +24,16 @@ namespace Model.ConvolutionalNeuralNetwork.Models
                 filterWeightMap.Add(prevLayer, filterWeights);
             }
 
-            var prevLayerDimensions = previousLayers[0].Dimensions;
+            var prevLayerDimensions = previousLayers[0].Shape;
             var nodes = new List<Node>();
-            for (var i = 0; i < prevLayerDimensions.height - Dimensions.height + 1; i++) // down
+            for (var i = 0; i < prevLayerDimensions.height - Shape.height + 1; i++) // down
             {
-                for (var j = 0; j < prevLayerDimensions.width - Dimensions.width + 1; j++) // across
+                for (var j = 0; j < prevLayerDimensions.width - Shape.width + 1; j++) // across
                 {
                     var nodeWeights = new Dictionary<Node, Weight>();
-                    for (var k = 0; k < Dimensions.height; k++) // down
+                    for (var k = 0; k < Shape.height; k++) // down
                     {
-                        for (var l = 0; l < Dimensions.width; l++) // across
+                        for (var l = 0; l < Shape.width; l++) // across
                         {
                             var nodePosition = j + l + (i + k) * prevLayerDimensions.width;
                             foreach (var prevLayer in previousLayers)
