@@ -111,7 +111,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
         }
 
         [Fact]
-        public void TrainNetworkWithFilterSortofWellRgb()
+        public void TrainNetworkWithFilterSortOfWellRgb()
         {
             var r = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var g = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
