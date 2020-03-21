@@ -16,7 +16,7 @@ namespace Model.NeuralNetwork
         {
             foreach (var node in layer.Nodes)
             {
-                node.Initialise(rand, layer.InitialisationFunction);
+                node.Initialise(rand, layer.InitialisationFunction, layer.Nodes.Length);
             }
             foreach (var nodeGroupPrev in layer.PreviousLayers)
             {
@@ -75,18 +75,18 @@ namespace Model.NeuralNetwork
         #region Private Methods
 
 
-        private static void Initialise(this Node node, Random rand, Func<Random, int, double>  initialisationFunction)
+        private static void Initialise(this Node node, Random rand, Func<Random, int, int, double>  initialisationFunction, int nodeCount)
         {
             if (node == null) return;
             var feedingNodes = node.Weights.Count;
             foreach (var prevNode in node.Weights.Keys.ToList())
             {
-                node.Weights[prevNode].Value = initialisationFunction.Invoke(rand, feedingNodes);
+                node.Weights[prevNode].Value = initialisationFunction.Invoke(rand, feedingNodes, nodeCount);
             }
             var biasWeightKeys = new List<Layer>(node.BiasWeights.Keys.ToList());
             foreach (var biasWeightKey in biasWeightKeys)
             {
-                node.BiasWeights[biasWeightKey].Value = initialisationFunction.Invoke(rand, feedingNodes);
+                node.BiasWeights[biasWeightKey].Value = initialisationFunction.Invoke(rand, feedingNodes, nodeCount);
             }
         }
 

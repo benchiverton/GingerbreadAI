@@ -42,7 +42,7 @@ namespace Model.NeuralNetwork.Models
                 InitialisationFunction = InitialisationFunctionResolver.ResolveInitialisationFunctions(value);
             }
         }
-        public Func<Random, int, double> InitialisationFunction { get; private set; }
+        public Func<Random, int, int, double> InitialisationFunction { get; private set; }
 
         public Layer(
             ActivationFunctionType activationFunctionType = ActivationFunctionType.RELU,

@@ -37,9 +37,9 @@ namespace NeuralNetwork.Test.CNN
             EnsureDataExists();
 
             var input = new Layer2D((28, 28), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filters = (new[] { input }).Add2DConvolutionalLayer(32, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filters = (new[] { input }).Add2DConvolutionalLayer(32, (5, 5), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             filters.AddPooling(2);
-            var stepDownLayer = new Layer(32, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var stepDownLayer = new Layer(128, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
             var output = new Layer(10, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             var momentum = output.GenerateMomentum();
             output.Initialise(new Random());
