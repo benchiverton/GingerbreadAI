@@ -23,9 +23,9 @@ namespace NeuralNetwork.Test.NN
         [RunnableInDebugOnly]
         public void PredictResultsFromMultipleInputs()
         {
-            var input1 = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var input2 = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var inner = new Layer(5, new[] { input1, input2 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input1 = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var input2 = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var inner = new Layer(5, new[] { input1, input2 }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var outputLayer = new Layer(1, new[] { inner }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             outputLayer.Initialise(new Random());
 

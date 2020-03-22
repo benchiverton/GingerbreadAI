@@ -5,15 +5,13 @@ namespace Model.ConvolutionalNeuralNetwork.Models
 {
     public class PooledWeight : Weight
     {
-        internal PooledWeight(int weightDimension, int poolSize) : base(0)
+        internal PooledWeight(int poolSize) : base(0)
         {
-            _weightDimension = weightDimension;
             _poolSize = poolSize;
             _occurrences = 1;
             CalculateMagnitude();
         }
 
-        private readonly int _weightDimension;
         private readonly int _poolSize;
         private int _occurrences;
         private double _magnitude;
@@ -29,7 +27,7 @@ namespace Model.ConvolutionalNeuralNetwork.Models
 
         public void CalculateMagnitude()
         {
-            _magnitude = (double)_occurrences / Math.Pow(_poolSize, _weightDimension);
+            _magnitude = (double)_occurrences / _poolSize;
         }
     }
 }

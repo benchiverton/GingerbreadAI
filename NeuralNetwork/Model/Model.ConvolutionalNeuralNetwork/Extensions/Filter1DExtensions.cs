@@ -21,7 +21,7 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
                     {
                         if (pooledWeightMap[i + j] == null)
                         {
-                            pooledWeightMap[i + j] = new PooledWeight(1, poolingDimension);
+                            pooledWeightMap[i + j] = new PooledWeight(poolingDimension);
                         }
                         else
                         {

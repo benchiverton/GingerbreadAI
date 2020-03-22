@@ -18,8 +18,11 @@ namespace Model.NeuralNetwork.Initialisers
                 case InitialisationFunctionType.RandomPositive:
                     initialisationFunction = (rand, feedingNodeCount, outputNodeCount) => rand.NextDouble();
                     break;
-                case InitialisationFunctionType.Uniform:
-                    initialisationFunction = (rand, feedingNodeCount, outputNodeCount) => Math.Sqrt(6d / ((double)feedingNodeCount + outputNodeCount));
+                case InitialisationFunctionType.HeUniform:
+                    initialisationFunction = (rand, feedingNodeCount, outputNodeCount) => Math.Sqrt(6d / (feedingNodeCount)) * (rand.NextDouble() * 2 - 1);
+                    break;
+                case InitialisationFunctionType.GlorotUniform:
+                    initialisationFunction = (rand, feedingNodeCount, outputNodeCount) => Math.Sqrt(6d / ((double)feedingNodeCount + outputNodeCount)) * (rand.NextDouble() * 2 - 1);
                     break;
                 case InitialisationFunctionType.HeEtAl:
                     initialisationFunction = (rand, feedingNodeCount, outputNodeCount) => (2d * rand.NextDouble() / Math.Sqrt(feedingNodeCount)) - 1d / Math.Sqrt(feedingNodeCount);

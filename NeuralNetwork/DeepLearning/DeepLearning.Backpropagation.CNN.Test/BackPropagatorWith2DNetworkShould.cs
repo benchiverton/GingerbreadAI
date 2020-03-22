@@ -23,64 +23,25 @@ namespace DeepLearning.Backpropagation.CNN.Test
         }
 
         [Fact]
-        public void TrainFilterToFeatureSortOfWell()
-        {
-            var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var output = new Layer(1, new Layer[] { filter }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            output.Initialise(new Random());
-            var inputMatch = new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1 };
-            var inputNoMatch1 = new double[] { 0, 1, 0, 1, 0, 1, 0, 1, 0 };
-            var inputNoMatch2 = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            var inputNoMatch3 = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-            for (var i = 0; i < 10000; i++)
-            {
-                output.Backpropagate(inputMatch, new double[] { 1 }, 0.5);
-                output.Backpropagate(inputNoMatch1, new double[] { 0 }, 0.5);
-                output.Backpropagate(inputNoMatch2, new double[] { 0 }, 0.5);
-                output.Backpropagate(inputNoMatch3, new double[] { 0 }, 0.5);
-            }
-
-            // filter weights should look as follows:
-            // +  -  +      -  +  -
-            // -  +  -  OR  +  -  +  (Depending on output weight being +ve/-ve)
-            // +  -  +      -  +  -
-            _testOutputHelper.WriteLine($"filter: {string.Join(",", filter.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
-
-            var outputMultiplier = output.Nodes[0].Weights[filter.Nodes[0]].Value > 0 ? 1 : -1;
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[0]].Value > 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[1]].Value < 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[2]].Value > 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[3]].Value < 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[4]].Value > 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[5]].Value < 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[6]].Value > 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[7]].Value < 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[8]].Value > 0);
-        }
-
-        [Fact]
         public void TrainFilterToMultipleFeaturesSortOfWell()
         {
-            var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter1 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter2 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var filter1 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var filter2 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(2, new Layer[] { filter1, filter2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var momentum = output.GenerateMomentum();
             output.Initialise(new Random());
             var fullMatch = new double[] { 1, 1, 0, 1, 0, 1, 0, 1, 1 };
             var inputMatch1 = new double[] { 1, 1, 0, 1, 0, 0, 0, 0, 0 };
             var inputMatch2 = new double[] { 0, 0, 0, 0, 0, 1, 0, 1, 1 };
-            var inputNoMatch1 = new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1 };
-            var inputNoMatch2 = new double[] { 0, 0, 1, 0, 1, 0, 1, 0, 0 };
+            var noMatch = new double[] { 0, 0, 1, 0, 1, 0, 1, 0, 0 };
 
-            for (var i = 0; i < 100000; i++)
+            for (var i = 0; i < 10000; i++)
             {
-                output.Backpropagate(fullMatch, new double[] { 1, 1 }, 0.1);
-                output.Backpropagate(inputMatch1, new double[] { 1, 0 }, 0.1);
-                output.Backpropagate(inputMatch2, new double[] { 0, 1 }, 0.1);
-                output.Backpropagate(inputNoMatch1, new double[] { 0, 0 }, 0.1);
-                output.Backpropagate(inputNoMatch2, new double[] { 0, 0 }, 0.1);
+                output.Backpropagate(fullMatch, new double[] { 1, 1 }, 0.1, momentum, 0.9);
+                output.Backpropagate(inputMatch1, new double[] { 1, 0 }, 0.1, momentum, 0.9);
+                output.Backpropagate(inputMatch2, new double[] { 0, 1 }, 0.1, momentum, 0.9);
+                output.Backpropagate(noMatch, new double[] { 0, 0 }, 0.1, momentum, 0.9);
             }
 
             output.CalculateOutputs(inputMatch2);
@@ -97,10 +58,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
             output.CalculateOutputs(inputMatch2);
             Assert.True(output.Nodes[0].Output < 0.05);
             Assert.True(output.Nodes[1].Output > 0.95);
-            output.CalculateOutputs(inputNoMatch1);
-            Assert.True(output.Nodes[0].Output < 0.05);
-            Assert.True(output.Nodes[1].Output < 0.05);
-            output.CalculateOutputs(inputNoMatch2);
+            output.CalculateOutputs(noMatch);
             Assert.True(output.Nodes[0].Output < 0.05);
             Assert.True(output.Nodes[1].Output < 0.05);
         }
@@ -109,13 +67,14 @@ namespace DeepLearning.Backpropagation.CNN.Test
         [Fact]
         public void TrainConvolutionalNetworksSortofWellRgb()
         {
-            var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter1 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter2 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter3 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var filter1 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var filter2 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var filter3 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new Layer[] { filter1, filter2, filter3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var momentum = output.GenerateMomentum();
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -144,7 +103,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.5);
+                output.Backpropagate(inputs, targetOutputs, 0.1, momentum, 0.9);
             }
 
             // each filter should pick up r/b/g differently
@@ -171,16 +130,16 @@ namespace DeepLearning.Backpropagation.CNN.Test
         [Fact]
         public void TrainConvolutionalNetworksWithFilterSortofWellRgb()
         {
-            var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[]
             {
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform)
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform)
             };
-            filters.AddPooling(2);
+            filters.AddPooling((2, 2));
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             var momentum = output.GenerateMomentum();
             output.Initialise(new Random());

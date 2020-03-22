@@ -24,8 +24,8 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
             //
             // Pooling:
             // 1,2 + 2,3
-            var input = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter = new Filter1D(new[] { input }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var filter = new Filter1D(new[] { input }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             // Expected _magnitudes: 
             // 0.50: 1,3
             // 1.00: 2

@@ -13,8 +13,8 @@ namespace DeepLearning.NegativeSampling.Test
         [Fact]
         public void TrainBasicNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -39,10 +39,10 @@ namespace DeepLearning.NegativeSampling.Test
         [Fact]
         public void TrainComplexNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -67,8 +67,8 @@ namespace DeepLearning.NegativeSampling.Test
         [Fact]
         public void TrainNetworksUsingTheSameTargetSortofWell()
         {
-            var input = new Layer(100, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(100, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -93,8 +93,8 @@ namespace DeepLearning.NegativeSampling.Test
         [Fact]
         public void TrainNetworksUsingTheSameInputSortofWell()
         {
-            var input = new Layer(100, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -120,8 +120,8 @@ namespace DeepLearning.NegativeSampling.Test
         [Fact]
         public void TrainNetworksUsingDifferentInputsAndOutputsSortofWell()
         {
-            var input = new Layer(100, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(100, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -158,11 +158,11 @@ namespace DeepLearning.NegativeSampling.Test
         [Fact]
         public void OnlyChangeRelatedWeights()
         {
-            var input = new Layer(10, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h2 = new Layer(10, new Layer[] { h1 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h3 = new Layer(10, new Layer[] { h1 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h4 = new Layer(10, new Layer[] { h2, h3 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(10, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var h2 = new Layer(10, new Layer[] { h1 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var h3 = new Layer(10, new Layer[] { h1 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var h4 = new Layer(10, new Layer[] { h2, h3 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(10, new Layer[] { h4 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());

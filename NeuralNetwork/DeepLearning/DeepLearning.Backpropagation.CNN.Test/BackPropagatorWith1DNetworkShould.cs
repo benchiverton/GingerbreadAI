@@ -25,17 +25,18 @@ namespace DeepLearning.Backpropagation.CNN.Test
         [Fact]
         public void TrainFilterToFeatureSortOfWell()
         {
-            var inputLayer = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var inputLayer = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var filter = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(1, new Layer[] { filter }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var momentum = output.GenerateMomentum();
             output.Initialise(new Random());
             var inputMatch = new double[] { 1, 0, 1 };
             var inputNoMatch = new double[] { 0, 1, 0 };
 
             for (var i = 0; i < 10000; i++)
             {
-                output.Backpropagate(inputMatch, new double[] { 1 }, 0.5);
-                output.Backpropagate(inputNoMatch, new double[] { 0 }, 0.5);
+                output.Backpropagate(inputMatch, new double[] { 1 }, 0.1, momentum, 0.9);
+                output.Backpropagate(inputNoMatch, new double[] { 0 }, 0.1, momentum, 0.9);
             }
 
             // filter weights should look as follows:
@@ -51,12 +52,12 @@ namespace DeepLearning.Backpropagation.CNN.Test
         [Fact]
         public void TrainFilterToRBGFeatureSortOfWell()
         {
-            var r = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var g = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var b = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter1 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter2 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter3 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var r = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var g = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var b = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var filter1 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var filter2 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var filter3 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new Layer[] { filter1, filter2, filter3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
@@ -113,14 +114,14 @@ namespace DeepLearning.Backpropagation.CNN.Test
         [Fact]
         public void TrainNetworkWithFilterSortOfWellRgb()
         {
-            var r = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var g = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var b = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var r = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var g = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var b = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[]
             {
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform),
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform)
+                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
+                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
+                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform)
             };
             filters.AddPooling(2);
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);

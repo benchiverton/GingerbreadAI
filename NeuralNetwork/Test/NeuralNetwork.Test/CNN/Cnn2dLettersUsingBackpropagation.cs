@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using DeepLearning.Backpropagation;
@@ -13,8 +12,6 @@ using Model.NeuralNetwork.ActivationFunctions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using NeuralNetwork.Test.Helpers;
-using Numpy;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.CNN
@@ -36,11 +33,11 @@ namespace NeuralNetwork.Test.CNN
         {
             EnsureDataExists();
 
-            var input = new Layer2D((28, 28), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filters = (new[] { input }).Add2DConvolutionalLayer(32, (5, 5), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            filters.AddPooling(2);
-            var stepDownLayer = new Layer(128, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var output = new Layer(10, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var input = new Layer2D((28, 28), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var filters = new[] { input }.Add2DConvolutionalLayer(32, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            filters.AddPooling((2, 2));
+            var stepDownLayer = new Layer(100, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var output = new Layer(10, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
             var momentum = output.GenerateMomentum();
             output.Initialise(new Random());
 
@@ -48,7 +45,7 @@ namespace NeuralNetwork.Test.CNN
             {
                 var targetOutputs = new double[10];
                 targetOutputs[trainingData.label] = 1d;
-                output.Backpropagate(trainingData.image, targetOutputs, 0.1, momentum, 0.9);
+                output.Backpropagate(trainingData.image, targetOutputs, 0.01, momentum, 0.9);
             }
 
             var correctResults = new double[10];
@@ -116,7 +113,7 @@ namespace NeuralNetwork.Test.CNN
                 {
                     for (var j = 0; j < 28; j++)
                     {
-                        trainingDataAsDoubleArray[j + 28 * i] = trainingDataAsDouble[j, i];
+                        trainingDataAsDoubleArray[j + 28 * i] = trainingDataAsDouble[i, j];
                     }
                 }
                 yield return (trainingDataAsDoubleArray, trainingData.Label);

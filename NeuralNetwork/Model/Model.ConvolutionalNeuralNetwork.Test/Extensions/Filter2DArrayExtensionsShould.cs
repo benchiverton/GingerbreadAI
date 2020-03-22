@@ -25,8 +25,8 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
             //
             // Pooling:
             // 1,2,4,5 + 2,3,4,6 + 4,5,7,8 + 5,6,8,9
-            var input = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var filter = new Filter2D(new[] { input }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var filter = new Filter2D(new[] { input }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             // Expected _magnitudes: 
             // 0.25: 1,3,7,9
             // 0.50: 2,4,6,8
@@ -44,7 +44,7 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
                 [8] = 0.25,
             };
 
-            filter.AddPooling(2);
+            filter.AddPooling((2, 2));
 
             var node = Assert.Single(filter.Nodes);
             Assert.Equal(9, node.Weights.Count);

@@ -12,8 +12,8 @@ namespace DeepLearning.Backpropagation.Test
         [Fact]
         public void TrainBasicNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -39,10 +39,10 @@ namespace DeepLearning.Backpropagation.Test
         [Fact]
         public void TrainComplexNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var output = new Layer(5, new Layer[] { h3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());

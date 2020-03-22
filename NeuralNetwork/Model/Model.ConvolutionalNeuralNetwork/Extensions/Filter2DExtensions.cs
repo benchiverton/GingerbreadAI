@@ -6,16 +6,16 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
 {
     public static class Filter2DExtensions
     {
-        public static void AddPooling(this Filter2D filter, int poolingDimension)
+        public static void AddPooling(this Filter2D filter, (int height, int width) poolingDimensions)
         {
             var filterWeightMap = new Dictionary<Layer, PooledWeight[,]>();
             foreach (var prevLayer in filter.PreviousLayers)
             {
                 // 'catchment' area
-                var pooledWeightMap = new PooledWeight[filter.Shape.width + poolingDimension - 1, filter.Shape.height + poolingDimension - 1];
-                for (var i = 0; i < poolingDimension; i++) // down
+                var pooledWeightMap = new PooledWeight[filter.Shape.width + poolingDimensions.width - 1, filter.Shape.height + poolingDimensions.height - 1];
+                for (var i = 0; i < poolingDimensions.height; i++) // down
                 {
-                    for (var j = 0; j < poolingDimension; j++) // across
+                    for (var j = 0; j < poolingDimensions.width; j++) // across
                     {
                         for (var k = 0; k < filter.Shape.height; k++) // down
                         {
@@ -23,7 +23,7 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
                             {
                                 if (pooledWeightMap[j + l, i + k] == null)
                                 {
-                                    pooledWeightMap[j + l, i + k] = new PooledWeight(2, poolingDimension);
+                                    pooledWeightMap[j + l, i + k] = new PooledWeight(poolingDimensions.height * poolingDimensions.width);
                                 }
                                 else
                                 {
@@ -38,14 +38,14 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
 
             var prevLayerDimensions = (filter.PreviousLayers[0] as Layer2D).Shape;
             var nodes = new List<Node>();
-            for (var i = 0; i < prevLayerDimensions.height - filter.Shape.height - poolingDimension + 2; i += poolingDimension) // down
+            for (var i = 0; i < prevLayerDimensions.height - filter.Shape.height - poolingDimensions.height + 2; i += poolingDimensions.height) // down
             {
-                for (var j = 0; j < prevLayerDimensions.width - filter.Shape.width - poolingDimension + 2; j += poolingDimension) // across
+                for (var j = 0; j < prevLayerDimensions.width - filter.Shape.width - poolingDimensions.width + 2; j += poolingDimensions.width) // across
                 {
                     var nodeWeights = new Dictionary<Node, Weight>();
-                    for (var k = 0; k < filter.Shape.width + poolingDimension - 1; k++) // down
+                    for (var k = 0; k < filter.Shape.width + poolingDimensions.height - 1; k++) // down
                     {
-                        for (var l = 0; l < filter.Shape.height + poolingDimension - 1; l++) // across
+                        for (var l = 0; l < filter.Shape.height + poolingDimensions.width - 1; l++) // across
                         {
                             var nodePosition = j + l + (i + k) * prevLayerDimensions.width;
                             foreach (var previousLayer in filter.PreviousLayers)

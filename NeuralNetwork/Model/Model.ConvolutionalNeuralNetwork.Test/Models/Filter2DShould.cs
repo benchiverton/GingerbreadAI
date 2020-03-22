@@ -29,11 +29,11 @@ namespace Model.ConvolutionalNeuralNetwork.Test.Models
             // X  X  X  O  O  O
             // X  X  X  O  O  O
             // O  O  O  O  O  O
-            var input1 = new Layer2D((4, 6), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var input2 = new Layer2D((4, 6), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            var input3 = new Layer2D((4, 6), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var input1 = new Layer2D((4, 6), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var input2 = new Layer2D((4, 6), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var input3 = new Layer2D((4, 6), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
 
-            var filter = new Filter2D(new[] { input1, input2, input3 }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            var filter = new Filter2D(new[] { input1, input2, input3 }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
 
             Assert.Equal(8, filter.Nodes.Length);
             for (var i = 0; i < 3; i++)

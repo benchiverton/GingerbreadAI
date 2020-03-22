@@ -23,9 +23,9 @@ namespace DeepLearning.Backpropagation.Test.Extensions
         {
             _testOutputHelper = testOutputHelper;
 
-            _input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            _hidden1 = new Layer(10, new[] { _input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
-            _hidden2 = new Layer(15, new[] { _input }, ActivationFunctionType.RELU, InitialisationFunctionType.Uniform);
+            _input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            _hidden1 = new Layer(10, new[] { _input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            _hidden2 = new Layer(15, new[] { _input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             _output = new Layer(20, new[] { _hidden1, _hidden2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
         }
 

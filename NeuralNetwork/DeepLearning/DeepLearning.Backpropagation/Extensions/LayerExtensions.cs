@@ -5,6 +5,7 @@ namespace DeepLearning.Backpropagation.Extensions
 {
     public static class LayerExtensions
     {
+        // builds a copy of the network with different weight references
         public static Layer GenerateMomentum(this Layer layer)
         {
             var momentum = new Layer
