@@ -135,7 +135,7 @@ namespace Model.NeuralNetwork.Extensions
                 clonedPreviousLayers.Add(RecurseCloneWithSameWeightValueReferences(previousLayer));
             }
 
-            var newLayer = new Layer()
+            var newLayer = new Layer
             {
                 PreviousLayers = clonedPreviousLayers.ToArray(),
                 Nodes = new Node[layer.Nodes.Length],
@@ -155,10 +155,15 @@ namespace Model.NeuralNetwork.Extensions
                 {
                     for (var k = 0; k < layer.PreviousLayers[j].Nodes.Length; k++)
                     {
-                        newNode.Weights.Add(newLayer.PreviousLayers[j].Nodes[k], layer.Nodes[i].Weights[layer.PreviousLayers[j].Nodes[k]]);
+                        if (layer.Nodes[i].Weights.TryGetValue(layer.PreviousLayers[j].Nodes[k], out var weight))
+                        {
+                            newNode.Weights.Add(newLayer.PreviousLayers[j].Nodes[k], weight);
+                        }
                     }
-
-                    newNode.BiasWeights.Add(newLayer.PreviousLayers[j], layer.Nodes[i].BiasWeights[layer.PreviousLayers[j]]);
+                    if (layer.Nodes[i].BiasWeights.TryGetValue(layer.PreviousLayers[j], out var biasWeight))
+                    {
+                        newNode.BiasWeights.Add(newLayer.PreviousLayers[j], biasWeight);
+                    }
                 }
 
                 newLayer.Nodes[i] = newNode;

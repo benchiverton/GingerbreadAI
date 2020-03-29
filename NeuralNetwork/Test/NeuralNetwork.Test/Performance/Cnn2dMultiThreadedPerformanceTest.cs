@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using DeepLearning.Backpropagation;
 using DeepLearning.Backpropagation.Extensions;
@@ -14,7 +15,7 @@ using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.Performance
 {
-    public class Cnn2dPerformanceTest
+    public class Cnn2dMultiThreadedPerformanceTest
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
@@ -24,13 +25,14 @@ namespace NeuralNetwork.Test.Performance
         private int _processedImages;
         private bool _continueProcessing = true;
 
-        public Cnn2dPerformanceTest(ITestOutputHelper testOutputHelper)
+        public Cnn2dMultiThreadedPerformanceTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
 
+        // TODO: make this work
         [RunnableInDebugOnly]
-        public void PerformanceTestCnnNetwork()
+        public void PerformanceMultiThreadedTestCnnNetwork()
         {
             var input = new Layer2D((10, 10), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[] { input }.Add2DConvolutionalLayer(16, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
@@ -48,15 +50,20 @@ namespace NeuralNetwork.Test.Performance
             };
             timer.Elapsed += OnTimerElapsed;
             timer.Start();
-            while (_continueProcessing)
+
+            Parallel.For(0, 4, i =>
             {
-                output.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, 0.1, 0.9);
-                _processedImages++;
-                output.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, 0.1, 0.9);
-                _processedImages++;
-                output.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, 0.1, 0.9);
-                _processedImages++;
-            }
+                var networkToTrainWith = output.CloneWithSameWeightValueReferences();
+                while (_continueProcessing)
+                {
+                    networkToTrainWith.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, 0.1, 0.9);
+                    _processedImages++;
+                    networkToTrainWith.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, 0.1, 0.9);
+                    _processedImages++;
+                    networkToTrainWith.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, 0.1, 0.9);
+                    _processedImages++;
+                }
+            });
             timer.Stop();
 
             output.CalculateOutputs(SquareAsArray);

@@ -14,12 +14,12 @@ using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.NN
 {
-    public class CurveUsingMultithreadBackpropagation
+    public class CurveUsingMultiThreadBackpropagation
     {
-        private const string ResultsDirectory = nameof(CurveUsingMultithreadBackpropagation);
+        private const string ResultsDirectory = nameof(CurveUsingMultiThreadBackpropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public CurveUsingMultithreadBackpropagation(ITestOutputHelper testOutputHelper)
+        public CurveUsingMultiThreadBackpropagation(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
