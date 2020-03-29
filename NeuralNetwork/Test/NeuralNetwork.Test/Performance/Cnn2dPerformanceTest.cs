@@ -52,9 +52,9 @@ namespace NeuralNetwork.Test.Performance
             {
                 output.Backpropagate(SquareAsArray, new [] {1d, 0d, 0d}, 0.1, 0.9);
                 _processedImages++;
-                output.Backpropagate(SquareAsArray, new [] {0d, 1d, 0d}, 0.1, 0.9);
+                output.Backpropagate(CircleAsArray, new [] {0d, 1d, 0d}, 0.1, 0.9);
                 _processedImages++;
-                output.Backpropagate(SquareAsArray, new [] {0d, 0d, 1d}, 0.1, 0.9);
+                output.Backpropagate(TriangleAsArray, new [] {0d, 0d, 1d}, 0.1, 0.9);
                 _processedImages++;
             }
             timer.Stop();
