@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.Models;
 
 namespace DeepLearning.NegativeSampling
@@ -9,10 +8,10 @@ namespace DeepLearning.NegativeSampling
     {
         public static void NegativeSample(this Layer outputLayer, int inputIndex, int outputIndex, double learningRate, bool isPositiveTarget)
         {
-            var currentOutput = outputLayer.GetResult(inputIndex, outputIndex);
+            outputLayer.CalculateIndexedOutput(inputIndex, outputIndex, 1);
             var targetOutput = isPositiveTarget ? 1 : 0;
 
-            var deltas = NegativeSampleOutput(outputLayer, currentOutput, targetOutput, outputIndex, learningRate);
+            var deltas = NegativeSampleOutput(outputLayer, targetOutput, outputIndex, learningRate);
 
             foreach (var previousLayer in outputLayer.PreviousLayers)
             {
@@ -23,12 +22,12 @@ namespace DeepLearning.NegativeSampling
             }
         }
 
-        private static Dictionary<Node, double> NegativeSampleOutput(Layer outputLayer, double currentOutput, double targetOutput, int outputIndex, double learningRate)
+        private static Dictionary<Node, double> NegativeSampleOutput(Layer outputLayer, double targetOutput, int outputIndex, double learningRate)
         {
             var outputNode = outputLayer.Nodes[outputIndex];
 
-            var delta = (currentOutput - targetOutput)
-                        * outputLayer.ActivationFunctionDifferential(currentOutput)
+            var delta = (outputNode.Output - targetOutput)
+                        * outputLayer.ActivationFunctionDifferential(outputNode.Output)
                         * learningRate;
             foreach (var weight in outputNode.Weights)
             {

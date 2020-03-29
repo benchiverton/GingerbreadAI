@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DeepLearning.NegativeSampling;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 

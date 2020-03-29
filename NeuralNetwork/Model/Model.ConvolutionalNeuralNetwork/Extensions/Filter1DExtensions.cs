@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork.Models;
 
@@ -10,18 +8,18 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
     {
         public static void AddPooling(this Filter1D filter, int poolingDimension)
         {
-            var filterWeightMap = new Dictionary<Layer, PooledWeight[]>();
+            var filterWeightMap = new Dictionary<Layer, WeightWithPooling[]>();
             foreach (var prevLayer in filter.PreviousLayers)
             {
                 // 'catchment' area
-                var pooledWeightMap = new PooledWeight[filter.Size + poolingDimension - 1];
+                var pooledWeightMap = new WeightWithPooling[filter.Size + poolingDimension - 1];
                 for (var i = 0; i < poolingDimension; i++)
                 {
                     for (var j = 0; j < filter.Size; j++)
                     {
                         if (pooledWeightMap[i + j] == null)
                         {
-                            pooledWeightMap[i + j] = new PooledWeight(poolingDimension);
+                            pooledWeightMap[i + j] = new WeightWithPooling(poolingDimension, 0d);
                         }
                         else
                         {

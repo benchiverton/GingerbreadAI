@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Model.NeuralNetwork.Models
 {
     public class Node
     {
         /// <summary>
-        ///     The weights, with reference to the layer & node the value id being mapped from
+        /// The weights, with reference to the layer & node the value id being mapped from
         /// </summary>
         public Dictionary<Node, Weight> Weights { get; set; } = new Dictionary<Node, Weight>();
 
         /// <summary>
-        ///     The bias weights, with reference to the layer the value is mapped from
+        /// The bias weights, with reference to the layer the value is mapped from
         /// </summary>
         public Dictionary<Layer, Weight> BiasWeights { get; set; } = new Dictionary<Layer, Weight>();
 
         /// <summary>
-        ///     The output of the node from the last results calculation.
+        /// The output of the node from the last results calculation.
         /// </summary>
         public double Output { get; set; }
 
@@ -43,8 +42,17 @@ namespace Model.NeuralNetwork.Models
 
         public void CalculateOutput(Func<double, double> activationFunction)
         {
-            var output = Weights.Sum(previousNodeWeight => previousNodeWeight.Key.Output * previousNodeWeight.Value.Value) 
-                         + BiasWeights.Sum(previousLayerWeight => previousLayerWeight.Value.Value);
+            var output = 0d;
+
+            // TODO: optimise this
+            foreach (var (prevNode, weight) in Weights)
+            {
+                output += prevNode.Output * weight.Value;
+            }
+            foreach (var weight in BiasWeights)
+            {
+                output += weight.Value.Value;
+            }
 
             Output = activationFunction.Invoke(output);
         }

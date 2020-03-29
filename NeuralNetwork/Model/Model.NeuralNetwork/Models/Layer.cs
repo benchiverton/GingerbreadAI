@@ -8,41 +8,10 @@ namespace Model.NeuralNetwork.Models
 {
     public class Layer
     {
-        /// <summary>
-        ///     An array of the nodes within this layer.
-        /// </summary>
-        public Node[] Nodes { get; set; }
-
-        /// <summary>
-        ///     An array containing the layers that feed into this one.
-        /// </summary>
-        public Layer[] PreviousLayers { get; set; }
+        private readonly Guid _id = Guid.NewGuid();
 
         private ActivationFunctionType _activationFunctionType;
-        public ActivationFunctionType ActivationFunctionType
-        {
-            get => _activationFunctionType;
-            set
-            {
-                _activationFunctionType = value;
-                (ActivationFunction, ActivationFunctionDifferential) = ActivationFunctionResolver.ResolveActivationFunctions(value);
-            }
-        }
-        public Func<double, double> ActivationFunction { get; private set; }
-        public Func<double, double> ActivationFunctionDifferential { get; private set; }
-
-
         private InitialisationFunctionType _initialisationFunctionType;
-        public InitialisationFunctionType InitialisationFunctionType
-        {
-            get => _initialisationFunctionType;
-            set
-            {
-                _initialisationFunctionType = value;
-                InitialisationFunction = InitialisationFunctionResolver.ResolveInitialisationFunctions(value);
-            }
-        }
-        public Func<Random, int, int, double> InitialisationFunction { get; private set; }
 
         public Layer(
             ActivationFunctionType activationFunctionType = ActivationFunctionType.RELU,
@@ -65,42 +34,59 @@ namespace Model.NeuralNetwork.Models
             }
         }
 
+        /// <summary>
+        /// An array of the nodes within this layer.
+        /// </summary>
+        public Node[] Nodes { get; set; }
+
+        /// <summary>
+        /// An array containing the layers that feed into this one.
+        /// </summary>
+        public Layer[] PreviousLayers { get; set; }
+
+        /// <summary>
+        /// The function used to calculate the output given the aggregated input.
+        /// </summary>
+        public Func<double, double> ActivationFunction { get; private set; }
+
+        /// <summary>
+        /// The differential of the function used to calculate the output given the aggregated input.
+        /// </summary>
+        public Func<double, double> ActivationFunctionDifferential { get; private set; }
+
+        /// <summary>
+        /// The function used to calculate the initial weights of the layer.
+        /// </summary>
+        public Func<Random, int, int, double> InitialisationFunction { get; private set; }
+
+        public ActivationFunctionType ActivationFunctionType
+        {
+            get => _activationFunctionType;
+            set
+            {
+                _activationFunctionType = value;
+                (ActivationFunction, ActivationFunctionDifferential) = ActivationFunctionResolver.ResolveActivationFunctions(value);
+            }
+        }
+
+        public InitialisationFunctionType InitialisationFunctionType
+        {
+            get => _initialisationFunctionType;
+            set
+            {
+                _initialisationFunctionType = value;
+                InitialisationFunction = InitialisationFunctionResolver.ResolveInitialisationFunctions(value);
+            }
+        }
+
         public void CalculateOutputs(double[] inputs)
         {
-            if (!PreviousLayers.Any())
-            {
-                SetOutputs(inputs);
-                return;
-            }
-
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.CalculateOutputs(inputs);
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.CalculateOutput(ActivationFunction);
-            }
+            CalculateOutputs(inputs, new List<Guid>());
         }
 
         public void CalculateOutputs(Dictionary<Layer, double[]> inputs)
         {
-            if (!PreviousLayers.Any())
-            {
-                SetOutputs(inputs[this]);
-                return;
-            }
-
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.CalculateOutputs(inputs);
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.CalculateOutput(ActivationFunction);
-            }
+            CalculateOutputs(inputs, new List<Guid>());
         }
 
         /// <summary>
@@ -118,6 +104,55 @@ namespace Model.NeuralNetwork.Models
 
         #region Private methods
 
+        private void CalculateOutputs(double[] inputs, ICollection<Guid> processedLayers)
+        {
+            if (processedLayers.Contains(_id))
+            {
+                return;
+            }
+
+            processedLayers.Add(_id);
+            if (!PreviousLayers.Any())
+            {
+                SetOutputs(inputs);
+                return;
+            }
+
+            foreach (var prevLayer in PreviousLayers)
+            {
+                prevLayer.CalculateOutputs(inputs, processedLayers);
+            }
+
+            foreach (var node in Nodes)
+            {
+                node.CalculateOutput(ActivationFunction);
+            }
+        }
+
+        private void CalculateOutputs(IReadOnlyDictionary<Layer, double[]> inputs, ICollection<Guid> processedLayers)
+        {
+            if (processedLayers.Contains(_id))
+            {
+                return;
+            }
+
+            processedLayers.Add(_id);
+            if (!PreviousLayers.Any())
+            {
+                SetOutputs(inputs[this]);
+                return;
+            }
+
+            foreach (var prevLayer in PreviousLayers)
+            {
+                prevLayer.CalculateOutputs(inputs, processedLayers);
+            }
+
+            foreach (var node in Nodes)
+            {
+                node.CalculateOutput(ActivationFunction);
+            }
+        }
 
         private void SetOutputs(double[] outputs)
         {

@@ -5,12 +5,12 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using Model.NeuralNetwork.Models;
 
-namespace Model.NeuralNetwork
+namespace Model.NeuralNetwork.Extensions
 {
     public static class LayerExtensions
     {
         /// <summary>
-        ///     Initialises each Node in the layer with random weights.
+        /// Initialises each Node in the layer with random weights.
         /// </summary>
         public static void Initialise(this Layer layer, Random rand)
         {
@@ -59,7 +59,7 @@ namespace Model.NeuralNetwork
             return RecurseCloneWithSameWeightValueReferences(layer);
         }
 
-        public static void Save(this Layer layer, string location)
+        public static void SaveNetwork(this Layer layer, string location)
         {
             using (var ms = new MemoryStream())
             {
@@ -68,6 +68,21 @@ namespace Model.NeuralNetwork
                 using (var fileStream = File.Create(location))
                 {
                     ms.WriteTo(fileStream);
+                }
+            }
+        }
+
+        public static Layer LoadNetwork(string location)
+        {
+            using (var byteStream = File.OpenRead(location))
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    byteStream.CopyTo(memoryStream);
+                    memoryStream.Position = 0;
+
+                    var formatter = new BinaryFormatter();
+                    return (Layer)formatter.Deserialize(memoryStream);
                 }
             }
         }

@@ -5,8 +5,8 @@ using System.Linq;
 using DeepLearning.Backpropagation;
 using DeepLearning.Backpropagation.Extensions;
 using Library.Computations.Statistics;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
@@ -30,6 +30,7 @@ namespace NeuralNetwork.Test.NN
             var inner1 = new Layer(10, new[] { input }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
             var inner2 = new Layer(10, new[] { inner1 }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
             var outputLayer = new Layer(1, new[] { inner2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            outputLayer.AddMomentumRecursively();
             var accuracyResults = new List<double>();
             var initialResults = new double[100];
             var finalResults = new double[100];
@@ -45,7 +46,6 @@ namespace NeuralNetwork.Test.NN
 
             outputLayer.Initialise(new Random());
             var rand = new Random();
-            var momentum = outputLayer.GenerateMomentum();
             for (var i = 0; i < 100000; i++)
             {
                 if (i % 1000 == 0)
@@ -56,21 +56,21 @@ namespace NeuralNetwork.Test.NN
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = rand.NextDouble();
-                outputLayer.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, 0.1, momentum, 0.9);
+                outputLayer.Backpropagate(new[] { trial }, new double[] { Calculation(trial) }, 0.1, 0.9);
             }
 
             SetResults(inputs, outputLayer, finalResults);
 
             var suffix = DateTime.Now.Ticks;
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
-            using (var file = new System.IO.StreamWriter($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{suffix}.csv", false))
+            using (var file = new StreamWriter($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{suffix}.csv", false))
             {
                 file.WriteLine(string.Join(",", inputs.ToArray()));
                 file.WriteLine(string.Join(",", inputs.Select(Calculation)));
                 file.WriteLine(string.Join(",", initialResults.ToArray()));
                 file.WriteLine(string.Join(",", finalResults.ToArray()));
             }
-            using (var file = new System.IO.StreamWriter($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/accuracyResults-{suffix}.csv", false))
+            using (var file = new StreamWriter($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/accuracyResults-{suffix}.csv", false))
             {
                 file.WriteLine(string.Join(",", accuracyResults.ToArray()));
             }

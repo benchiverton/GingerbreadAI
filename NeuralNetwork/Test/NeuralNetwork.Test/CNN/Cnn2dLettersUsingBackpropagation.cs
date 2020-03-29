@@ -7,11 +7,12 @@ using DeepLearning.Backpropagation.Extensions;
 using MNIST.IO;
 using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using NeuralNetwork.Test.Helpers;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.CNN
@@ -29,7 +30,7 @@ namespace NeuralNetwork.Test.CNN
         }
 
         [RunnableInDebugOnly]
-        public void TrainAgainstGandWrittenNumbers()
+        public void TrainAgainstHandWrittenNumbers()
         {
             EnsureDataExists();
 
@@ -38,14 +39,14 @@ namespace NeuralNetwork.Test.CNN
             filters.AddPooling((2, 2));
             var stepDownLayer = new Layer(100, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(10, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
-            var momentum = output.GenerateMomentum();
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
 
             foreach (var trainingData in GetDataSet($"{_trainingDataDir}/train-images-idx3-ubyte.gz", $"{_trainingDataDir}/train-labels-idx1-ubyte.gz"))
             {
                 var targetOutputs = new double[10];
                 targetOutputs[trainingData.label] = 1d;
-                output.Backpropagate(trainingData.image, targetOutputs, 0.01, momentum, 0.9);
+                output.Backpropagate(trainingData.image, targetOutputs, 0.01, 0.9);
             }
 
             var correctResults = new double[10];

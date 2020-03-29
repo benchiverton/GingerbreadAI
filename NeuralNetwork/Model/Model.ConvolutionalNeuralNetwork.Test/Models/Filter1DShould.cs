@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Model.ConvolutionalNeuralNetwork.Models;
+﻿using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork.ActivationFunctions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;

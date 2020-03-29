@@ -1,46 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using DeepLearning.Backpropagation.Interfaces;
+using DeepLearning.Backpropagation.Models;
+using Model.ConvolutionalNeuralNetwork.Models;
 using Model.NeuralNetwork.Models;
 
 namespace DeepLearning.Backpropagation.Extensions
 {
     public static class LayerExtensions
     {
-        // builds a copy of the network with different weight references
-        public static Layer GenerateMomentum(this Layer layer)
+        public static void AddMomentumRecursively(this Layer layer)
         {
-            var momentum = new Layer
+            layer.AddMomentum();
+            foreach (var previousLayer in layer.PreviousLayers)
             {
-                Nodes = new Node[layer.Nodes.Length],
-                PreviousLayers = new Layer[layer.PreviousLayers.Length]
+                previousLayer.AddMomentumRecursively();
+            }
+        }
+
+        public static void AddMomentum(this Layer layer)
+        {
+            foreach (var node in layer.Nodes)
+            {
+                var prevNodes = node.Weights.Keys.ToArray();
+                foreach (var prevNode in prevNodes)
+                {
+                    node.Weights[prevNode] = GetWeightWithMomentum(node.Weights[prevNode]);
+                }
+                var prevLayers = node.BiasWeights.Keys.ToArray();
+                foreach (var prevLayer in prevLayers)
+                {
+                    node.BiasWeights[prevLayer] = GetWeightWithMomentum(node.BiasWeights[prevLayer]);
+                }
+            }
+        }
+
+        private static Weight GetWeightWithMomentum(Weight weightWithoutMomentum)
+        {
+            return weightWithoutMomentum switch
+            {
+                WeightWithPooling weightWithPooling => new WeightWithPoolingAndMomentum(weightWithPooling),
+                _ => new WeightWithMomentum(weightWithoutMomentum.Value),
             };
-
-            for (var i = 0; i < layer.Nodes.Length; i++)
-            {
-                var newNode = new Node
-                {
-                    Weights = new Dictionary<Node, Weight>(),
-                    BiasWeights = new Dictionary<Layer, Weight>()
-                };
-
-                foreach (var weightKey in layer.Nodes[i].Weights.Keys)
-                {
-                    newNode.Weights.Add(weightKey, new Weight(0));
-                }
-
-                foreach (var biasWeightKey in layer.Nodes[i].BiasWeights.Keys)
-                {
-                    newNode.BiasWeights.Add(biasWeightKey, new Weight(0));
-                }
-
-                momentum.Nodes[i] = newNode;
-            }
-
-            for (var i = 0; i < layer.PreviousLayers.Length; i++)
-            {
-                momentum.PreviousLayers[i] = layer.PreviousLayers[i].GenerateMomentum();
-            }
-
-            return momentum;
         }
     }
 }

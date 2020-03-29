@@ -1,6 +1,6 @@
 using System;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit;

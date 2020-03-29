@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Model.NeuralNetwork.ActivationFunctions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;

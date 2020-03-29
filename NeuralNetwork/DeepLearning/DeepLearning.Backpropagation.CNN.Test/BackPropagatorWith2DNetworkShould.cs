@@ -4,8 +4,8 @@ using System.Linq;
 using DeepLearning.Backpropagation.Extensions;
 using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit;
@@ -29,7 +29,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
             var filter1 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var filter2 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(2, new Layer[] { filter1, filter2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            var momentum = output.GenerateMomentum();
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
             var fullMatch = new double[] { 1, 1, 0, 1, 0, 1, 0, 1, 1 };
             var inputMatch1 = new double[] { 1, 1, 0, 1, 0, 0, 0, 0, 0 };
@@ -38,10 +38,10 @@ namespace DeepLearning.Backpropagation.CNN.Test
 
             for (var i = 0; i < 10000; i++)
             {
-                output.Backpropagate(fullMatch, new double[] { 1, 1 }, 0.1, momentum, 0.9);
-                output.Backpropagate(inputMatch1, new double[] { 1, 0 }, 0.1, momentum, 0.9);
-                output.Backpropagate(inputMatch2, new double[] { 0, 1 }, 0.1, momentum, 0.9);
-                output.Backpropagate(noMatch, new double[] { 0, 0 }, 0.1, momentum, 0.9);
+                output.Backpropagate(fullMatch, new double[] { 1, 1 }, 0.1, 0.9);
+                output.Backpropagate(inputMatch1, new double[] { 1, 0 }, 0.1, 0.9);
+                output.Backpropagate(inputMatch2, new double[] { 0, 1 }, 0.1, 0.9);
+                output.Backpropagate(noMatch, new double[] { 0, 0 }, 0.1, 0.9);
             }
 
             output.CalculateOutputs(inputMatch2);
@@ -74,7 +74,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
             var filter2 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var filter3 = new Filter2D(new[] { r, g, b }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new Layer[] { filter1, filter2, filter3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            var momentum = output.GenerateMomentum();
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -103,7 +103,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.1, momentum, 0.9);
+                output.Backpropagate(inputs, targetOutputs, 0.1, 0.9);
             }
 
             // each filter should pick up r/b/g differently
@@ -141,7 +141,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
             };
             filters.AddPooling((2, 2));
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            var momentum = output.GenerateMomentum();
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -170,7 +170,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.1, momentum, 0.9);
+                output.Backpropagate(inputs, targetOutputs, 0.1, 0.9);
             }
 
             var redInput = ResolveInputs(true, false, false);

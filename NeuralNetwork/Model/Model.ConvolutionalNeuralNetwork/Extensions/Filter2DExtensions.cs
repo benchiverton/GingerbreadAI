@@ -8,11 +8,11 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
     {
         public static void AddPooling(this Filter2D filter, (int height, int width) poolingDimensions)
         {
-            var filterWeightMap = new Dictionary<Layer, PooledWeight[,]>();
+            var filterWeightMap = new Dictionary<Layer, WeightWithPooling[,]>();
             foreach (var prevLayer in filter.PreviousLayers)
             {
                 // 'catchment' area
-                var pooledWeightMap = new PooledWeight[filter.Shape.width + poolingDimensions.width - 1, filter.Shape.height + poolingDimensions.height - 1];
+                var pooledWeightMap = new WeightWithPooling[filter.Shape.width + poolingDimensions.width - 1, filter.Shape.height + poolingDimensions.height - 1];
                 for (var i = 0; i < poolingDimensions.height; i++) // down
                 {
                     for (var j = 0; j < poolingDimensions.width; j++) // across
@@ -23,7 +23,7 @@ namespace Model.ConvolutionalNeuralNetwork.Extensions
                             {
                                 if (pooledWeightMap[j + l, i + k] == null)
                                 {
-                                    pooledWeightMap[j + l, i + k] = new PooledWeight(poolingDimensions.height * poolingDimensions.width);
+                                    pooledWeightMap[j + l, i + k] = new WeightWithPooling(poolingDimensions.height * poolingDimensions.width, 0d);
                                 }
                                 else
                                 {

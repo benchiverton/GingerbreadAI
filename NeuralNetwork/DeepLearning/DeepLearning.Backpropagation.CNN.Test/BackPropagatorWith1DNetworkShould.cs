@@ -4,8 +4,8 @@ using System.Linq;
 using DeepLearning.Backpropagation.Extensions;
 using Model.ConvolutionalNeuralNetwork.Extensions;
 using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit;
@@ -28,15 +28,15 @@ namespace DeepLearning.Backpropagation.CNN.Test
             var inputLayer = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filter = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(1, new Layer[] { filter }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            var momentum = output.GenerateMomentum();
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
             var inputMatch = new double[] { 1, 0, 1 };
             var inputNoMatch = new double[] { 0, 1, 0 };
 
             for (var i = 0; i < 10000; i++)
             {
-                output.Backpropagate(inputMatch, new double[] { 1 }, 0.1, momentum, 0.9);
-                output.Backpropagate(inputNoMatch, new double[] { 0 }, 0.1, momentum, 0.9);
+                output.Backpropagate(inputMatch, new double[] { 1 }, 0.1, 0.9);
+                output.Backpropagate(inputNoMatch, new double[] { 0 }, 0.1, 0.9);
             }
 
             // filter weights should look as follows:
@@ -125,7 +125,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
             };
             filters.AddPooling(2);
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
-            var momentum = output.GenerateMomentum();
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -154,7 +154,7 @@ namespace DeepLearning.Backpropagation.CNN.Test
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.1, momentum, 0.9);
+                output.Backpropagate(inputs, targetOutputs, 0.1, 0.9);
             }
 
             var redInput = ResolveInputs(true, false, false);

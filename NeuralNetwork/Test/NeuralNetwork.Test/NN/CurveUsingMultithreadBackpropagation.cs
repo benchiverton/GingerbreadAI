@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using DeepLearning.Backpropagation;
 using DeepLearning.Backpropagation.Extensions;
 using Library.Computations.Statistics;
-using Model.NeuralNetwork;
 using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
@@ -30,6 +30,7 @@ namespace NeuralNetwork.Test.NN
             var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var inner = new Layer(20, new[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeEtAl);
             var outputLayer = new Layer(1, new[] { inner }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            outputLayer.AddMomentumRecursively();
             outputLayer.Initialise(new Random());
             var accuracyResults = new List<double>();
             var initialResults = new double[100];
@@ -68,7 +69,6 @@ namespace NeuralNetwork.Test.NN
         {
             var rand = new Random();
             var output = outputLayer.CloneWithSameWeightValueReferences();
-            var momentum = output.GenerateMomentum();
 
             for (var i = 0; i < 10000; i++)
             {
@@ -80,7 +80,7 @@ namespace NeuralNetwork.Test.NN
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
                 var trial = rand.NextDouble() / 4 + ((double)currentThread + 1) / threadCount;
-                output.Backpropagate(new[] { trial }, new [] { Calculation(trial) }, 0.01, momentum, 0.9);
+                output.Backpropagate(new[] { trial }, new [] { Calculation(trial) }, 0.01, 0.9);
             }
         }
 
