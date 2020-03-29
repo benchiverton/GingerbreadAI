@@ -41,18 +41,10 @@ namespace DeepLearning.Backpropagation
             }
 
             var deltas = new Dictionary<Node, double>();
+            var sumDeltaWeights = GetSumDeltaWeights(layer.Nodes, backwardsPassDeltas);
             foreach (var node in layer.Nodes)
             {
-                // TODO: optimise this
-                var sumDeltaWeights = 0d;
-                foreach (var (passedNode, passedDelta) in backwardsPassDeltas)
-                {
-                    if (passedNode.Weights.TryGetValue(node, out var weightBetweenNodeAndPassedNode))
-                    {
-                        sumDeltaWeights += passedDelta * weightBetweenNodeAndPassedNode.Value;
-                    }
-                }
-                var delta = sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
+                var delta = sumDeltaWeights[node].Value * layer.ActivationFunctionDifferential(node.Output);
                 deltas.Add(node, delta);
 
                 foreach (var (prevNode, weightForPrevNode) in node.Weights)
@@ -70,6 +62,23 @@ namespace DeepLearning.Backpropagation
             {
                 RecurseBackpropagation(t, deltas, momentumMagnitude);
             }
+        }
+
+        private static Dictionary<Node, MutableDouble> GetSumDeltaWeights(Node[] layerNodes, Dictionary<Node, double> backwardsPassDeltas)
+        {
+            var dict = layerNodes.ToDictionary(x => x, x => new MutableDouble());
+            foreach (var (passedNode, passedDelta) in backwardsPassDeltas)
+            {
+                foreach (var nodeWeightPair in passedNode.Weights)
+                {
+                    if (dict.TryGetValue(nodeWeightPair.Key, out var deltaSum))
+                    {
+                        deltaSum.Value += passedDelta * nodeWeightPair.Value.Value;
+                    }
+                }
+            }
+
+            return dict;
         }
 
         private static Dictionary<Node, double> UpdateOutputLayer(Layer outputLayer, double[] targetOutputs, double learningRate, double momentumMagnitude)
@@ -122,5 +131,10 @@ namespace DeepLearning.Backpropagation
                 weightForPrevLayerAsWeightWithMomentum.Momentum = change + changeFromMomentum;
             }
         }
+    }
+
+    internal class MutableDouble
+    {
+        public double Value {get; set;}
     }
 }
