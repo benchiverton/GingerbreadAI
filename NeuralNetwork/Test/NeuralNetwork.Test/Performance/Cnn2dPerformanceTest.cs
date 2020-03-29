@@ -19,7 +19,10 @@ namespace NeuralNetwork.Test.Performance
         private readonly ITestOutputHelper _testOutputHelper;
 
         private const int IntervalInMs = 5000;
+        private const int TotalSamples = 5;
+        private int _sampleCount;
         private int _processedImages;
+        private bool _continueProcessing = true;
 
         public Cnn2dPerformanceTest(ITestOutputHelper testOutputHelper)
         {
@@ -30,12 +33,14 @@ namespace NeuralNetwork.Test.Performance
         public void PerformanceTestCnnNetwork()
         {
             var input = new Layer2D((10, 10), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var filters = new[] { input }.Add2DConvolutionalLayer(12, (4, 4), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var filters = new[] { input }.Add2DConvolutionalLayer(16, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             filters.AddPooling((2, 2));
             var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
+
+            _testOutputHelper.WriteLine($"Starting test run: Interval: {IntervalInMs}ms, Samples: {TotalSamples}");
 
             var timer = new Timer
             {
@@ -43,33 +48,49 @@ namespace NeuralNetwork.Test.Performance
             };
             timer.Elapsed += OnTimerElapsed;
             timer.Start();
-            for (var i = 0; i < 10000; i++)
+            while(_continueProcessing)
             {
                 output.Backpropagate(SquareAsArray, new [] {1d, 0d, 0d}, 0.1, 0.9);
                 _processedImages++;
-                output.Backpropagate(SquareAsArray, new [] {1d, 0d, 0d}, 0.1, 0.9);
+                output.Backpropagate(SquareAsArray, new [] {0d, 1d, 0d}, 0.1, 0.9);
                 _processedImages++;
-                output.Backpropagate(SquareAsArray, new [] {1d, 0d, 0d}, 0.1, 0.9);
+                output.Backpropagate(SquareAsArray, new [] {0d, 0d, 1d}, 0.1, 0.9);
                 _processedImages++;
             }
+            timer.Stop();
+
+            output.CalculateOutputs(SquareAsArray);
+            _testOutputHelper.WriteLine($"Results after training from Square: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            output.CalculateOutputs(CircleAsArray);
+            _testOutputHelper.WriteLine($"Results after training from Circle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            output.CalculateOutputs(TriangleAsArray);
+            _testOutputHelper.WriteLine($"Results after training from Triangle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
         }
 
         private void OnTimerElapsed(object source, ElapsedEventArgs e)
         {
             _testOutputHelper.WriteLine($"Images processed in {IntervalInMs}ms: {_processedImages}");
-            _processedImages = 0;
+            _sampleCount++;
+            if (_sampleCount < TotalSamples)
+            {
+                _processedImages = 0;
+            }
+            else
+            {
+                _continueProcessing = false;
+            }
         }
 
         private double[] SquareAsArray => TransformTo1dArray(new double[,]
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,1,1,1,1,1,1,1,1,0 },
-            { 0,1,1,1,1,1,1,1,1,0 },
-            { 0,1,1,0,0,0,0,1,1,0 },
-            { 0,1,1,0,0,0,0,1,1,0 },
-            { 0,1,1,0,0,0,0,1,1,0 },
-            { 0,1,1,0,0,0,0,1,1,0 },
-            { 0,1,1,1,1,1,1,1,1,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
             { 0,1,1,1,1,1,1,1,1,0 },
             { 0,0,0,0,0,0,0,0,0,0 },
         }).ToArray();
@@ -78,12 +99,12 @@ namespace NeuralNetwork.Test.Performance
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,1,1,0,0,0,0 },
-            { 0,0,1,1,1,1,1,1,0,0 },
             { 0,0,1,1,0,0,1,1,0,0 },
-            { 0,1,1,0,0,0,0,1,1,0 },
-            { 0,1,1,0,0,0,0,1,1,0 },
+            { 0,0,1,0,0,0,0,1,0,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
+            { 0,0,1,0,0,0,0,1,0,0 },
             { 0,0,1,1,0,0,1,1,0,0 },
-            { 0,0,1,1,1,1,1,1,0,0 },
             { 0,0,0,0,1,1,0,0,0,0 },
             { 0,0,0,0,0,0,0,0,0,0 },
         }).ToArray();
@@ -92,13 +113,13 @@ namespace NeuralNetwork.Test.Performance
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,1,1,0,0,0,0 },
-            { 0,0,0,1,1,1,1,0,0,0 },
-            { 0,0,1,1,0,0,1,1,0,0 },
-            { 0,1,1,0,0,0,0,1,1,0 },
-            { 1,1,0,0,0,0,0,0,1,1 },
+            { 0,0,0,0,1,1,0,0,0,0 },
+            { 0,0,0,1,0,0,1,0,0,0 },
+            { 0,0,1,0,0,0,0,1,0,0 },
+            { 0,1,0,0,0,0,0,0,1,0 },
             { 1,0,0,0,0,0,0,0,0,1 },
             { 1,1,1,1,1,1,1,1,1,1 },
-            { 1,1,1,1,1,1,1,1,1,1 },
+            { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,0,0,0,0,0,0 },
         }).ToArray();
 
