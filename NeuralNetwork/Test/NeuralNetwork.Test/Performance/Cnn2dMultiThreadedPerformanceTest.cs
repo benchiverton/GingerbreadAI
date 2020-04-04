@@ -39,7 +39,7 @@ namespace NeuralNetwork.Test.Performance
             filters.AddPooling((2, 2));
             var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
-            output.AddMomentumRecursively();
+            //output.AddMomentumRecursively();
             output.Initialise(new Random());
 
             _testOutputHelper.WriteLine($"Starting test run: Interval: {IntervalInMs}ms, Samples: {TotalSamples}");

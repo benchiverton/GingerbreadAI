@@ -16,25 +16,12 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Content Include="TestData\**\*.*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>  
-  </ItemGroup>
-  
-  <ItemGroup>
     <ProjectReference Include="..\..\DeepLearning\DeepLearning.Backpropagation\DeepLearning.Backpropagation.csproj" />
     <ProjectReference Include="..\..\DeepLearning\DeepLearning.NegativeSampling\DeepLearning.NegativeSampling.csproj" />
     <ProjectReference Include="..\..\Library\Library.Computations\Library.Computations.csproj" />
     <ProjectReference Include="..\..\Model\Model.ConvolutionalNeuralNetwork\Model.ConvolutionalNeuralNetwork.csproj" />
     <ProjectReference Include="..\..\Model\Model.NeuralNetwork\Model.NeuralNetwork.csproj" />
     <ProjectReference Include="..\..\NLP\NLP.Word2Vec\NLP.Word2Vec.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="TestData\Images\Cats\" />
-    <Folder Include="TestData\Images\Dogs\" />
-    <Folder Include="TestData\Images\Fish\" />
-    <Folder Include="TestData\Images\Birds\" />
   </ItemGroup>
   
 </Project>

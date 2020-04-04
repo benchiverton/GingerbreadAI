@@ -23,7 +23,7 @@ namespace Model.ConvolutionalNeuralNetwork.Models
             CalculateMagnitude();
         }
 
-        public override double Value { get => _value * _magnitude; set => _value = value; }
+        public override double Value { get => _value * _magnitude; set => _value = value; } // ? - requires more thought
 
         public void IncreaseOccurrences()
         {

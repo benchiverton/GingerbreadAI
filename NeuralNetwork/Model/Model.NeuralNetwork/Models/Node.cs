@@ -45,9 +45,9 @@ namespace Model.NeuralNetwork.Models
             var output = 0d;
 
             // TODO: optimise this
-            foreach (var (prevNode, weight) in Weights)
+            foreach (var weight in Weights)
             {
-                output += prevNode.Output * weight.Value;
+                output += weight.Key.Output * weight.Value.Value;
             }
             foreach (var weight in BiasWeights)
             {

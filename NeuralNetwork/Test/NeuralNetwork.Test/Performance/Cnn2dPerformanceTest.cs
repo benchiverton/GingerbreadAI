@@ -10,6 +10,7 @@ using Model.NeuralNetwork.ActivationFunctions;
 using Model.NeuralNetwork.Extensions;
 using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NeuralNetwork.Test.Performance
@@ -29,7 +30,7 @@ namespace NeuralNetwork.Test.Performance
             _testOutputHelper = testOutputHelper;
         }
 
-        [RunnableInDebugOnly]
+        [Fact]
         public void PerformanceTestCnnNetwork()
         {
             var input = new Layer2D((10, 10), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);

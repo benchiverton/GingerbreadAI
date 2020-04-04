@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DeepLearning.Backpropagation.Interfaces;
-using DeepLearning.Backpropagation.Models;
 using Model.NeuralNetwork.Models;
 
 namespace DeepLearning.Backpropagation

@@ -11,13 +11,13 @@ using Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace DeepLearning.Backpropagation.CNN.Test
+namespace DeepLearning.Backpropagation.Test.CNN
 {
-    public class BackPropagatorWith1DNetworkShould
+    public class BackpropagatorWith1DNetworkShould
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public BackPropagatorWith1DNetworkShould(ITestOutputHelper testOutputHelper)
+        public BackpropagatorWith1DNetworkShould(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }

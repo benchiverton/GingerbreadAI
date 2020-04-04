@@ -5,7 +5,7 @@ using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 using Xunit;
 
-namespace DeepLearning.Backpropagation.Test
+namespace DeepLearning.Backpropagation.Test.NN
 {
     public class BackpropagationShould
     {

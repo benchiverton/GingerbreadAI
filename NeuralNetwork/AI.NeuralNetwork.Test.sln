@@ -33,11 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLP.Word2Vec.Test", "NLP\NL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Test", "Test\NeuralNetwork.Test\NeuralNetwork.Test.csproj", "{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model.ConvolutionalNeuralNetwork", "Model\Model.ConvolutionalNeuralNetwork\Model.ConvolutionalNeuralNetwork.csproj", "{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model.ConvolutionalNeuralNetwork", "Model\Model.ConvolutionalNeuralNetwork\Model.ConvolutionalNeuralNetwork.csproj", "{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model.ConvolutionalNeuralNetwork.Test", "Model\Model.ConvolutionalNeuralNetwork.Test\Model.ConvolutionalNeuralNetwork.Test.csproj", "{44D594BA-6C44-449D-B949-32DF63B34A9D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeepLearning.Backpropagation.CNN.Test", "DeepLearning\DeepLearning.Backpropagation.CNN.Test\DeepLearning.Backpropagation.CNN.Test.csproj", "{6A19DA49-4A09-4C4B-9210-A9E2E9B1841D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,10 +91,6 @@ Global
 		{44D594BA-6C44-449D-B949-32DF63B34A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44D594BA-6C44-449D-B949-32DF63B34A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44D594BA-6C44-449D-B949-32DF63B34A9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6A19DA49-4A09-4C4B-9210-A9E2E9B1841D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A19DA49-4A09-4C4B-9210-A9E2E9B1841D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A19DA49-4A09-4C4B-9210-A9E2E9B1841D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A19DA49-4A09-4C4B-9210-A9E2E9B1841D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,7 +108,6 @@ Global
 		{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5} = {E84E2FB6-1B26-4006-B0DD-9C1A6C60C29F}
 		{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F} = {F9024985-99A2-4FE3-93C1-78ED971E6768}
 		{44D594BA-6C44-449D-B949-32DF63B34A9D} = {F9024985-99A2-4FE3-93C1-78ED971E6768}
-		{6A19DA49-4A09-4C4B-9210-A9E2E9B1841D} = {01E17F55-2A0B-4263-9D9F-5B6E9CB64BB1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {316817EF-00A2-4C09-8C9C-7B0ABF43BF05}
