@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using GingerbreadAI.DeepLearning.Backpropagation;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.Initialisers;
@@ -64,7 +65,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
                 var inputValue2 = rand.NextDouble();
                 inputDict[input1][0] = inputValue1;
                 inputDict[input2][0] = inputValue2;
-                outputLayer.Backpropagate(inputDict, new double[] { Calculation(inputValue1, inputValue2) }, learningRate);
+                outputLayer.Backpropagate(inputDict, new double[] { Calculation(inputValue1, inputValue2) }, ErrorFunctionType.MSE, learningRate);
 
                 ModifyLearningRate(ref learningRate);
             }

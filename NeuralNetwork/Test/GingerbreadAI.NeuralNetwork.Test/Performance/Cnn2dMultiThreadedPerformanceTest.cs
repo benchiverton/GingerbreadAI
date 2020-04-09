@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using GingerbreadAI.DeepLearning.Backpropagation;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
@@ -55,11 +56,11 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
                 var networkToTrainWith = output.CloneWithSameWeightValueReferences();
                 while (_continueProcessing)
                 {
-                    networkToTrainWith.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, 0.1, 0.9);
+                    networkToTrainWith.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
                     _processedImages++;
-                    networkToTrainWith.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, 0.1, 0.9);
+                    networkToTrainWith.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
                     _processedImages++;
-                    networkToTrainWith.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, 0.1, 0.9);
+                    networkToTrainWith.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, ErrorFunctionType.MSE, 0.1, 0.9);
                     _processedImages++;
                 }
             });

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
@@ -35,18 +36,15 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
 
             for (var i = 0; i < 10000; i++)
             {
-                output.Backpropagate(inputMatch, new double[] { 1 }, 0.1, 0.9);
-                output.Backpropagate(inputNoMatch, new double[] { 0 }, 0.1, 0.9);
+                output.Backpropagate(inputMatch, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputNoMatch, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
             }
 
-            // filter weights should look as follows:
-            // +  -  +      -  +  -  (Depending on output weight being +ve/-ve)
-            _testOutputHelper.WriteLine($"filter: {string.Join(",", filter.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
+            output.CalculateOutputs(inputMatch);
+            Assert.True(output.Nodes[0].Output > 0.95);
 
-            var outputMultiplier = output.Nodes[0].Weights[filter.Nodes[0]].Value > 0 ? 1 : -1;
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[0]].Value > 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[1]].Value < 0);
-            Assert.True(outputMultiplier * filter.Nodes[0].Weights[inputLayer.Nodes[2]].Value > 0);
+            output.CalculateOutputs(inputNoMatch);
+            Assert.True(output.Nodes[0].Output < 0.05);
         }
 
         [Fact]
@@ -59,6 +57,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
             var filter2 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var filter3 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new Layer[] { filter1, filter2, filter3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
             Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
             {
@@ -87,7 +86,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.5);
+                output.Backpropagate(inputs, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
             }
 
             // each filter should pick up r/b/g differently
@@ -154,7 +153,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, 0.1, 0.9);
+                output.Backpropagate(inputs, targetOutputs, ErrorFunctionType.CrossEntropy, 0.1, 0.9);
             }
 
             var redInput = ResolveInputs(true, false, false);
