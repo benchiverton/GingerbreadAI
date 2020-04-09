@@ -1,15 +1,23 @@
 # Gingerbread AI
 
-Yet another AI library.
+C# libraries written written to model neural networks, and deep learning algorithms to train them.
 
 ## [NeuralNetwork](NeuralNetwork)
 
-C# libraries that allow you to model the following neural networks:
+Contains C# libraries that model the following neural networks:
 
 * Fully Connected (Dense) Neural Networks
 * Convolutional Neural Networks (1D w/ filtering, 2D w/ filtering)
 
-There are also deep learning algorithms that support the training of these networks via backpropagation with smoothing/momentum.
+The following activation functions are supported:
+* Linear
+* RELU
+* Sigmoid
+* Tanh
+
+There is an implementation of Baskpropagation (w/ momentum), where the following error/loss functions are supported:
+* MSE
+* Cross Entropy
 
 #### [Documentation](Documentation)
 
