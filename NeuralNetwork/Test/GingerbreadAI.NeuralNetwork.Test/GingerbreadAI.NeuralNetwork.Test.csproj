@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="MNIST.IO" Version="1.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\DeepLearning\GingerbreadAI.DeepLearning.Backpropagation\GingerbreadAI.DeepLearning.Backpropagation.csproj" />
+    <ProjectReference Include="..\..\DeepLearning\GingerbreadAI.DeepLearning.NegativeSampling\GingerbreadAI.DeepLearning.NegativeSampling.csproj" />
+    <ProjectReference Include="..\..\Model\GingerbreadAI.Model.ConvolutionalNeuralNetwork\GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj" />
+    <ProjectReference Include="..\..\Model\GingerbreadAI.Model.NeuralNetwork\GingerbreadAI.Model.NeuralNetwork.csproj" />
+    <ProjectReference Include="..\..\NLP\GingerbreadAI.NLP.Word2Vec\GingerbreadAI.NLP.Word2Vec.csproj" />
+  </ItemGroup>
+  
+</Project>
