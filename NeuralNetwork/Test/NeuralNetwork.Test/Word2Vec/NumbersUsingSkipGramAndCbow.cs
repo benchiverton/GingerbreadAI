@@ -11,7 +11,7 @@ namespace NeuralNetwork.Test.Word2Vec
         [RunnableInDebugOnly]
         public void Go()
         {
-            var inputFile = $@"{Directory.GetCurrentDirectory()}/Data/numbers.txt";
+            var inputFile = $@"{Directory.GetCurrentDirectory()}/TestData/numbers.txt";
             var outputFile = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{DateTime.Now.Ticks}.csv";
 
             System.IO.Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");

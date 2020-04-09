@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using Library.Computations;
 
 namespace Model.NeuralNetwork.Models
 {
-    [Serializable]
     public class Node
     {
         /// <summary>
-        ///     The weights, with reference to the layer & node the value id being mapped from
+        /// The weights, with reference to the layer & node the value id being mapped from
         /// </summary>
-        public Dictionary<Node, Weight> Weights { get; set; }
+        public Dictionary<Node, Weight> Weights { get; set; } = new Dictionary<Node, Weight>();
 
         /// <summary>
-        ///     The bias weights, with reference to the layer the value is mapped from
+        /// The bias weights, with reference to the layer the value is mapped from
         /// </summary>
-        public Dictionary<Layer, Weight> BiasWeights { get; set; }
+        public Dictionary<Layer, Weight> BiasWeights { get; set; } = new Dictionary<Layer, Weight>();
 
         /// <summary>
-        ///     The output of the node from the last results calculation.
+        /// The output of the node from the last results calculation.
         /// </summary>
-        public double Output { get; set; } = 0;
+        public double Output { get; set; }
 
         public Node()
         {
@@ -28,7 +26,6 @@ namespace Model.NeuralNetwork.Models
 
         public Node(IReadOnlyList<Layer> nodeGroupPrev)
         {
-            Weights = new Dictionary<Node, Weight>();
             foreach (var prevNodeLayer in nodeGroupPrev)
             {
                 foreach (var node in prevNodeLayer.Nodes)
@@ -37,26 +34,27 @@ namespace Model.NeuralNetwork.Models
                 }
             }
 
-            BiasWeights = new Dictionary<Layer, Weight>();
             foreach (var prevNodeLayer in nodeGroupPrev)
             {
                 BiasWeights.Add(prevNodeLayer, new Weight(0));
             }
         }
 
-        public void PopulateOutput()
+        public void CalculateOutput(Func<double, double> activationFunction)
         {
             var output = 0d;
-            foreach (var previousNodeWeight in Weights)
+
+            // TODO: optimise this
+            foreach (var weight in Weights)
             {
-                output += previousNodeWeight.Key.Output * previousNodeWeight.Value.Value;
+                output += weight.Key.Output * weight.Value.Value;
             }
-            foreach (var previousLayerWeight in BiasWeights)
+            foreach (var weight in BiasWeights)
             {
-                output += previousLayerWeight.Value.Value;
+                output += weight.Value.Value;
             }
 
-            Output = LogisticFunction.ComputeOutput(output);
+            Output = activationFunction.Invoke(output);
         }
     }
 }

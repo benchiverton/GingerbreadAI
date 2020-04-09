@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DeepLearning.Backpropagation;
 using DeepLearning.NegativeSampling;
-using Model.NeuralNetwork;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Extensions;
+using Model.NeuralNetwork.Initialisers;
 using Model.NeuralNetwork.Models;
 
 namespace NLP.Word2Vec
@@ -97,11 +98,12 @@ namespace NLP.Word2Vec
 
         private void InitNetwork()
         {
-            var inputLayer = new Layer("input", _wordCollection.GetNumberOfUniqueWords(), new Layer[0]);
-            var hiddenLayer = new Layer("hidden", _numberOfDimensions, new[] { inputLayer });
-            _neuralNetwork = new Layer("output", _wordCollection.GetNumberOfUniqueWords(), new[] { hiddenLayer });
+            var inputLayer = new Layer(_wordCollection.GetNumberOfUniqueWords(), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.HeEtAl);
+            var hiddenLayer = new Layer(5, new[] { inputLayer }, ActivationFunctionType.RELU, InitialisationFunctionType.HeEtAl);
+            var hiddenLayer2 = new Layer(5, new[] { hiddenLayer }, ActivationFunctionType.RELU, InitialisationFunctionType.HeEtAl);
+            _neuralNetwork = new Layer(_wordCollection.GetNumberOfUniqueWords(), new[] { hiddenLayer2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             // do not initialise output weights (?)
-            hiddenLayer.Initialise(new Random());
+            hiddenLayer2.Initialise(new Random());
         }
 
         private void Train()

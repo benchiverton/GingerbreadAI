@@ -1,135 +1,174 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Library.Computations;
-using Model.NeuralNetwork.Exceptions;
+using Model.NeuralNetwork.ActivationFunctions;
+using Model.NeuralNetwork.Initialisers;
 
 namespace Model.NeuralNetwork.Models
 {
-    [Serializable]
     public class Layer
     {
-        /// <summary>
-        ///     The name of the node.
-        /// </summary>
-        public string Name { get; set; }
+        private readonly Guid _id = Guid.NewGuid();
 
-        /// <summary>
-        ///     An array of the nodes within this group.
-        /// </summary>
-        public Node[] Nodes { get; set; }
+        private ActivationFunctionType _activationFunctionType;
+        private InitialisationFunctionType _initialisationFunctionType;
 
-        /// <summary>
-        ///     An array containing the NodeGroups that feed into this one.
-        /// </summary>
-        public Layer[] PreviousLayers { get; set; }
-
-        public Layer()
+        public Layer(
+            ActivationFunctionType activationFunctionType = ActivationFunctionType.RELU,
+            InitialisationFunctionType initialisationFunctionType = InitialisationFunctionType.HeEtAl)
         {
+            ActivationFunctionType = activationFunctionType;
+            InitialisationFunctionType = initialisationFunctionType;
         }
 
-        public Layer(string name, int nodeCount, Layer[] previousGroups)
+        public Layer(int nodeCount, Layer[] previousGroups, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionType)
         {
-            Name = name;
+            ActivationFunctionType = activationFunctionType;
+            InitialisationFunctionType = initialisationFunctionType;
             Nodes = new Node[nodeCount];
+            PreviousLayers = previousGroups;
+
             for (var i = 0; i < nodeCount; i++)
             {
                 Nodes[i] = new Node(previousGroups);
             }
-            PreviousLayers = previousGroups;
         }
 
-        public void PopulateAllOutputs(double[] inputs)
+        /// <summary>
+        /// An array of the nodes within this layer.
+        /// </summary>
+        public Node[] Nodes { get; set; }
+
+        /// <summary>
+        /// An array containing the layers that feed into this one.
+        /// </summary>
+        public Layer[] PreviousLayers { get; set; }
+
+        /// <summary>
+        /// The function used to calculate the output given the aggregated input.
+        /// </summary>
+        public Func<double, double> ActivationFunction { get; private set; }
+
+        /// <summary>
+        /// The differential of the function used to calculate the output given the aggregated input.
+        /// </summary>
+        public Func<double, double> ActivationFunctionDifferential { get; private set; }
+
+        /// <summary>
+        /// The function used to calculate the initial weights of the layer.
+        /// </summary>
+        public Func<Random, int, int, double> InitialisationFunction { get; private set; }
+
+        public ActivationFunctionType ActivationFunctionType
         {
-            if (!PreviousLayers.Any())
+            get => _activationFunctionType;
+            set
             {
-                PopulateInputLayersOutputs(inputs);
-                return;
-            }
-
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.PopulateAllOutputs(inputs);
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.PopulateOutput();
+                _activationFunctionType = value;
+                (ActivationFunction, ActivationFunctionDifferential) = ActivationFunctionResolver.ResolveActivationFunctions(value);
             }
         }
 
-        public void PopulateAllOutputs(Dictionary<Layer, double[]> inputs)
+        public InitialisationFunctionType InitialisationFunctionType
         {
-            if (!PreviousLayers.Any())
+            get => _initialisationFunctionType;
+            set
             {
-                PopulateInputLayersOutputs(inputs[this]);
-                return;
+                _initialisationFunctionType = value;
+                InitialisationFunction = InitialisationFunctionResolver.ResolveInitialisationFunctions(value);
             }
+        }
 
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.PopulateAllOutputs(inputs);
-            }
+        public void CalculateOutputs(double[] inputs)
+        {
+            CalculateOutputs(inputs, new List<Guid>());
+        }
 
-            foreach (var node in Nodes)
-            {
-                node.PopulateOutput();
-            }
+        public void CalculateOutputs(Dictionary<Layer, double[]> inputs)
+        {
+            CalculateOutputs(inputs, new List<Guid>());
         }
 
         /// <summary>
         ///  Note: does not support multiple inputs
         /// </summary>
-        public void PopulateIndexedOutput(int inputIndex, int outputIndex, double inputValue)
+        public void CalculateIndexedOutput(int inputIndex, int outputIndex, double inputValue)
         {
             foreach (var previousLayer in PreviousLayers)
             {
-                PopulateIndexedOutput(previousLayer, inputIndex, inputValue);
+                CalculateIndexedOutput(previousLayer, inputIndex, inputValue);
             }
 
-            Nodes[outputIndex].PopulateOutput();
-        }
-
-        public string ToString(bool recurse = false, int layer = 0)
-        {
-            var indentation = "";
-            for (var i = 0; i < layer; i++)
-            {
-                indentation += "    ";
-            }
-
-            var s = new StringBuilder($"{indentation}Node Group: {Name}; Node count: {Nodes.Length}\n");
-            s.Append($"{indentation}Previous Groups:\n");
-
-            layer++;
-            foreach (var nodeGroup in PreviousLayers)
-            {
-                s.Append(recurse
-                    ? nodeGroup.ToString(true, layer)
-                    : $"{indentation}Node Group: {nodeGroup.Name}; Node count: {nodeGroup.Nodes.Length}\n");
-            }
-            return s.ToString();
+            Nodes[outputIndex].CalculateOutput(ActivationFunction);
         }
 
         #region Private methods
 
-
-        private void PopulateInputLayersOutputs(double[] inputs)
+        private void CalculateOutputs(double[] inputs, ICollection<Guid> processedLayers)
         {
-            if (Nodes.Length != inputs.Length)
+            if (processedLayers.Contains(_id))
             {
-                throw new NeuralNetworkException($"Input layer length ({Nodes.Length}) not equal to length of your inputs ({inputs.Length}).");
+                return;
+            }
+
+            processedLayers.Add(_id);
+            if (!PreviousLayers.Any())
+            {
+                SetOutputs(inputs);
+                return;
+            }
+
+            foreach (var prevLayer in PreviousLayers)
+            {
+                prevLayer.CalculateOutputs(inputs, processedLayers);
+            }
+
+            foreach (var node in Nodes)
+            {
+                node.CalculateOutput(ActivationFunction);
+            }
+        }
+
+        private void CalculateOutputs(IReadOnlyDictionary<Layer, double[]> inputs, ICollection<Guid> processedLayers)
+        {
+            if (processedLayers.Contains(_id))
+            {
+                return;
+            }
+
+            processedLayers.Add(_id);
+            if (!PreviousLayers.Any())
+            {
+                SetOutputs(inputs[this]);
+                return;
+            }
+
+            foreach (var prevLayer in PreviousLayers)
+            {
+                prevLayer.CalculateOutputs(inputs, processedLayers);
+            }
+
+            foreach (var node in Nodes)
+            {
+                node.CalculateOutput(ActivationFunction);
+            }
+        }
+
+        private void SetOutputs(double[] outputs)
+        {
+            if (Nodes.Length != outputs.Length)
+            {
+                throw new ArgumentException($"Layer length ({Nodes.Length}) not equal to length of your output array ({outputs.Length}).");
             }
 
             var i = 0;
             foreach (var node in Nodes)
             {
-                node.Output = inputs[i++];
+                node.Output = outputs[i++];
             }
         }
 
-        private bool PopulateIndexedOutput(Layer layer, int inputIndex, double inputValue)
+        private bool CalculateIndexedOutput(Layer layer, int inputIndex, double inputValue)
         {
             if (!layer.PreviousLayers.Any())
             {
@@ -140,15 +179,14 @@ namespace Model.NeuralNetwork.Models
             var shouldPopulateAllOutputs = false;
             foreach (var prevLayer in layer.PreviousLayers)
             {
-                var isNextToInput = PopulateIndexedOutput(prevLayer, inputIndex, inputValue);
+                var isNextToInput = CalculateIndexedOutput(prevLayer, inputIndex, inputValue);
 
                 if (isNextToInput)
                 {
                     var inputNode = prevLayer.Nodes[inputIndex];
                     foreach (var node in layer.Nodes)
                     {
-                        node.Output = node.Weights[inputNode].Value * inputNode.Output + node.BiasWeights[prevLayer].Value;
-                        node.Output = LogisticFunction.ComputeOutput(node.Output);
+                        node.Output = ActivationFunction(node.Weights[inputNode].Value * inputNode.Output + node.BiasWeights[prevLayer].Value);
                     }
                 }
                 else
@@ -162,7 +200,7 @@ namespace Model.NeuralNetwork.Models
             {
                 foreach (var node in layer.Nodes)
                 {
-                    node.PopulateOutput();
+                    node.CalculateOutput(ActivationFunction);
                 }
             }
 
