@@ -7,7 +7,7 @@ Yet another AI library.
 C# libraries that allow you to model the following neural networks:
 
 * Fully Connected (Dense) Neural Networks
-* Convolutional Neural Networks (1D, 2D w/ filtering)
+* Convolutional Neural Networks (1D w/ filtering, 2D w/ filtering)
 
 There are also deep learning algorithms that support the training of these networks via backpropagation with smoothing/momentum.
 
