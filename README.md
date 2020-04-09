@@ -15,8 +15,8 @@ The following activation functions are supported:
 * Sigmoid
 * Tanh
 
-There is an implementation of Baskpropagation (w/ momentum), where the following error/loss functions are supported:
-* MSE
+There is an implementation of Backpropagation (w/ momentum), where the following error functions are supported:
+* Mean Square Error
 * Cross Entropy
 
 #### [Documentation](Documentation)
