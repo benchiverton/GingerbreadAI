@@ -1,10 +1,9 @@
 ﻿using System.Linq;
-using DeepLearning.Backpropagation.Interfaces;
-using DeepLearning.Backpropagation.Models;
-using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.DeepLearning.Backpropagation.Models;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 
-namespace DeepLearning.Backpropagation.Extensions
+namespace GingerbreadAI.DeepLearning.Backpropagation.Extensions
 {
     public static class LayerExtensions
     {

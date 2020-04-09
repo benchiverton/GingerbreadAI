@@ -1,14 +1,13 @@
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
+using System;
+using System.Collections.Generic;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
+using Xunit;
+using Xunit.Abstractions;
 
-namespace Model.NeuralNetwork.Test.Models
+namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using Xunit;
-    using Xunit.Abstractions;
-
     public class LayerShould
     {
         private readonly ITestOutputHelper _testOutputHelper;

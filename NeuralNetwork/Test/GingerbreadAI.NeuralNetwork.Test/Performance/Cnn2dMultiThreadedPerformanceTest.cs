@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using DeepLearning.Backpropagation;
-using DeepLearning.Backpropagation.Extensions;
-using Model.ConvolutionalNeuralNetwork.Extensions;
-using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Extensions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.DeepLearning.Backpropagation;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Extensions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit.Abstractions;
 
-namespace NeuralNetwork.Test.Performance
+namespace GingerbreadAI.NeuralNetwork.Test.Performance
 {
     public class Cnn2dMultiThreadedPerformanceTest
     {

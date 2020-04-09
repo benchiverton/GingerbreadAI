@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Model.ConvolutionalNeuralNetwork.Extensions;
-using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 
-namespace Model.ConvolutionalNeuralNetwork.Test.Extensions
+namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Extensions
 {
     public class Filter1DArrayExtensionsShould
     {

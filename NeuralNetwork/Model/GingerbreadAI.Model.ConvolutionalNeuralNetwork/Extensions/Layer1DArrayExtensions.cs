@@ -1,8 +1,8 @@
-﻿using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Initialisers;
+﻿using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
 
-namespace Model.ConvolutionalNeuralNetwork.Extensions
+namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions
 {
     public static class Layer1DArrayExtensions
     {

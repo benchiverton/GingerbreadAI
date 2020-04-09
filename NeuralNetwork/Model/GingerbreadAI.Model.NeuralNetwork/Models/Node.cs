@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.NeuralNetwork.Models
+namespace GingerbreadAI.Model.NeuralNetwork.Models
 {
     public class Node
     {

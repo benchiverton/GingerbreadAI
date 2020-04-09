@@ -1,4 +1,4 @@
-﻿namespace Model.NeuralNetwork.Initialisers
+﻿namespace GingerbreadAI.Model.NeuralNetwork.Initialisers
 {
     public enum InitialisationFunctionType
     {

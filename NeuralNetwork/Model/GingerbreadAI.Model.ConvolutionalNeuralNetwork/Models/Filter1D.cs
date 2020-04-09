@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 
-namespace Model.ConvolutionalNeuralNetwork.Models
+namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
 {
     public class Filter1D : Layer1D
     {

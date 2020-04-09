@@ -1,6 +1,6 @@
-﻿using Model.NeuralNetwork.Models;
+﻿using GingerbreadAI.Model.NeuralNetwork.Models;
 
-namespace Model.ConvolutionalNeuralNetwork.Models
+namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
 {
     public class WeightWithPooling : Weight
     {

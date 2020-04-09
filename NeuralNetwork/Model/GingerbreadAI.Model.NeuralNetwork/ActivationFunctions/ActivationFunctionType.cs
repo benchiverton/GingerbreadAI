@@ -1,4 +1,4 @@
-﻿namespace Model.NeuralNetwork.ActivationFunctions
+﻿namespace GingerbreadAI.Model.NeuralNetwork.ActivationFunctions
 {
     public enum ActivationFunctionType
     {

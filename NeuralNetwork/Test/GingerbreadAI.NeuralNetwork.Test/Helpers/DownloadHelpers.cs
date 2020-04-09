@@ -2,7 +2,7 @@
 using System.IO.Compression;
 using System.Net;
 
-namespace NeuralNetwork.Test.Helpers
+namespace GingerbreadAI.NeuralNetwork.Test.Helpers
 {
     public static class DownloadHelpers
     {

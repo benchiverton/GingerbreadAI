@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
 
-namespace Model.NeuralNetwork.Models
+namespace GingerbreadAI.Model.NeuralNetwork.Models
 {
     public class Layer
     {

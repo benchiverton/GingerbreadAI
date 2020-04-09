@@ -1,6 +1,6 @@
-﻿using Model.ConvolutionalNeuralNetwork.Models;
+﻿using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 
-namespace Model.ConvolutionalNeuralNetwork.Extensions
+namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions
 {
     public static class Filter2DArrayExtensions
     {

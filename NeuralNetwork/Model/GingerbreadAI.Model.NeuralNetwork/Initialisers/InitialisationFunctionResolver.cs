@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Model.NeuralNetwork.Initialisers
+namespace GingerbreadAI.Model.NeuralNetwork.Initialisers
 {
     public static class InitialisationFunctionResolver
     {

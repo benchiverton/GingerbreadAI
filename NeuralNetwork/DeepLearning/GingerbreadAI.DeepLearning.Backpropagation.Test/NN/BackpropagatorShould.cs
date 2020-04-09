@@ -1,11 +1,11 @@
 using System;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Extensions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Extensions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 
-namespace DeepLearning.Backpropagation.Test.NN
+namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NN
 {
     public class BackpropagationShould
     {

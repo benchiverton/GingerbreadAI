@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Xunit;
 
-namespace NeuralNetwork.Test
+namespace GingerbreadAI.NeuralNetwork.Test
 {
     public sealed class RunnableInDebugOnlyAttribute : FactAttribute
     {

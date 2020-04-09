@@ -1,7 +1,7 @@
-﻿using DeepLearning.Backpropagation.Interfaces;
-using Model.ConvolutionalNeuralNetwork.Models;
+﻿using GingerbreadAI.DeepLearning.Backpropagation.Interfaces;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 
-namespace DeepLearning.Backpropagation.Models
+namespace GingerbreadAI.DeepLearning.Backpropagation.Models
 {
     public class WeightWithPoolingAndMomentum : WeightWithPooling, IWeightWithMomentum
     {

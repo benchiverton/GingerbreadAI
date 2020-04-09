@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NLP.Word2Vec
+namespace GingerbreadAI.NLP.Word2Vec
 {
     //C# Word2Vec based on https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c
     //Any comments in here is to show how misleading they can be. :)

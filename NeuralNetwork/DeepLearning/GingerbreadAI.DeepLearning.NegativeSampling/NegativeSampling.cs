@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 
-namespace DeepLearning.NegativeSampling
+namespace GingerbreadAI.DeepLearning.NegativeSampling
 {
     public static class NegativeSampling
     {

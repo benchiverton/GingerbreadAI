@@ -1,4 +1,4 @@
-namespace NLP.Word2Vec
+namespace GingerbreadAI.NLP.Word2Vec
 {
     public class WordInfo
     {

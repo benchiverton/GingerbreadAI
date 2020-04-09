@@ -1,11 +1,11 @@
-﻿using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
+﻿using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Model.ConvolutionalNeuralNetwork.Test.Models
+namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Models
 {
     public class Filter1DShould
     {

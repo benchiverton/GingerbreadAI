@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DeepLearning.Backpropagation;
-using DeepLearning.Backpropagation.Extensions;
+using GingerbreadAI.DeepLearning.Backpropagation;
+using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Extensions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
+using GingerbreadAI.NeuralNetwork.Test.Helpers;
 using MNIST.IO;
-using Model.ConvolutionalNeuralNetwork.Extensions;
-using Model.ConvolutionalNeuralNetwork.Models;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Extensions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
-using NeuralNetwork.Test.Helpers;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace NeuralNetwork.Test.CNN
+namespace GingerbreadAI.NeuralNetwork.Test.CNN
 {
     public class Cnn2dLettersUsingBackpropagation
     {

@@ -1,4 +1,4 @@
-﻿namespace DeepLearning.Backpropagation.Interfaces
+﻿namespace GingerbreadAI.DeepLearning.Backpropagation.Interfaces
 {
     public interface IWeightWithMomentum
     {

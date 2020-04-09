@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using NLP.Word2Vec;
+using GingerbreadAI.NLP.Word2Vec;
 
-namespace NeuralNetwork.Test.Word2Vec
+namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
     public class NumbersUsingSkipGram
     {

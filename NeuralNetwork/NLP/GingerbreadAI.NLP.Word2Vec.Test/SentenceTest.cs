@@ -2,7 +2,7 @@
 using System.Text;
 using Xunit;
 
-namespace NLP.Word2Vec.Test
+namespace GingerbreadAI.NLP.Word2Vec.Test
 {
     public class SentenceTest
     {

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DeepLearning.NegativeSampling;
-using Model.NeuralNetwork.ActivationFunctions;
-using Model.NeuralNetwork.Extensions;
-using Model.NeuralNetwork.Initialisers;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.DeepLearning.NegativeSampling;
+using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
+using GingerbreadAI.Model.NeuralNetwork.Extensions;
+using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 
-namespace NLP.Word2Vec
+namespace GingerbreadAI.NLP.Word2Vec
 {
     public class Word2VecUsingLibrary
     {

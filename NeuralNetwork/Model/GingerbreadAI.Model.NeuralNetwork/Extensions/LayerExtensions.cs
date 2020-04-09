@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 
-namespace Model.NeuralNetwork.Extensions
+namespace GingerbreadAI.Model.NeuralNetwork.Extensions
 {
     public static class LayerExtensions
     {

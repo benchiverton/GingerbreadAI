@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Model.NeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 
-namespace NLP.Word2Vec
+namespace GingerbreadAI.NLP.Word2Vec
 {
     public class FileHandler
     {

@@ -1,4 +1,4 @@
-﻿namespace Model.NeuralNetwork.Models
+﻿namespace GingerbreadAI.Model.NeuralNetwork.Models
 {
     public class Weight
     {

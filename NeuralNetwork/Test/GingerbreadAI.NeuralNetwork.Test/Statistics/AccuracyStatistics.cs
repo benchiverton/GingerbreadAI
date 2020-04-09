@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Library.Computations.Statistics
+namespace GingerbreadAI.NeuralNetwork.Test.Statistics
 {
     public class AccuracyStatistics
     {
