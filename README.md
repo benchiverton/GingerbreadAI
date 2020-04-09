@@ -2,7 +2,7 @@
 
 Yet another AI library.
 
-#### [NeuralNetwork](NeuralNetwork)
+## [NeuralNetwork](NeuralNetwork)
 
 C# libraries that allow you to model neural the following neural networks:
 
@@ -11,7 +11,7 @@ C# libraries that allow you to model neural the following neural networks:
 
 There are also deep learning algorithms that support the training of these networks via backpropagation with smoothing/momentum.
 
-##### [Documentation](Documentation)
+#### [Documentation](Documentation)
 
 Various documentation that has been written explaining some of the decisions taken when writing the GingerbreadAI library.
 
