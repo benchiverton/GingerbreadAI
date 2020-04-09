@@ -74,14 +74,14 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
 
         private static Dictionary<Node, double> UpdateOutputLayer(Layer outputLayer, double[] targetOutputs, ErrorFunctionType errorFunctionType, double learningRate, double momentumMagnitude)
         {
-            var errorFunction = ErrorFunctionResolver.ResolveErrorFunctionDifferential(errorFunctionType);
+            var errorFunctionDifferential = ErrorFunctionResolver.ResolveErrorFunctionDifferential(errorFunctionType);
 
             var deltas = new Dictionary<Node, double>();
 
             for (var i = 0; i < outputLayer.Nodes.Length; i++)
             {
                 var node = outputLayer.Nodes[i];
-                var delta = errorFunction.Invoke(targetOutputs[i], node.Output)
+                var delta = errorFunctionDifferential.Invoke(targetOutputs[i], node.Output)
                             * outputLayer.ActivationFunctionDifferential(node.Output)
                             * learningRate;
                 deltas.Add(node, delta);
