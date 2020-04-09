@@ -1,0 +1,25 @@
+figure;
+
+subplot(1,3,1)
+fplot(@(x) heaviside(x-1))
+axis([-5 5 -0.5 1.5])
+title('Step Function')
+vline(1,'r','A')
+xlabel('Input')
+ylabel('f_{step}(Input)')
+
+subplot(1,3,2)
+fplot(@(x) Logistic(1,1,x))
+axis([-5 5 -0.5 1.5])
+title('Logistic Function; \beta=1')
+vline(1,'r','A')
+xlabel('Input')
+ylabel('f_{logistic}(Input)')
+
+subplot(1,3,3)
+fplot(@(x) Logistic(1,8,x))
+axis([-5 5 -0.5 1.5])
+title('Logistic Function; \beta=5')
+vline(1,'r','A')
+xlabel('Input')
+ylabel('f_{logistic}(Input)')
