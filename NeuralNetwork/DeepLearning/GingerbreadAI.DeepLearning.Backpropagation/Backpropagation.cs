@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.DeepLearning.Backpropagation.Interfaces;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 
@@ -7,23 +8,23 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
 {
     public static class Backpropagation
     {
-        public static void Backpropagate(this Layer outputLayer, double[] inputs, double[] targetOutputs, double learningRate, double momentumMagnitude = 0d)
+        public static void Backpropagate(this Layer outputLayer, double[] inputs, double[] targetOutputs, ErrorFunctionType errorFunctionType, double learningRate, double momentumMagnitude = 0d)
         {
             outputLayer.CalculateOutputs(inputs);
 
-            DoBackpropagation(outputLayer, targetOutputs, learningRate, momentumMagnitude);
+            DoBackpropagation(outputLayer, targetOutputs, errorFunctionType, learningRate, momentumMagnitude);
         }
 
-        public static void Backpropagate(this Layer outputLayer, Dictionary<Layer, double[]> inputs, double[] targetOutputs, double learningRate, double momentumMagnitude = 0d)
+        public static void Backpropagate(this Layer outputLayer, Dictionary<Layer, double[]> inputs, double[] targetOutputs, ErrorFunctionType errorFunctionType, double learningRate, double momentumMagnitude = 0d)
         {
             outputLayer.CalculateOutputs(inputs);
 
-            DoBackpropagation(outputLayer, targetOutputs, learningRate, momentumMagnitude);
+            DoBackpropagation(outputLayer, targetOutputs, errorFunctionType, learningRate, momentumMagnitude);
         }
 
-        private static void DoBackpropagation(Layer outputLayer, double[] targetOutputs, double learningRate, double momentumMagnitude)
+        private static void DoBackpropagation(Layer outputLayer, double[] targetOutputs, ErrorFunctionType errorFunctionType, double learningRate, double momentumMagnitude)
         {
-            var backwardsPassDeltas = UpdateOutputLayer(outputLayer, targetOutputs, learningRate, momentumMagnitude);
+            var backwardsPassDeltas = UpdateOutputLayer(outputLayer, targetOutputs, errorFunctionType, learningRate, momentumMagnitude);
 
             foreach (var t in outputLayer.PreviousLayers)
             {
@@ -71,14 +72,16 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
             }
         }
 
-        private static Dictionary<Node, double> UpdateOutputLayer(Layer outputLayer, double[] targetOutputs, double learningRate, double momentumMagnitude)
+        private static Dictionary<Node, double> UpdateOutputLayer(Layer outputLayer, double[] targetOutputs, ErrorFunctionType errorFunctionType, double learningRate, double momentumMagnitude)
         {
+            var errorFunctionDifferential = ErrorFunctionResolver.ResolveErrorFunctionDifferential(errorFunctionType);
+
             var deltas = new Dictionary<Node, double>();
 
             for (var i = 0; i < outputLayer.Nodes.Length; i++)
             {
                 var node = outputLayer.Nodes[i];
-                var delta = (node.Output - targetOutputs[i])
+                var delta = errorFunctionDifferential.Invoke(targetOutputs[i], node.Output)
                             * outputLayer.ActivationFunctionDifferential(node.Output)
                             * learningRate;
                 deltas.Add(node, delta);

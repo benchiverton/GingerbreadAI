@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using GingerbreadAI.DeepLearning.Backpropagation;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
@@ -30,7 +31,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             _testOutputHelper = testOutputHelper;
         }
 
-        [Fact]
+        [RunnableInDebugOnly]
         public void PerformanceTestCnnNetwork()
         {
             var input = new Layer2D((10, 10), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
@@ -51,11 +52,11 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             timer.Start();
             while (_continueProcessing)
             {
-                output.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, 0.1, 0.9);
+                output.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
                 _processedImages++;
-                output.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, 0.1, 0.9);
+                output.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
                 _processedImages++;
-                output.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, 0.1, 0.9);
+                output.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, ErrorFunctionType.MSE, 0.1, 0.9);
                 _processedImages++;
             }
             timer.Stop();

@@ -1,4 +1,5 @@
 using System;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.Initialisers;
@@ -23,7 +24,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NN
             var learningRate = 0.25;
             for (var i = 0; i < 1000; i++)
             {
-                output.Backpropagate(inputs, targetOutputs, learningRate);
+                output.Backpropagate(inputs, targetOutputs, ErrorFunctionType.MSE, learningRate);
             }
 
             var outputResults = output.GetResults(inputs);
@@ -52,7 +53,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NN
             var learningRate = 0.25;
             for (var i = 0; i < 1000; i++)
             {
-                output.Backpropagate(inputs, targetOutputs, learningRate);
+                output.Backpropagate(inputs, targetOutputs, ErrorFunctionType.MSE, learningRate);
             }
 
             var outputResults = output.GetResults(inputs);

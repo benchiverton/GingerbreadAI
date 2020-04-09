@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
@@ -45,7 +46,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
             {
                 var targetOutputs = new double[10];
                 targetOutputs[trainingData.label] = 1d;
-                output.Backpropagate(trainingData.image, targetOutputs, 0.01, 0.9);
+                output.Backpropagate(trainingData.image, targetOutputs, ErrorFunctionType.MSE, 0.01, 0.9);
             }
 
             var correctResults = new double[10];
