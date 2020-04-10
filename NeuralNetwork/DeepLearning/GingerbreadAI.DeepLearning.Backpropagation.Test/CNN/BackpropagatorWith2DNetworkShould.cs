@@ -29,7 +29,8 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
             var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filter1 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var filter2 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
-            var output = new Layer(1, new Layer[] { filter1, filter2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var filter3 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var output = new Layer(1, new Layer[] { filter1, filter2, filter3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
             // feature is horizontal line
