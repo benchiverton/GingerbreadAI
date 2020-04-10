@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Timers;
 using GingerbreadAI.DeepLearning.Backpropagation;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
+using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Performance
@@ -30,7 +32,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             _testOutputHelper = testOutputHelper;
         }
 
-        // TODO: make this work
         [RunnableInDebugOnly]
         public void PerformanceMultiThreadedTestCnnNetwork()
         {
@@ -39,7 +40,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             filters.AddPooling((2, 2));
             var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
-            //output.AddMomentumRecursively();
+            output.AddMomentumRecursively();
             output.Initialise(new Random());
 
             _testOutputHelper.WriteLine($"Starting test run: Interval: {IntervalInMs}ms, Samples: {TotalSamples}");
@@ -56,11 +57,11 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
                 var networkToTrainWith = output.CloneWithSameWeightValueReferences();
                 while (_continueProcessing)
                 {
-                    networkToTrainWith.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
+                    networkToTrainWith.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                     _processedImages++;
-                    networkToTrainWith.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
+                    networkToTrainWith.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                     _processedImages++;
-                    networkToTrainWith.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, ErrorFunctionType.MSE, 0.1, 0.9);
+                    networkToTrainWith.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                     _processedImages++;
                 }
             });

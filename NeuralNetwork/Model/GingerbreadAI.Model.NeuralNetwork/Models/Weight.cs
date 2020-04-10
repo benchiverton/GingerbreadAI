@@ -7,6 +7,11 @@
             Value = value;
         }
 
-        public virtual double Value { get; set; }
+        public virtual double Value { get; private set; }
+
+        public virtual void Adjust(double change)
+        {
+            Value += change;
+        }
     }
 }

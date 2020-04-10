@@ -9,7 +9,7 @@ using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using GingerbreadAI.NeuralNetwork.Test.Helpers;
 using MNIST.IO;
@@ -46,7 +46,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
             {
                 var targetOutputs = new double[10];
                 targetOutputs[trainingData.label] = 1d;
-                output.Backpropagate(trainingData.image, targetOutputs, ErrorFunctionType.MSE, 0.01, 0.9);
+                output.Backpropagate(trainingData.image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
             }
 
             var correctResults = new double[10];

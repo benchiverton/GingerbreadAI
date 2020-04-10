@@ -98,13 +98,13 @@ namespace GingerbreadAI.DeepLearning.NegativeSampling
         private static void UpdateNodeWeight(Node node, Node prevNode, Weight prevNodeWeight, double delta)
         {
             var change = -(delta * prevNode.Output);
-            prevNodeWeight.Value += change;
+            prevNodeWeight.Adjust(change);
         }
 
         private static void UpdateBiasNodeWeight(Node node, Layer prevLayer, Weight prevLayerWeight, double delta)
         {
             var change = -delta;
-            prevLayerWeight.Value += change;
+            prevLayerWeight.Adjust(change);
         }
     }
 }

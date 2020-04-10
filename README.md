@@ -1,27 +1,35 @@
 # Gingerbread AI
 
-C# libraries written written to model neural networks, and deep learning algorithms to train them.
+C# libraries written written to model neural networks, and deep learning algorithms that train them.
 
 ## [NeuralNetwork](NeuralNetwork)
 
 Contains C# libraries that model the following neural networks:
 
-* Fully Connected (Dense) Neural Networks
-* Convolutional Neural Networks (1D w/ filtering, 2D w/ filtering)
+| Network                       | Supports                       |
+| ----------------------------- | ------------------------------ |
+| Dense Neural Networks         | Deep networks                  |
+| Convolutional Neural Networks | 1D + filtering, 2D + filtering |
 
-The following activation functions are supported:
-* Linear
-* RELU
-* Sigmoid
-* Tanh
+The following [activation functions](https://en.wikipedia.org/wiki/Activation_function) are supported:
 
-There is an implementation of Backpropagation (w/ momentum), where the following error functions are supported:
-* Mean Square Error
-* Cross Entropy
+| Function | Links                                                        |
+| -------- | ------------------------------------------------------------ |
+| Linear   | https://en.wikipedia.org/wiki/Identity_function              |
+| RELU     | https://en.wikipedia.org/wiki/Rectifier_(neural_networks)    |
+| Sigmoid  | https://en.wikipedia.org/wiki/Logistic_function              |
+| Tanh     | https://en.wikipedia.org/wiki/Hyperbolic_functions#Hyperbolic_tangent |
+
+There is an implementation of [Backpropagation](https://en.wikipedia.org/wiki/Backpropagation) (with momentum), where the following error functions are supported:
+
+| Function           | Links                                            |
+| ------------------ | ------------------------------------------------ |
+| Mean Squared Error | https://en.wikipedia.org/wiki/Mean_squared_error |
+| Cross Entropy      | https://en.wikipedia.org/wiki/Cross_entropy      |
 
 #### [Documentation](Documentation)
 
-Various documentation that has been written explaining some of the decisions taken when writing the GingerbreadAI library.
+Documentation that has been written explaining some of the decisions taken when writing the GingerbreadAI library.
 
 ## Getting Started
 
@@ -29,15 +37,15 @@ Open the [GingerbreadAI.NeuralNetwork.Test](NeuralNetwork/GingerbreadAI.NeuralNe
 
 ### Prerequisites
 
-Visual Studio 2019 (with dotnet core 3.1)
+Visual Studio 2019 (with dotnet core 3.1).
 
-## Unit tests
+### Unit tests
 
-All unit tests should be runnable from the [GingerbreadAI.NeuralNetwork.Test](NeuralNetwork/GingerbreadAI.NeuralNetwork.Test.sln) solution.
+All unit tests should be runnable from the [GingerbreadAI.NeuralNetwork.Test solution](NeuralNetwork).
 
 ### Long running tests
 
-Longer running tests that produce a report can only be run in debug, and can be found in the GinbergreadAI.NeuralNetwork.Tests project, which is in the [GingerbreadAI.NeuralNetwork.Test](NeuralNetwork/GingerbreadAI.NeuralNetwork.Test.sln) solution.
+Longer running tests that produce a report need to be run in debug mode, and can be found in the [GinbergreadAI.NeuralNetwork.Test project](NeuralNetwork\Test\GingerbreadAI.NeuralNetwork.Test) (in the [GingerbreadAI.NeuralNetwork.Test solution)](NeuralNetwork).
 
 ## Authors
 

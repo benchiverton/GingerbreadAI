@@ -1,5 +1,4 @@
 ﻿using System;
-using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 
 namespace GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions
 {
@@ -13,23 +12,15 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions
         /// <returns></returns>
         public static Func<double, double, double> ResolveErrorFunctionDifferential(ErrorFunctionType errorFunctionType)
         {
-            Func<double, double, double> errorFunctionDifferential;
-            switch (errorFunctionType)
+            return errorFunctionType switch
             {
-                case ErrorFunctionType.MSE:
-                    errorFunctionDifferential = (target, actual) => actual - target;
-                    break;
-                case ErrorFunctionType.CrossEntropy:
-                    errorFunctionDifferential = (target, actual) => Math.Abs(actual) < 0.00001 ? 0 : - (target / actual) + (1 - target) / (1 - actual);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(errorFunctionType),
-                        errorFunctionType,
-                        "This error function type is not yet supported. Please use a different error function type.");
-            }
-
-            return errorFunctionDifferential;
+                ErrorFunctionType.MSE => (target, actual) => actual - target,
+                ErrorFunctionType.CrossEntropy => (target, actual) => Math.Abs(actual) < 0.0000001 ? 0 : -(target / actual) + (1 - target) / (1 - actual),
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(errorFunctionType),
+                    errorFunctionType,
+                    "This error function type is not yet supported. Please use a different error function type.")
+            };
         }
     }
 }

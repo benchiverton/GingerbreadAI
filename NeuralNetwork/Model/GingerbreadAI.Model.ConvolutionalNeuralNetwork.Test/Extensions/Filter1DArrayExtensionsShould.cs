@@ -3,7 +3,7 @@ using System.Linq;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 
@@ -42,7 +42,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Extensions
             {
                 var (_, weight) = node.Weights.First(w => w.Key == input.Nodes[i]);
                 // set weight so that we can assert the _magnitude is correctly set
-                weight.Value = 1;
+                weight.Adjust(1);
                 Assert.Equal(expectedWeights[i], weight.Value);
             }
         }

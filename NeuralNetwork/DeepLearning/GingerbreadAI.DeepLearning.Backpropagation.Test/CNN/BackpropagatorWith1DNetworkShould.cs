@@ -7,7 +7,7 @@ using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
@@ -26,24 +26,39 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         [Fact]
         public void TrainFilterToFeatureSortOfWell()
         {
-            var inputLayer = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var filter = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var inputLayer = new Layer1D(10, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var filter = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var output = new Layer(1, new Layer[] { filter }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
-            var inputMatch = new double[] { 1, 0, 1 };
-            var inputNoMatch = new double[] { 0, 1, 0 };
+            var inputMatch1 = new double[] { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
+            var inputMatch2 = new double[] { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 };
+            var inputMatch3 = new double[] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 };
+            var inputNoMatch1 = new double[] { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 };
+            var inputNoMatch2 = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            var inputNoMatch3 = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 };
 
             for (var i = 0; i < 10000; i++)
             {
-                output.Backpropagate(inputMatch, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
-                output.Backpropagate(inputNoMatch, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputMatch1, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputMatch2, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputMatch3, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputNoMatch1, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputNoMatch2, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputNoMatch3, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
             }
 
-            output.CalculateOutputs(inputMatch);
+            output.CalculateOutputs(inputMatch1);
             Assert.True(output.Nodes[0].Output > 0.95);
-
-            output.CalculateOutputs(inputNoMatch);
+            output.CalculateOutputs(inputMatch2);
+            Assert.True(output.Nodes[0].Output > 0.95);
+            output.CalculateOutputs(inputMatch3);
+            Assert.True(output.Nodes[0].Output > 0.95);
+            output.CalculateOutputs(inputNoMatch1);
+            Assert.True(output.Nodes[0].Output < 0.05);
+            output.CalculateOutputs(inputNoMatch2);
+            Assert.True(output.Nodes[0].Output < 0.05);
+            output.CalculateOutputs(inputNoMatch3);
             Assert.True(output.Nodes[0].Output < 0.05);
         }
 
@@ -53,9 +68,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
             var r = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var g = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var b = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var filter1 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var filter2 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var filter3 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var filter1 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var filter2 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var filter3 = new Filter1D(new[] { r, g, b }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var output = new Layer(3, new Layer[] { filter1, filter2, filter3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
@@ -111,16 +126,16 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         }
 
         [Fact]
-        public void TrainNetworkWithFilterSortOfWellRgb()
+        public void TrainNetworkWithPoolingSortOfWellRgb()
         {
             var r = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var g = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var b = new Layer1D(4, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[]
             {
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform)
+                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
             };
             filters.AddPooling(2);
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
@@ -153,7 +168,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
                 var inputs = ResolveInputs(isRed, isGreen, isBlue);
                 var targetOutputs = new[] { isRed ? 1d : 0d, isGreen ? 1d : 0d, isBlue ? 1d : 0d };
 
-                output.Backpropagate(inputs, targetOutputs, ErrorFunctionType.CrossEntropy, 0.1, 0.9);
+                output.Backpropagate(inputs, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
             }
 
             var redInput = ResolveInputs(true, false, false);

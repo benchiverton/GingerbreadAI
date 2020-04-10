@@ -102,12 +102,12 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
         private static void UpdateNodeWeight(Node prevNode, Weight weightForPrevNode, double delta, double momentumMagnitude)
         {
             var change = -(delta * prevNode.Output);
-            weightForPrevNode.Value += change;
+            weightForPrevNode.Adjust(change);
 
             if (weightForPrevNode is IWeightWithMomentum weightForPrevNodeAsWeightWithMomentum)
             {
                 var changeFromMomentum = momentumMagnitude * weightForPrevNodeAsWeightWithMomentum.Momentum;
-                weightForPrevNode.Value += changeFromMomentum;
+                weightForPrevNode.Adjust(changeFromMomentum);
                 weightForPrevNodeAsWeightWithMomentum.Momentum = change + changeFromMomentum;
             }
         }
@@ -115,12 +115,12 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
         private static void UpdateBiasNodeWeight(Weight weightForPrevLayer, double delta, double momentumMagnitude)
         {
             var change = -delta;
-            weightForPrevLayer.Value += change;
+            weightForPrevLayer.Adjust(change);
 
             if (weightForPrevLayer is IWeightWithMomentum weightForPrevLayerAsWeightWithMomentum)
             {
                 var changeFromMomentum = momentumMagnitude * weightForPrevLayerAsWeightWithMomentum.Momentum;
-                weightForPrevLayer.Value += changeFromMomentum;
+                weightForPrevLayer.Adjust(changeFromMomentum);
                 weightForPrevLayerAsWeightWithMomentum.Momentum = change + changeFromMomentum;
             }
         }

@@ -1,5 +1,5 @@
 ﻿using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 
 namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models

@@ -7,7 +7,7 @@ using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using GingerbreadAI.NeuralNetwork.Test.Statistics;
 using Xunit.Abstractions;

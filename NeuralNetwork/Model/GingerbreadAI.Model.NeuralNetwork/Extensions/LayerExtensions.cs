@@ -96,12 +96,12 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
             var feedingNodes = node.Weights.Count;
             foreach (var prevNode in node.Weights.Keys.ToList())
             {
-                node.Weights[prevNode].Value = initialisationFunction.Invoke(rand, feedingNodes, nodeCount);
+                node.Weights[prevNode].Adjust(initialisationFunction.Invoke(rand, feedingNodes, nodeCount));
             }
             var biasWeightKeys = new List<Layer>(node.BiasWeights.Keys.ToList());
             foreach (var biasWeightKey in biasWeightKeys)
             {
-                node.BiasWeights[biasWeightKey].Value = initialisationFunction.Invoke(rand, feedingNodes, nodeCount);
+                node.BiasWeights[biasWeightKey].Adjust(initialisationFunction.Invoke(rand, feedingNodes, nodeCount));
             }
         }
 

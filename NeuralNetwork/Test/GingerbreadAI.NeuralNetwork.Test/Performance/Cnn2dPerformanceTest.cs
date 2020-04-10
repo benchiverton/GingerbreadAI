@@ -9,7 +9,7 @@ using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
@@ -52,11 +52,11 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             timer.Start();
             while (_continueProcessing)
             {
-                output.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
+                output.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                 _processedImages++;
-                output.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, ErrorFunctionType.MSE, 0.1, 0.9);
+                output.Backpropagate(CircleAsArray, new[] { 0d, 1d, 0d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                 _processedImages++;
-                output.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, ErrorFunctionType.MSE, 0.1, 0.9);
+                output.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                 _processedImages++;
             }
             timer.Stop();

@@ -7,7 +7,7 @@ using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
-using GingerbreadAI.Model.NeuralNetwork.Initialisers;
+using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 using Xunit.Abstractions;
@@ -24,39 +24,49 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         }
 
         [Fact]
-        public void TrainFilterToMultipleFeaturesSortOfWell()
+        public void TrainFilterToFeaturesSortOfWell()
         {
             var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var filter1 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var filter2 = new Filter2D(new[] { inputLayer }, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var output = new Layer(2, new Layer[] { filter1, filter2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var filter1 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var output = new Layer(1, new Layer[] { filter1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
-            var inputMatch1 = new double[] { 1, 1, 0, 1, 0, 0, 0, 0, 0 };
-            var inputMatch2 = new double[] { 0, 0, 0, 0, 0, 1, 0, 1, 1 };
-            var noMatch = new double[] { 0, 0, 1, 0, 1, 0, 1, 0, 0 };
+            // feature is horizontal line
+            var inputMatch1 = new double[] { 1, 1, 1, 0, 0, 0, 0, 0, 0 };
+            var inputMatch2 = new double[] { 0, 0, 0, 1, 1, 1, 0, 0, 0 };
+            var inputMatch3 = new double[] { 0, 0, 0, 0, 0, 0, 1, 1, 1 };
+            // vertical lines
+            var inputNoMatch1 = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0 };
+            var inputNoMatch2 = new double[] { 0, 1, 0, 0, 1, 0, 0, 1, 0 };
+            var inputNoMatch3 = new double[] { 0, 0, 1, 0, 0, 1, 0, 0, 1 };
 
             for (var i = 0; i < 10000; i++)
             {
-                output.Backpropagate(inputMatch1, new double[] { 1, 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
-                output.Backpropagate(inputMatch2, new double[] { 0, 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
-                output.Backpropagate(noMatch, new double[] { 0, 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputMatch1, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputMatch2, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputMatch3, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputNoMatch1, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputNoMatch2, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                output.Backpropagate(inputNoMatch3, new double[] { 0 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
             }
 
             output.CalculateOutputs(inputMatch2);
 
             _testOutputHelper.WriteLine($"filter 1: {string.Join(",", filter1.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
-            _testOutputHelper.WriteLine($"filter 2: {string.Join(",", filter2.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
+            //_testOutputHelper.WriteLine($"filter 2: {string.Join(",", filter2.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
 
             output.CalculateOutputs(inputMatch1);
             Assert.True(output.Nodes[0].Output > 0.95);
-            Assert.True(output.Nodes[1].Output < 0.05);
             output.CalculateOutputs(inputMatch2);
+            Assert.True(output.Nodes[0].Output > 0.95);
+            output.CalculateOutputs(inputMatch3);
+            Assert.True(output.Nodes[0].Output > 0.95);
+            output.CalculateOutputs(inputNoMatch1);
             Assert.True(output.Nodes[0].Output < 0.05);
-            Assert.True(output.Nodes[1].Output > 0.95);
-            output.CalculateOutputs(noMatch);
+            output.CalculateOutputs(inputNoMatch2);
             Assert.True(output.Nodes[0].Output < 0.05);
-            Assert.True(output.Nodes[1].Output < 0.05);
+            output.CalculateOutputs(inputNoMatch3);
+            Assert.True(output.Nodes[0].Output < 0.05);
         }
 
 
@@ -68,9 +78,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
             var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[]
             {
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform)
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
             };
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
@@ -123,16 +133,16 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         }
 
         [Fact]
-        public void TrainConvolutionalNetworksWithFilterSortofWellRgb()
+        public void TrainConvolutionalNetworksWithPoolingSortofWellRgb()
         {
             var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[]
             {
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform)
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
             };
             filters.AddPooling((2, 2));
             var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
