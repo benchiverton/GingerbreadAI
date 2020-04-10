@@ -24,11 +24,12 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         }
 
         [Fact]
-        public void TrainFilterToFeaturesSortOfWell()
+        public void TrainFilterToFeatureSortOfWell()
         {
             var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filter1 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
-            var output = new Layer(1, new Layer[] { filter1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var filter2 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var output = new Layer(1, new Layer[] { filter1, filter2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
             // feature is horizontal line
@@ -53,7 +54,6 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
             output.CalculateOutputs(inputMatch2);
 
             _testOutputHelper.WriteLine($"filter 1: {string.Join(",", filter1.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
-            //_testOutputHelper.WriteLine($"filter 2: {string.Join(",", filter2.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
 
             output.CalculateOutputs(inputMatch1);
             Assert.True(output.Nodes[0].Output > 0.95);

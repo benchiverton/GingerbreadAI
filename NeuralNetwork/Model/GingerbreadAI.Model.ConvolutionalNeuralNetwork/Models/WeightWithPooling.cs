@@ -23,7 +23,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
             CalculateMagnitude();
         }
 
-        public override double Value => _value * _occurrences;
+        public override double Value => _value * _magnitude;
 
         public override void Adjust(double change)
         {

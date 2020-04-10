@@ -27,8 +27,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         public void TrainFilterToFeatureSortOfWell()
         {
             var inputLayer = new Layer1D(10, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var filter = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
-            var output = new Layer(1, new Layer[] { filter }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var filter1 = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var filter2 = new Filter1D(new[] { inputLayer }, 3, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var output = new Layer(1, new Layer[] { filter1, filter2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
             var inputMatch1 = new double[] { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
