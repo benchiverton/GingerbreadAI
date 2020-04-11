@@ -37,7 +37,7 @@ jobs:
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
       env:
         RUN_NUMBER: ${{ github.run_number }}
-        working-directory: $PROJECT_LOCATION
+      working-directory: $PROJECT_LOCATION
       run: dotnet pack $PROJECT_FILE --configuration Release --version-suffix $RUN_NUMBER --include-symbols --no-dependencies
     - name: Pack Release
       if: github.event_name == 'push'
