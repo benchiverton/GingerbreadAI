@@ -1,0 +1,39 @@
+name: Build and Publish Backpropagation
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+    - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
+    - '.github/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+    - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
+    - '.github/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+        source-url: https://nuget.pkg.github.com/benchiverton/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      # suffix the package with the run number if building from a PR
+    - name: Pack Pre-Release
+      if: github.event.pull_request
+      env:
+        RUN_NUMBER: ${{ github.run_number }}
+      run: dotnet pack src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/GingerbreadAI.DeepLearning.Backpropagation.csproj --configuration Release --version-suffix $RUN_NUMBER --include-symbols
+    - name: Pack Release
+      if: github.event.push
+      run: dotnet pack src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/GingerbreadAI.DeepLearning.Backpropagation.csproj --configuration Release --include-symbols
+    - name: Publish
+      run: dotnet nuget push "src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/bin/Release/*.nupkg" --skip-duplicate

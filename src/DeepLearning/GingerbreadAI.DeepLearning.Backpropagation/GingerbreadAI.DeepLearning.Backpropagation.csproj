@@ -2,7 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>GingerbreadAI.Backpropagation</PackageId>
     <Version>0.0.1</Version>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
+    <Authors>Benjamin Chiverton</Authors>
+    <PackageDescription>Backpropagation algorithm for GingerbreadAI Neuaral Network Models</PackageDescription>
+    <RepositoryUrl>https://github.com/benchiverton/GingerbreadAI</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
