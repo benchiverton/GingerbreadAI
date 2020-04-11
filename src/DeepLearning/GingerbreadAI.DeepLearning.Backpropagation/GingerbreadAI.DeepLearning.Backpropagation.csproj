@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>GingerbreadAI.Backpropagation</PackageId>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
     <Authors>Benjamin Chiverton</Authors>

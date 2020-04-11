@@ -12,6 +12,10 @@ on:
     - 'src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/**'
     - '.github/**'
 
+env:
+  PROJECT_LOCATION: src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/
+  PROJECT_FILE: GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj
+
 jobs:
   build:
 
@@ -27,13 +31,15 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       # suffix the package with the run number if building from a PR
+    - name: Copy Icon
+      run: cp -v docs/Images/icon.png 
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
       env:
         RUN_NUMBER: ${{ github.run_number }}
-      run: dotnet pack src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj --configuration Release --version-suffix $RUN_NUMBER --include-symbols
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --version-suffix $RUN_NUMBER --include-symbols
     - name: Pack Release
       if: github.event_name == 'push'
-      run: dotnet pack src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj --configuration Release --include-symbols
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols
     - name: Publish
-      run: dotnet nuget push "src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/bin/Release/*.nupkg" --skip-duplicate
+      run: dotnet nuget push ${{ env.PROJECT_LOCATION }}bin/Release/*.nupkg --skip-duplicate
