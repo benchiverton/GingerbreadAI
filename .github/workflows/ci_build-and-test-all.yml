@@ -1,11 +1,6 @@
 name: Build and Test (All)
 
 on:
-  push:
-    branches: [ master ]
-    paths:
-    - 'src/**'
-    - '.github/**'
   pull_request:
     branches: [ master ]
     paths:

@@ -1,11 +1,6 @@
 name: Build and Publish Neural Network
 
 on:
-  push:
-    branches: [ master ]
-    paths:
-    - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
-    - '.github/**'
   pull_request:
     branches: [ master ]
     paths:
@@ -28,12 +23,12 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
-      if: github.event_name == 'pull_request' && github.event.pull_request.merged != true
+      if: github.event_name == 'pull_request' && github.event.action != 'closed'
       env:
         RUN_NUMBER: ${{ github.run_number }}
       run: dotnet pack src/Model/GingerbreadAI.Model.NeuralNetwork/GingerbreadAI.Model.NeuralNetwork.csproj --configuration Release --version-suffix $RUN_NUMBER --include-symbols
     - name: Pack Release
-      if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       run: dotnet pack src/Model/GingerbreadAI.Model.NeuralNetwork/GingerbreadAI.Model.NeuralNetwork.csproj --configuration Release --include-symbols
     - name: Publish
       run: dotnet nuget push "src/Model/GingerbreadAI.Model.NeuralNetwork/bin/Release/*.nupkg" --skip-duplicate
