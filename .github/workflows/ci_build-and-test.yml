@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Install dependencies
-      run: dotnet restore NeuralNetwork/GingerbreadAI.NeuralNetwork.Test.sln
+      run: dotnet restore src/GingerbreadAI.NeuralNetwork.Test.sln
     - name: Build
-      run: dotnet build NeuralNetwork/GingerbreadAI.NeuralNetwork.Test.sln --configuration Release --no-restore
+      run: dotnet build src/GingerbreadAI.NeuralNetwork.Test.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test NeuralNetwork/GingerbreadAI.NeuralNetwork.Test.sln --no-restore --verbosity normal
+      run: dotnet test src/GingerbreadAI.NeuralNetwork.Test.sln --no-restore --verbosity normal
