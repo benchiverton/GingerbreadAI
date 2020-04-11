@@ -24,13 +24,13 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Extensions
             // 1,2 + 2,3
             var input = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var filter = new Filter1D(new[] { input }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
-            // Expected _magnitudes: 
+            // Expected weights after adjusting to 1: 
             // 0.50: 1,3
             // 1.00: 2
             var expectedWeights = new Dictionary<int, double>
             {
                 [0] = 0.5,
-                [1] = 1,
+                [1] = 2,
                 [2] = 0.5,
             };
 
