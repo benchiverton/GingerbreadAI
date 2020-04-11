@@ -1,0 +1,106 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeepLearning", "DeepLearning", "{01E17F55-2A0B-4263-9D9F-5B6E9CB64BB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{F9024985-99A2-4FE3-93C1-78ED971E6768}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NLP", "NLP", "{56617565-CA64-4A83-9D85-6D75EF314497}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E84E2FB6-1B26-4006-B0DD-9C1A6C60C29F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.Model.NeuralNetwork.Test", "Model\GingerbreadAI.Model.NeuralNetwork.Test\GingerbreadAI.Model.NeuralNetwork.Test.csproj", "{CE4D1E83-49CE-4DB8-B401-43F882CB5285}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.Backpropagation", "DeepLearning\GingerbreadAI.DeepLearning.Backpropagation\GingerbreadAI.DeepLearning.Backpropagation.csproj", "{520C1397-B898-45E4-93CA-7C57B8007A39}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.Backpropagation.Test", "DeepLearning\GingerbreadAI.DeepLearning.Backpropagation.Test\GingerbreadAI.DeepLearning.Backpropagation.Test.csproj", "{48B88E9F-575B-450C-9BBF-A12722293894}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.NegativeSampling", "DeepLearning\GingerbreadAI.DeepLearning.NegativeSampling\GingerbreadAI.DeepLearning.NegativeSampling.csproj", "{A04ECB1F-7D07-4F06-901F-33A68DCE7486}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.NegativeSampling.Test", "DeepLearning\GingerbreadAI.DeepLearning.NegativeSampling.Test\GingerbreadAI.DeepLearning.NegativeSampling.Test.csproj", "{84824981-297D-460B-9AFF-E003303E933A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.NLP.Word2Vec", "NLP\GingerbreadAI.NLP.Word2Vec\GingerbreadAI.NLP.Word2Vec.csproj", "{18BE61FA-0700-4E8C-AA1C-E2BE76271230}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.Model.NeuralNetwork", "Model\GingerbreadAI.Model.NeuralNetwork\GingerbreadAI.Model.NeuralNetwork.csproj", "{EC14A7FD-71CC-42C6-A9DD-56B63028AEED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.NLP.Word2Vec.Test", "NLP\GingerbreadAI.NLP.Word2Vec.Test\GingerbreadAI.NLP.Word2Vec.Test.csproj", "{9CA36508-FD21-41D4-A1F6-BE0CE585DC0B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.NeuralNetwork.Test", "Test\GingerbreadAI.NeuralNetwork.Test\GingerbreadAI.NeuralNetwork.Test.csproj", "{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.Model.ConvolutionalNeuralNetwork", "Model\GingerbreadAI.Model.ConvolutionalNeuralNetwork\GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj", "{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test", "Model\GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test\GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.csproj", "{44D594BA-6C44-449D-B949-32DF63B34A9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE4D1E83-49CE-4DB8-B401-43F882CB5285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE4D1E83-49CE-4DB8-B401-43F882CB5285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE4D1E83-49CE-4DB8-B401-43F882CB5285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE4D1E83-49CE-4DB8-B401-43F882CB5285}.Release|Any CPU.Build.0 = Release|Any CPU
+		{520C1397-B898-45E4-93CA-7C57B8007A39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{520C1397-B898-45E4-93CA-7C57B8007A39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{520C1397-B898-45E4-93CA-7C57B8007A39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{520C1397-B898-45E4-93CA-7C57B8007A39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B88E9F-575B-450C-9BBF-A12722293894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B88E9F-575B-450C-9BBF-A12722293894}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B88E9F-575B-450C-9BBF-A12722293894}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B88E9F-575B-450C-9BBF-A12722293894}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A04ECB1F-7D07-4F06-901F-33A68DCE7486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A04ECB1F-7D07-4F06-901F-33A68DCE7486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A04ECB1F-7D07-4F06-901F-33A68DCE7486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A04ECB1F-7D07-4F06-901F-33A68DCE7486}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84824981-297D-460B-9AFF-E003303E933A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84824981-297D-460B-9AFF-E003303E933A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84824981-297D-460B-9AFF-E003303E933A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84824981-297D-460B-9AFF-E003303E933A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18BE61FA-0700-4E8C-AA1C-E2BE76271230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18BE61FA-0700-4E8C-AA1C-E2BE76271230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18BE61FA-0700-4E8C-AA1C-E2BE76271230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18BE61FA-0700-4E8C-AA1C-E2BE76271230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC14A7FD-71CC-42C6-A9DD-56B63028AEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC14A7FD-71CC-42C6-A9DD-56B63028AEED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC14A7FD-71CC-42C6-A9DD-56B63028AEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC14A7FD-71CC-42C6-A9DD-56B63028AEED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CA36508-FD21-41D4-A1F6-BE0CE585DC0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CA36508-FD21-41D4-A1F6-BE0CE585DC0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CA36508-FD21-41D4-A1F6-BE0CE585DC0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CA36508-FD21-41D4-A1F6-BE0CE585DC0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44D594BA-6C44-449D-B949-32DF63B34A9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44D594BA-6C44-449D-B949-32DF63B34A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44D594BA-6C44-449D-B949-32DF63B34A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44D594BA-6C44-449D-B949-32DF63B34A9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CE4D1E83-49CE-4DB8-B401-43F882CB5285} = {F9024985-99A2-4FE3-93C1-78ED971E6768}
+		{520C1397-B898-45E4-93CA-7C57B8007A39} = {01E17F55-2A0B-4263-9D9F-5B6E9CB64BB1}
+		{48B88E9F-575B-450C-9BBF-A12722293894} = {01E17F55-2A0B-4263-9D9F-5B6E9CB64BB1}
+		{A04ECB1F-7D07-4F06-901F-33A68DCE7486} = {01E17F55-2A0B-4263-9D9F-5B6E9CB64BB1}
+		{84824981-297D-460B-9AFF-E003303E933A} = {01E17F55-2A0B-4263-9D9F-5B6E9CB64BB1}
+		{18BE61FA-0700-4E8C-AA1C-E2BE76271230} = {56617565-CA64-4A83-9D85-6D75EF314497}
+		{EC14A7FD-71CC-42C6-A9DD-56B63028AEED} = {F9024985-99A2-4FE3-93C1-78ED971E6768}
+		{9CA36508-FD21-41D4-A1F6-BE0CE585DC0B} = {56617565-CA64-4A83-9D85-6D75EF314497}
+		{4FAE7C9D-6E95-4FF7-948F-BF34F74836E5} = {E84E2FB6-1B26-4006-B0DD-9C1A6C60C29F}
+		{2B40AD59-1FC9-4B8D-811D-1CAD499D6F5F} = {F9024985-99A2-4FE3-93C1-78ED971E6768}
+		{44D594BA-6C44-449D-B949-32DF63B34A9D} = {F9024985-99A2-4FE3-93C1-78ED971E6768}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {316817EF-00A2-4C09-8C9C-7B0ABF43BF05}
+	EndGlobalSection
+EndGlobal

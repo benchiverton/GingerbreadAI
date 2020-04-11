@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>0.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GingerbreadAI.Model.NeuralNetwork\GingerbreadAI.Model.NeuralNetwork.csproj" />
+  </ItemGroup>
+
+</Project>

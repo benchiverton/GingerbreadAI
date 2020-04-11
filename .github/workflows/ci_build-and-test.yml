@@ -1,10 +1,16 @@
-name: .NET Core
+name: Build and Test
 
 on:
   push:
     branches: [ master ]
+    paths:
+    - 'src'
+    - '.github'
   pull_request:
     branches: [ master ]
+    paths:
+    - 'src'
+    - '.github'
 
 jobs:
   build:
