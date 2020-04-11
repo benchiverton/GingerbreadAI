@@ -1,6 +1,6 @@
 
 
-![](C:\Projects\AI\GingerbreadAI\docs\Images\logo.png)
+![](docs\Images\logo.png)
 
 # Gingerbread AI
 
