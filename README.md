@@ -1,10 +1,14 @@
+
+
+![](C:\Projects\AI\GingerbreadAI\docs\Images\logo.png)
+
 # Gingerbread AI
 
-C# libraries written written to model neural networks, and deep learning algorithms that train them.
+C# libraries written written to model different neural networks, and deep learning algorithms that train them.
 
-## [NeuralNetwork](NeuralNetwork)
+#### What's supported?
 
-Contains C# libraries that model the following neural networks:
+The following neural networks are supported:
 
 | Network                       | Supports                       |
 | ----------------------------- | ------------------------------ |
@@ -27,10 +31,6 @@ There is an implementation of [Backpropagation](https://en.wikipedia.org/wiki/Ba
 | Mean Squared Error | https://en.wikipedia.org/wiki/Mean_squared_error |
 | Cross Entropy      | https://en.wikipedia.org/wiki/Cross_entropy      |
 
-#### [Documentation](Documentation)
-
-Documentation that has been written explaining some of the decisions taken when writing the GingerbreadAI library.
-
 ## Getting Started
 
 Open the [GingerbreadAI.NeuralNetwork.Test](NeuralNetwork/GingerbreadAI.NeuralNetwork.Test.sln) solution file.
@@ -41,11 +41,11 @@ Visual Studio 2019 (with dotnet core 3.1).
 
 ### Unit tests
 
-All unit tests should be runnable from the [GingerbreadAI.NeuralNetwork.Test solution](NeuralNetwork).
+All unit tests should be runnable from the [GingerbreadAI.NeuralNetwork.Test solution](src).
 
 ### Long running tests
 
-Longer running tests that produce a report need to be run in debug mode, and can be found in the [GinbergreadAI.NeuralNetwork.Test project](NeuralNetwork\Test\GingerbreadAI.NeuralNetwork.Test) (in the [GingerbreadAI.NeuralNetwork.Test solution)](NeuralNetwork).
+Longer running tests that produce a report need to be run in debug mode, and can be found in the [GinbergreadAI.NeuralNetwork.Test project](src\Test\GingerbreadAI.NeuralNetwork.Test) (in the [GingerbreadAI.NeuralNetwork.Test solution)](src).
 
 ## Authors
 
