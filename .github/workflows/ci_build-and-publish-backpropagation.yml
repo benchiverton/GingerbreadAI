@@ -13,7 +13,7 @@ on:
     - '.github/**'
 
 env:
-  PROJECT_LOCATION: ./src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation
+  PROJECT_LOCATION: src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/
   PROJECT_FILE: GingerbreadAI.DeepLearning.Backpropagation.csproj
 
 jobs:
@@ -30,19 +30,14 @@ jobs:
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    - name: Copy Icon
-      run: cp -v docs/Images/icon.png $PROJECT_LOCATION
+    - name: Copy Icon for NuGet Package
+      run: cp -v docs/Images/icon.png .
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
-      env:
-        RUN_NUMBER: ${{ github.run_number }}
-      working-directory: $PROJECT_LOCATION
-      run: dotnet pack $PROJECT_FILE --configuration Release --version-suffix $RUN_NUMBER --include-symbols --no-dependencies
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols --no-dependencies --version-suffix ${{ github.RUN_NUMBER }} 
     - name: Pack Release
       if: github.event_name == 'push'
-      working-directory: $PROJECT_LOCATION
-      run: dotnet pack $PROJECT_FILE --configuration Release --include-symbols --no-dependencies
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols --no-dependencies
     - name: Publish
-      working-directory: $PROJECT_LOCATION
-      run: dotnet nuget push bin/Release/*.nupkg --skip-duplicate
+      run: dotnet nuget push ${{ env.PROJECT_LOCATION }}bin/Release/*.nupkg --skip-duplicate
