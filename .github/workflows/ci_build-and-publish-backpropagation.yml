@@ -13,7 +13,7 @@ on:
     - '.github/**'
 
 env:
-  PROJECT_LOCATION: src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/
+  PROJECT_LOCATION: ./src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation
   PROJECT_FILE: GingerbreadAI.DeepLearning.Backpropagation.csproj
 
 jobs:
