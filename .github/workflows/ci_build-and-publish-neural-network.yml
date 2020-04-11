@@ -31,17 +31,18 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Copy Icon
-      run: cp -v docs/Images/icon.png ${{ env.PROJECT_LOCATION }}
-    - name: Go to project dir
-      run: cd ${{ env.PROJECT_LOCATION }}
+      run: cp -v docs/Images/icon.png $PROJECT_LOCATION
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
       env:
         RUN_NUMBER: ${{ github.run_number }}
-      run: dotnet pack ${{ env.PROJECT_FILE }} --configuration Release --version-suffix $RUN_NUMBER --include-symbols --no-dependencies
+        working-directory: $PROJECT_LOCATION
+      run: dotnet pack $PROJECT_FILE --configuration Release --version-suffix $RUN_NUMBER --include-symbols --no-dependencies
     - name: Pack Release
       if: github.event_name == 'push'
-      run: dotnet pack ${{ env.PROJECT_FILE }} --configuration Release --include-symbols --no-dependencies
+      working-directory: $PROJECT_LOCATION
+      run: dotnet pack $PROJECT_FILE --configuration Release --include-symbols --no-dependencies
     - name: Publish
+      working-directory: $PROJECT_LOCATION
       run: dotnet nuget push bin/Release/*.nupkg --skip-duplicate
