@@ -31,7 +31,7 @@ There is an implementation of [Backpropagation](https://en.wikipedia.org/wiki/Ba
 
 ## Getting Started
 
-Open the [GingerbreadAI.NeuralNetwork.Test](NeuralNetwork/GingerbreadAI.NeuralNetwork.Test.sln) solution file.
+Open the [GingerbreadAI.NeuralNetwork.Test](src) solution file.
 
 ### Prerequisites
 
