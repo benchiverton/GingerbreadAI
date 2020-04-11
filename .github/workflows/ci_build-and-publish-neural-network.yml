@@ -33,4 +33,6 @@ jobs:
       if: github.event.push
       run: dotnet pack src/Model/GingerbreadAI.Model.NeuralNetwork/GingerbreadAI.Model.NeuralNetwork.csproj --configuration Release
     - name: Publish
-      run: dotnet nuget push "src/Model/GingerbreadAI.Model.NeuralNetwork/bin/Release/*.nupkg" --source "github" --skip-duplicate
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push "src/Model/GingerbreadAI.Model.NeuralNetwork/bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/benchiverton/index.json" --skip-duplicate -k ${GITHUB_TOKEN}
