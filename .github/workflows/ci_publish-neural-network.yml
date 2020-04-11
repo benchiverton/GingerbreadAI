@@ -1,20 +1,20 @@
-name: Build and Publish Backpropagation
+name: Publish Neural Network to NuGet
 
 on:
   push:
     branches: [ master ]
     paths:
-    - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
+    - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
     - '.github/**'
   pull_request:
     branches: [ master ]
     paths:
-    - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
+    - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
     - '.github/**'
 
 env:
-  PROJECT_LOCATION: src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/
-  PROJECT_FILE: GingerbreadAI.DeepLearning.Backpropagation.csproj
+  PROJECT_LOCATION: src/Model/GingerbreadAI.Model.NeuralNetwork/
+  PROJECT_FILE: GingerbreadAI.Model.NeuralNetwork.csproj
 
 jobs:
   build:

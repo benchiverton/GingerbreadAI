@@ -1,20 +1,20 @@
-name: Build and Publish Neural Network
+name: Publish Convolutional Neural Network to NuGet
 
 on:
   push:
     branches: [ master ]
     paths:
-    - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
+    - 'src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/**'
     - '.github/**'
   pull_request:
     branches: [ master ]
     paths:
-    - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
+    - 'src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/**'
     - '.github/**'
 
 env:
-  PROJECT_LOCATION: src/Model/GingerbreadAI.Model.NeuralNetwork/
-  PROJECT_FILE: GingerbreadAI.Model.NeuralNetwork.csproj
+  PROJECT_LOCATION: src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/
+  PROJECT_FILE: GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj
 
 jobs:
   build:

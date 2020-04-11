@@ -1,20 +1,20 @@
-name: Build and Publish Convolutional Neural Network
+name: Publish Backpropagation to NuGet
 
 on:
   push:
     branches: [ master ]
     paths:
-    - 'src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/**'
+    - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
     - '.github/**'
   pull_request:
     branches: [ master ]
     paths:
-    - 'src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/**'
+    - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
     - '.github/**'
 
 env:
-  PROJECT_LOCATION: src/Model/GingerbreadAI.Model.ConvolutionalNeuralNetwork/
-  PROJECT_FILE: GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj
+  PROJECT_LOCATION: src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/
+  PROJECT_FILE: GingerbreadAI.DeepLearning.Backpropagation.csproj
 
 jobs:
   build:
