@@ -4,7 +4,7 @@
 
 C# libraries written written to model different neural networks, and deep learning algorithms that train them.
 
-![Build and Test](https://github.com/benchiverton/GingerbreadAI/workflows/Build%20and%20Test/badge.svg)
+![Build and Test (All)](https://github.com/benchiverton/GingerbreadAI/workflows/Build%20and%20Test%20(All)/badge.svg)
 
 #### What's supported?
 
