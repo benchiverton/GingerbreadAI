@@ -1,5 +1,3 @@
-
-
 ![](docs\Images\logo.png)
 
 # Gingerbread AI
