@@ -9,6 +9,7 @@
     <Authors>Benjamin Chiverton</Authors>
     <PackageDescription>GingerbreadAI model of a Convolutional Neural Network</PackageDescription>
     <RepositoryUrl>https://github.com/benchiverton/GingerbreadAI</RepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
