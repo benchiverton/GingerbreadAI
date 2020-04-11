@@ -34,6 +34,6 @@ jobs:
       run: dotnet pack src/Model/GingerbreadAI.Model.NeuralNetwork/GingerbreadAI.Model.NeuralNetwork.csproj --configuration Release --version-suffix $RUN_NUMBER --include-symbols
     - name: Pack Release
       if: github.event.push
-      run: dotnet pack src/Model/GingerbreadAI.Model.NeuralNetwork/GingerbreadAI.Model.NeuralNetwork.csproj --configuration Release
+      run: dotnet pack src/Model/GingerbreadAI.Model.NeuralNetwork/GingerbreadAI.Model.NeuralNetwork.csproj --configuration Release --include-symbols
     - name: Publish
       run: dotnet nuget push "src/Model/GingerbreadAI.Model.NeuralNetwork/bin/Release/*.nupkg" --skip-duplicate
