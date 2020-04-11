@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ master ]
     paths:
-      - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
+    - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
     - '.github/**'
 
 jobs:
