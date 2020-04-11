@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>GingerbreadAI.NeuralNetwork</PackageId>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
     <Authors>Benjamin Chiverton</Authors>
     <PackageDescription>GingerbreadAI model of a Neural Network</PackageDescription>
     <RepositoryUrl>https://github.com/benchiverton/GingerbreadAI</RepositoryUrl>
