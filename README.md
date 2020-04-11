@@ -1,4 +1,4 @@
-![Logo](docs\Images\logo.png)
+![Logo](docs/Images/logo.png)
 
 # Gingerbread AI
 
