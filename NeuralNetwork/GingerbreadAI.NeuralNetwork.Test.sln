@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E84E2FB6-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.Model.NeuralNetwork.Test", "Model\GingerbreadAI.Model.NeuralNetwork.Test\GingerbreadAI.Model.NeuralNetwork.Test.csproj", "{CE4D1E83-49CE-4DB8-B401-43F882CB5285}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.Backpropagation", "DeepLearning\GingerbreadAI.DeepLearning.BackPropagation\GingerbreadAI.DeepLearning.Backpropagation.csproj", "{520C1397-B898-45E4-93CA-7C57B8007A39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.Backpropagation", "DeepLearning\GingerbreadAI.DeepLearning.Backpropagation\GingerbreadAI.DeepLearning.Backpropagation.csproj", "{520C1397-B898-45E4-93CA-7C57B8007A39}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.Backpropagation.Test", "DeepLearning\GingerbreadAI.DeepLearning.BackPropagation.Test\GingerbreadAI.DeepLearning.Backpropagation.Test.csproj", "{48B88E9F-575B-450C-9BBF-A12722293894}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.Backpropagation.Test", "DeepLearning\GingerbreadAI.DeepLearning.Backpropagation.Test\GingerbreadAI.DeepLearning.Backpropagation.Test.csproj", "{48B88E9F-575B-450C-9BBF-A12722293894}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.DeepLearning.NegativeSampling", "DeepLearning\GingerbreadAI.DeepLearning.NegativeSampling\GingerbreadAI.DeepLearning.NegativeSampling.csproj", "{A04ECB1F-7D07-4F06-901F-33A68DCE7486}"
 EndProject
