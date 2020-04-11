@@ -9,15 +9,10 @@
     <Authors>Benjamin Chiverton</Authors>
     <PackageDescription>GingerbreadAI model of a Convolutional Neural Network</PackageDescription>
     <RepositoryUrl>https://github.com/benchiverton/GingerbreadAI</RepositoryUrl>
-    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GingerbreadAI.Model.NeuralNetwork\GingerbreadAI.Model.NeuralNetwork.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\..\docs\Images\icon.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
