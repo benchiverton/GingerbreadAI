@@ -5,10 +5,12 @@ on:
     branches: [ master ]
     paths:
     - 'src'
+    - '.github'
   pull_request:
     branches: [ master ]
     paths:
     - 'src'
+    - '.github'
 
 jobs:
   build:
