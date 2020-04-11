@@ -40,7 +40,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
             var inputNoMatch2 = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             var inputNoMatch3 = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 };
 
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < 9000; i++)
             {
                 output.Backpropagate(inputMatch1, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                 output.Backpropagate(inputMatch2, new double[] { 1 }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
