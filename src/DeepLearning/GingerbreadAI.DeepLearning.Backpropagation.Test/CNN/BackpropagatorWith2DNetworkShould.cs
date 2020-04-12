@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
@@ -53,8 +52,6 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
             }
 
             output.CalculateOutputs(inputMatch2);
-
-            _testOutputHelper.WriteLine($"filter 1: {string.Join(",", filter1.Nodes[0].Weights.Values.Select(v => v.Value.ToString("0.00")))}");
 
             output.CalculateOutputs(inputMatch1);
             Assert.True(output.Nodes[0].Output > 0.95);

@@ -33,7 +33,7 @@ jobs:
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
-      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols --version-suffix ${{ github.RUN_NUMBER }} 
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols --version-suffix pr${{ github.RUN_NUMBER }} 
     - name: Pack Release
       if: github.event_name == 'push'
       run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols
