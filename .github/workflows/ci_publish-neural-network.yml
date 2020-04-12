@@ -31,19 +31,14 @@ jobs:
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Setup Nuget CLI
-      uses: nuget/setup-nuget@v1
-      with:
-        nuget-version: 'latest'
-        nuget-api-key: ${{ secrets.NuGetAPIKey }}
-    - name: Check if package version exists in source
-      run: |
-        nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/benchiverton/index.json -Username benchiverton -Password ${{ secrets.GITHUB_TOKEN }}
-        nuget list ${{ env.PACKAGE_NAME }} -Source "GPR"
+    # - name: Check if package version exists in source
+    #   run: |
+    #     nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/benchiverton/index.json -Username benchiverton -Password ${{ secrets.GITHUB_TOKEN }}
+    #     nuget list ${{ env.PACKAGE_NAME }} -Source "GPR"
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
-      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols --version-suffix ${{ github.RUN_NUMBER }} 
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols --version-suffix pr${{ github.RUN_NUMBER }} 
     - name: Pack Release
       if: github.event_name == 'push'
       run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols
