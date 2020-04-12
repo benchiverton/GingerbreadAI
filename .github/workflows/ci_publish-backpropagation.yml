@@ -5,12 +5,12 @@ on:
     branches: [ master ]
     paths:
     - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
-    - '.github/**'
+    - '.github//workflows/ci_publish-backpropagation.yml'
   pull_request:
     branches: [ master ]
     paths:
     - 'src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/**'
-    - '.github/**'
+    - '.github//workflows/ci_publish-backpropagation.yml'
 
 env:
   PROJECT_LOCATION: src/DeepLearning/GingerbreadAI.DeepLearning.Backpropagation/

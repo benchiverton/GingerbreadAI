@@ -5,12 +5,12 @@ on:
     branches: [ master ]
     paths:
     - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
-    - '.github/**'
+    - '.github/workflows/ci_publish-neural-network.yml'
   pull_request:
     branches: [ master ]
     paths:
     - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
-    - '.github/**'
+    - '.github/workflows/ci_publish-neural-network.yml'
 
 env:
   PROJECT_LOCATION: src/Model/GingerbreadAI.Model.NeuralNetwork/
