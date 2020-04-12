@@ -30,6 +30,8 @@ jobs:
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Check if version already exists
+      run: nuget list GingerbreadAI.NeuralNetwork -Source https://nuget.pkg.github.com/benchiverton/index.json
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
