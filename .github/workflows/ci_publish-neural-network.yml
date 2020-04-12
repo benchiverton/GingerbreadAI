@@ -34,7 +34,7 @@ jobs:
     - name: Setup Nuget CLI
       uses: nuget/setup-nuget@v1
       with:
-        nuget-version: '5.x'
+        nuget-version: '3.x'
         nuget-api-key: ${{ secrets.NuGetAPIKey }}
     - name: Check if package version exists in source
       run: nuget list ${{ env.PACKAGE_NAME }}
