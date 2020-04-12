@@ -8,7 +8,7 @@ C# libraries written written to model different neural networks, and deep learni
 
 #### What's supported?
 
-The following neural networks are supported:
+The following [neural networks](https://en.wikipedia.org/wiki/Artificial_neural_network) are supported:
 
 | Network                       | Supports                       |
 | ----------------------------- | ------------------------------ |
@@ -24,7 +24,7 @@ The following [activation functions](https://en.wikipedia.org/wiki/Activation_fu
 | Sigmoid  | https://en.wikipedia.org/wiki/Logistic_function              |
 | Tanh     | https://en.wikipedia.org/wiki/Hyperbolic_functions#Hyperbolic_tangent |
 
-There is an implementation of [Backpropagation](https://en.wikipedia.org/wiki/Backpropagation) (with momentum), where the following error functions are supported:
+There is an implementation of [backpropagation](https://en.wikipedia.org/wiki/Backpropagation) and negative sampling (both with momentum), where the following error functions are supported:
 
 | Function           | Links                                            |
 | ------------------ | ------------------------------------------------ |

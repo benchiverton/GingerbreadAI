@@ -5,12 +5,12 @@ on:
     branches: [ master ]
     paths:
     - 'src/**'
-    - '.github/**'
+    - '.github/workflows/ci_build-and-test-all.yml'
   pull_request:
     branches: [ master ]
     paths:
     - 'src/**'
-    - '.github/**'
+    - '.github/workflows/ci_build-and-test-all.yml'
 
 jobs:
   build:
