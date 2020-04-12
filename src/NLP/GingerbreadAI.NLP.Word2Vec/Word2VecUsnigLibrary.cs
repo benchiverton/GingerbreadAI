@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GingerbreadAI.DeepLearning.NegativeSampling;
+using GingerbreadAI.DeepLearning.Backpropagation;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
@@ -334,12 +335,12 @@ namespace GingerbreadAI.NLP.Word2Vec
                 if (_useSkipgram)
                 {
                     // current -> context
-                    neuralNetwork.NegativeSample(indexOfCurrentWord, target, _alpha, isPositiveSample);
+                    neuralNetwork.NegativeSample(indexOfCurrentWord, target, isPositiveSample, ErrorFunctionType.CrossEntropy, _alpha);
                 }
                 if (_useCbow)
                 {
                     // context -> current
-                    neuralNetwork.NegativeSample(target, indexOfCurrentWord, _alpha, isPositiveSample);
+                    neuralNetwork.NegativeSample(target, indexOfCurrentWord, isPositiveSample, ErrorFunctionType.CrossEntropy, _alpha);
                 }
             }
         }

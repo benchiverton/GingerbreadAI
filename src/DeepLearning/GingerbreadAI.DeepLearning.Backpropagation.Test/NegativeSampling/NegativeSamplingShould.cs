@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
+using GingerbreadAI.DeepLearning.Backpropagation.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
 
-namespace GingerbreadAI.DeepLearning.NegativeSampling.Test
+namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 {
     public class NegativeSamplingShould
     {
@@ -22,11 +24,38 @@ namespace GingerbreadAI.DeepLearning.NegativeSampling.Test
             var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                output.NegativeSample(0, 0, learningRate, false);
-                output.NegativeSample(1, 1, learningRate, false);
-                output.NegativeSample(2, 2, learningRate, true);
-                output.NegativeSample(3, 3, learningRate, false);
-                output.NegativeSample(4, 4, learningRate, false);
+                output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(3, 3, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(4, 4, false, ErrorFunctionType.CrossEntropy, learningRate);
+            }
+
+            Assert.True(output.GetResult(0, 0) < 0.05);
+            Assert.True(output.GetResult(1, 1) < 0.05);
+            Assert.True(output.GetResult(2, 2) > 0.95);
+            Assert.True(output.GetResult(3, 3) < 0.05);
+            Assert.True(output.GetResult(4, 4) < 0.05);
+        }
+
+        [Fact]
+        public void TrainBasicNetworksWithMomentumSortofWell()
+        {
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            output.AddMomentumRecursively();
+            output.Initialise(new Random());
+
+            var learningRate = 0.01;
+            var momentum = 0.9;
+            for (var i = 0; i < 2000; i++)
+            {
+                output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(2, 2, true, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(3, 3, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(4, 4, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
             }
 
             Assert.True(output.GetResult(0, 0) < 0.05);
@@ -50,11 +79,40 @@ namespace GingerbreadAI.DeepLearning.NegativeSampling.Test
             var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                output.NegativeSample(0, 0, learningRate, false);
-                output.NegativeSample(1, 1, learningRate, false);
-                output.NegativeSample(2, 2, learningRate, true);
-                output.NegativeSample(3, 3, learningRate, false);
-                output.NegativeSample(4, 4, learningRate, false);
+                output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(3, 3, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(4, 4, false, ErrorFunctionType.CrossEntropy, learningRate);
+            }
+
+            Assert.True(output.GetResult(0, 0) < 0.05);
+            Assert.True(output.GetResult(1, 1) < 0.05);
+            Assert.True(output.GetResult(2, 2) > 0.95);
+            Assert.True(output.GetResult(3, 3) < 0.05);
+            Assert.True(output.GetResult(4, 4) < 0.05);
+        }
+
+        [Fact]
+        public void TrainComplexNetworksWithMomentumSortofWell()
+        {
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var output = new Layer(5, new Layer[] { h3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            output.AddMomentumRecursively();
+            output.Initialise(new Random());
+
+            var learningRate = 0.01;
+            var momentum = 0.9;
+            for (var i = 0; i < 2000; i++)
+            {
+                output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(2, 2, true, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(3, 3, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
+                output.NegativeSample(4, 4, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
             }
 
             Assert.True(output.GetResult(0, 0) < 0.05);
@@ -76,11 +134,11 @@ namespace GingerbreadAI.DeepLearning.NegativeSampling.Test
             var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                output.NegativeSample(0, 2, learningRate, true);
-                output.NegativeSample(1, 2, learningRate, true);
-                output.NegativeSample(2, 2, learningRate, false);
-                output.NegativeSample(3, 2, learningRate, false);
-                output.NegativeSample(4, 2, learningRate, false);
+                output.NegativeSample(0, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(1, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 2, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(3, 2, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(4, 2, false, ErrorFunctionType.CrossEntropy, learningRate);
             }
 
             Assert.True(output.GetResult(0, 2) > 0.95);
@@ -102,11 +160,11 @@ namespace GingerbreadAI.DeepLearning.NegativeSampling.Test
             var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                output.NegativeSample(2, 0, learningRate, true);
-                output.NegativeSample(2, 1, learningRate, true);
-                output.NegativeSample(2, 2, learningRate, false);
-                output.NegativeSample(2, 3, learningRate, false);
-                output.NegativeSample(2, 4, learningRate, false);
+                output.NegativeSample(2, 0, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 1, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 2, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 3, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 4, false, ErrorFunctionType.CrossEntropy, learningRate);
             }
 
             Assert.True(output.GetResult(2, 0) > 0.95);
@@ -129,17 +187,17 @@ namespace GingerbreadAI.DeepLearning.NegativeSampling.Test
             var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                output.NegativeSample(2, 0, learningRate, true);
-                output.NegativeSample(2, 1, learningRate, true);
-                output.NegativeSample(2, 2, learningRate, false);
-                output.NegativeSample(2, 3, learningRate, false);
-                output.NegativeSample(2, 4, learningRate, false);
+                output.NegativeSample(2, 0, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 1, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 2, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 3, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(2, 4, false, ErrorFunctionType.CrossEntropy, learningRate);
 
-                output.NegativeSample(3, 0, learningRate, false);
-                output.NegativeSample(3, 1, learningRate, false);
-                output.NegativeSample(3, 2, learningRate, true);
-                output.NegativeSample(3, 3, learningRate, true);
-                output.NegativeSample(3, 4, learningRate, true);
+                output.NegativeSample(3, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(3, 1, false, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(3, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(3, 3, true, ErrorFunctionType.CrossEntropy, learningRate);
+                output.NegativeSample(3, 4, true, ErrorFunctionType.CrossEntropy, learningRate);
             }
 
             Assert.True(output.GetResult(2, 0) > 0.95);
@@ -191,7 +249,7 @@ namespace GingerbreadAI.DeepLearning.NegativeSampling.Test
             var learningRate = 0.25;
             for (var i = 0; i < 2000; i++)
             {
-                output.NegativeSample(4, 4, learningRate, true);
+                output.NegativeSample(4, 4, true, ErrorFunctionType.CrossEntropy, learningRate);
             }
 
             for (var i = 0; i < h1.Nodes.Length; i++)

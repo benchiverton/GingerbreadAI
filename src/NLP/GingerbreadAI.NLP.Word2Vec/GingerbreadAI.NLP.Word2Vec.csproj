@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DeepLearning\GingerbreadAI.DeepLearning.BackPropagation\GingerbreadAI.DeepLearning.Backpropagation.csproj" />
-    <ProjectReference Include="..\..\DeepLearning\GingerbreadAI.DeepLearning.NegativeSampling\GingerbreadAI.DeepLearning.NegativeSampling.csproj" />
   </ItemGroup>
 
 </Project>

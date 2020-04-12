@@ -43,16 +43,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
             var deltas = new Dictionary<Node, double>();
             foreach (var node in layer.Nodes)
             {
-                // TODO: optimise this
-                var sumDeltaWeights = 0d;
-                foreach (var (passedNode, passedDelta) in backwardsPassDeltas)
-                {
-                    if (passedNode.Weights.TryGetValue(node, out var weightBetweenNodeAndPassedNode))
-                    {
-                        sumDeltaWeights += passedDelta * weightBetweenNodeAndPassedNode.Value;
-                    }
-                }
-                var delta = sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
+                var delta = CalculateDelta(layer, backwardsPassDeltas, node);
                 deltas.Add(node, delta);
 
                 foreach (var (prevNode, weightForPrevNode) in node.Weights)
@@ -99,7 +90,21 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
             return deltas;
         }
 
-        private static void UpdateNodeWeight(Node prevNode, Weight weightForPrevNode, double delta, double momentumMagnitude)
+        internal static double CalculateDelta(Layer layer, Dictionary<Node, double> backwardsPassDeltas, Node node)
+        {
+            var sumDeltaWeights = 0d;
+            foreach (var (passedNode, passedDelta) in backwardsPassDeltas)
+            {
+                if (passedNode.Weights.TryGetValue(node, out var weightBetweenNodeAndPassedNode))
+                {
+                    sumDeltaWeights += passedDelta * weightBetweenNodeAndPassedNode.Value;
+                }
+            }
+
+            return sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
+        }
+
+        internal static void UpdateNodeWeight(Node prevNode, Weight weightForPrevNode, double delta, double momentumMagnitude)
         {
             var change = -(delta * prevNode.Output);
             weightForPrevNode.Adjust(change);
@@ -112,7 +117,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
             }
         }
 
-        private static void UpdateBiasNodeWeight(Weight weightForPrevLayer, double delta, double momentumMagnitude)
+        internal static void UpdateBiasNodeWeight(Weight weightForPrevLayer, double delta, double momentumMagnitude)
         {
             var change = -delta;
             weightForPrevLayer.Adjust(change);

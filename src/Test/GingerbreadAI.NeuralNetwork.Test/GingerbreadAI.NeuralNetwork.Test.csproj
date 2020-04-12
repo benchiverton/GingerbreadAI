@@ -17,7 +17,6 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\DeepLearning\GingerbreadAI.DeepLearning.Backpropagation\GingerbreadAI.DeepLearning.Backpropagation.csproj" />
-    <ProjectReference Include="..\..\DeepLearning\GingerbreadAI.DeepLearning.NegativeSampling\GingerbreadAI.DeepLearning.NegativeSampling.csproj" />
     <ProjectReference Include="..\..\Model\GingerbreadAI.Model.ConvolutionalNeuralNetwork\GingerbreadAI.Model.ConvolutionalNeuralNetwork.csproj" />
     <ProjectReference Include="..\..\Model\GingerbreadAI.Model.NeuralNetwork\GingerbreadAI.Model.NeuralNetwork.csproj" />
     <ProjectReference Include="..\..\NLP\GingerbreadAI.NLP.Word2Vec\GingerbreadAI.NLP.Word2Vec.csproj" />
