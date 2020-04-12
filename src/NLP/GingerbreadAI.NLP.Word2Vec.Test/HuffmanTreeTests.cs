@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions;
+using Xunit;
 
 namespace GingerbreadAI.NLP.Word2Vec.Test
 {
@@ -16,7 +17,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test
             AddWords(12, wordCollection, "c");
             AddWords(16, wordCollection, "d");
             wordCollection.InitWordPositions();
-            new HuffmanTree().Create(wordCollection);
+            wordCollection.CreateBinaryTree();
 
             var word = "a";
             var expectedCode = new[] { '\0', '\0', '\0', '\0' };

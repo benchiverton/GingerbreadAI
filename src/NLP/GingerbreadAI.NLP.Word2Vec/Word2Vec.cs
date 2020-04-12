@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions;
 
 namespace GingerbreadAI.NLP.Word2Vec
 {
@@ -22,9 +23,9 @@ namespace GingerbreadAI.NLP.Word2Vec
         private readonly int _negative;
         private readonly int _numberOfThreads = 4;
         private readonly float _thresholdForOccurrenceOfWords = 1e-3f;
-        private readonly WordCollection _wordCollection = new WordCollection();
         private readonly int _windowSize;
         private readonly FileHandler _fileHandler;
+        private WordCollection _wordCollection;
         private float _alpha;
         private float _startingAlpha;
         private float[,] _hiddenLayerWeights;
@@ -76,7 +77,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         {
             _startingAlpha = _alpha;
 
-            _fileHandler.GetWordDictionaryFromFile(_wordCollection, MaxCodeLength);
+            _wordCollection = _fileHandler.GetWordDictionaryFromFile(MaxCodeLength);
 
             _wordCollection.RemoveWordsWithCountLessThanMinCount(_minCount);
 
@@ -119,8 +120,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                     nextRandom = LinearCongruentialGenerator(nextRandom);
                     _hiddenLayerWeights[wordIndex, dimensionIndex] = ((nextRandom & 0xFFFF) / (float) 65536 - (float) 0.5) / _numberOfDimensions;
                 }
-            var huffmanTree = new HuffmanTree();
-            huffmanTree.Create(_wordCollection);
+            _wordCollection.CreateBinaryTree();
             GC.Collect();
         }
 
@@ -137,7 +137,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             int a;
             var power = 0.75;
             _table = new int[TableSize];
-            var trainWordsPow = _wordCollection.GetTrainWordsPow(power);
+            var trainWordsPow = _wordCollection.GetSumOfOccurenceOfWordsRaisedToPower(power);
 
             var i = 0;
             var keys = _wordCollection.GetWords().ToArray();

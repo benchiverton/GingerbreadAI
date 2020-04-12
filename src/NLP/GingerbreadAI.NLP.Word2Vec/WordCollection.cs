@@ -38,7 +38,7 @@ namespace GingerbreadAI.NLP.Word2Vec
 
         public long GetTotalNumberOfWords() => _words.Sum(x => x.Value.Count);
 
-        public double GetTrainWordsPow(double power)
+        public double GetSumOfOccurenceOfWordsRaisedToPower(double power)
             => _words.Sum(x => Math.Pow(x.Value.Count, power));
 
         public long GetOccurrenceOfWord(string word) => _words[word].Count;

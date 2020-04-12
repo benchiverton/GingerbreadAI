@@ -22,4 +22,10 @@
     <ProjectReference Include="..\..\NLP\GingerbreadAI.NLP.Word2Vec\GingerbreadAI.NLP.Word2Vec.csproj" />
   </ItemGroup>
   
+  <ItemGroup>
+    <None Update="TestData\numbers.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>

@@ -27,10 +27,14 @@ namespace GingerbreadAI.NLP.Word2Vec
 
         public long FileSize { get; }
 
-        public void GetWordDictionaryFromFile(WordCollection wordCollection, int maxCodeLength)
+        public WordCollection GetWordDictionaryFromFile(int maxCodeLength)
         {
+            var wordCollection = new WordCollection();
+
             if (!File.Exists(_trainFile))
+            {
                 throw new InvalidOperationException($"Unable to find {_trainFile}");
+            }
 
             using (var fileStream = new FileStream(_trainFile, FileMode.OpenOrCreate, FileAccess.Read))
             {
@@ -48,6 +52,13 @@ namespace GingerbreadAI.NLP.Word2Vec
                     }
                 }
             }
+
+            return wordCollection;
+        }
+
+        public StreamReader GetReader()
+        {
+            return File.OpenText(_trainFile);
         }
 
         public void WriteDescription(WordCollection wordCollection, int numberOfDimensions)
@@ -75,7 +86,10 @@ namespace GingerbreadAI.NLP.Word2Vec
                     {
                         var bytes = new List<byte>();
                         for (var dimensionIndex = 0; dimensionIndex < numberOfDimensions; dimensionIndex++)
+                        {
                             bytes.AddRange(BitConverter.GetBytes(hiddenLayerWeights[a, dimensionIndex]));
+                        }
+
                         writer.WriteLine($"{keys[a]}\t{Convert.ToBase64String(bytes.ToArray())}");
                     }
                 }
@@ -116,11 +130,6 @@ namespace GingerbreadAI.NLP.Word2Vec
                     writer.WriteLine(stringBuilder.ToString());
                 }
             }
-        }
-
-        public StreamReader GetReader()
-        {
-            return File.OpenText(_trainFile);
         }
     }
 }

@@ -2,27 +2,61 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GingerbreadAI.NLP.Word2Vec
+namespace GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions
 {
-    public class HuffmanTree
+    public static class WordCollectionExtensions
     {
-        /**
-         * ======== CreateBinaryTree ========
-         * Create binary Huffman tree using the word counts.
-         * Frequent words will have short unique binary codes.
-         * Huffman encoding is used for lossless compression.
-         * The vocab_word structure contains a field for the 'code' for the word.
-         */
-        private WordCollection _wordCollection;
-
-        public void Create(WordCollection wordCollection)
+        /// <summary>
+        /// Create unigram table for random sub-sampling.
+        /// Frequent words will occupy more positions in the table.
+        /// </summary>
+        public static int[] GetUnigramTable(this WordCollection wordCollection, int tableSize)
         {
-            _wordCollection = wordCollection;
+            if (wordCollection.GetNumberOfUniqueWords() == 0)
+            {
+                // maybe throw?
+                return new int[0];
+            }
+
+            const double power = 0.75;
+            var table = new int[tableSize];
+            var sumOfOccurenceOfWordsRaisedToPower = wordCollection.GetSumOfOccurenceOfWordsRaisedToPower(power);
+
+            var words = wordCollection.GetWords().ToArray();
+            var indexOfCurrentWord = -1;
+            var highestPositionOfWordInTable = -1;
+            for (var tablePosition = 0; tablePosition < tableSize; tablePosition++)
+            {
+                if (tablePosition > highestPositionOfWordInTable)
+                {
+                    indexOfCurrentWord++;
+                    highestPositionOfWordInTable += (int) Math.Ceiling(Math.Pow(wordCollection.GetOccurrenceOfWord(words[indexOfCurrentWord]), power) / sumOfOccurenceOfWordsRaisedToPower * tableSize);
+                }
+
+                table[tablePosition] = indexOfCurrentWord;
+
+                if (indexOfCurrentWord >= wordCollection.GetNumberOfUniqueWords())
+                {
+                    indexOfCurrentWord = wordCollection.GetNumberOfUniqueWords() - 1;
+                }
+            }
+
+            return table;
+        }
+
+        /// <summary>
+        /// Create binary Huffman tree using the word counts.
+        /// Frequent words will have short unique binary codes.
+        /// Huffman encoding is used for loss-less compression.
+        /// The vocab_word structure contains a field for the 'code' for the word.
+        /// </summary>
+        public static void CreateBinaryTree(this WordCollection wordCollection)
+        {
             var queue = GetQueueSortedByWordFrequencyAscending(wordCollection);
             IterateQueue(wordCollection, queue);
             var root = queue.Single();
             root.Code = "";
-            Preorder(root);
+            Preorder(wordCollection, root);
             GC.Collect();
         }
 
@@ -78,12 +112,16 @@ namespace GingerbreadAI.NLP.Word2Vec
         {
             var sortedByLowestCount = wordCollection.ToArray();
             var queue = sortedByLowestCount.Select(word => new Node
-                    {Frequency = word.Value.Count, WordInfo = word.Value, Word = word.Key})
+            {
+                Frequency = word.Value.Count,
+                WordInfo = word.Value,
+                Word = word.Key
+            })
                 .OrderBy(y => y.Frequency).ToList();
             return queue;
         }
 
-        private void Preorder(Node root)
+        private static void Preorder(WordCollection wordCollection, Node root)
         {
             if (root == null) return;
             if (root.Left != null)
@@ -91,8 +129,8 @@ namespace GingerbreadAI.NLP.Word2Vec
                 root.Left.Code = root.Code + "0";
                 if (root.Left.WordInfo != null)
                 {
-                    _wordCollection.SetCode(root.Left.Word, root.Left.Code.ToCharArray());
-                    SetPoint(root.Left.Word, root.Left.Code.Length, root, 1);
+                    wordCollection.SetCode(root.Left.Word, root.Left.Code.ToCharArray());
+                    SetPoint(wordCollection, root.Left.Word, root.Left.Code.Length, root, 1);
                 }
 
             }
@@ -102,27 +140,27 @@ namespace GingerbreadAI.NLP.Word2Vec
                 root.Right.Code = root.Code + "1";
                 if (root.Right.WordInfo != null)
                 {
-                    _wordCollection.SetCode(root.Right.Word, root.Right.Code.ToCharArray());
-                    SetPoint(root.Right.Word, root.Right.Code.Length, root, 1);
+                    wordCollection.SetCode(root.Right.Word, root.Right.Code.ToCharArray());
+                    SetPoint(wordCollection, root.Right.Word, root.Right.Code.Length, root, 1);
 
                 }
             }
-            Preorder(root.Right);
-            Preorder(root.Left);
+            Preorder(wordCollection, root.Right);
+            Preorder(wordCollection, root.Left);
         }
 
-        private void SetPoint(string word, int codeLength, Node root, int i)
+        private static void SetPoint(WordCollection wordCollection, string word, int codeLength, Node root, int i)
         {
-            _wordCollection.SetPoint(word, codeLength - i, root.IndexOfLeafNodeThisInteriorNodePretendsToBe.Value);
+            wordCollection.SetPoint(word, codeLength - i, root.IndexOfLeafNodeThisInteriorNodePretendsToBe.Value);
 
             if (codeLength - i == 0 || root.Parent == null)
             {
                 return;
             }
 
-            SetPoint(word, codeLength, root.Parent, ++i);
+            SetPoint(wordCollection, word, codeLength, root.Parent, ++i);
         }
-        
+
         private class Node : IComparable<Node>
         {
             public Node Parent { get; set; }
