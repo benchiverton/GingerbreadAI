@@ -29,16 +29,17 @@ jobs:
       with:
         dotnet-version: 3.1.101
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Setup Nuget CLI
       uses: nuget/setup-nuget@v1
       with:
         nuget-version: 'latest'
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        nuget-api-key: ${{ secrets.NuGetAPIKey }}
     - name: Check if package version exists in source
       run: |
-        nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/benchiverton/index.json -Username benchiverton -Password ${{ secrets.GITHUB_TOKEN }}
-        nuget list ${{ env.PACKAGE_NAME }} -Source "GPR" -AllVersions -Prerelease|findstr /i /r /c:"^${{ env.PACKAGE_NAME }} 0.0.5" -N>nul 2>&1
+        # nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/benchiverton/index.json -Username benchiverton -Password ${{ secrets.GITHUB_TOKEN }}
+        nuget list ${{ env.PACKAGE_NAME }} -Source https://nuget.pkg.github.com/benchiverton/index.json -AllVersions -Prerelease|findstr /i /r /c:"^${{ env.PACKAGE_NAME }} 0.0.5" -N>nul 2>&1
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
