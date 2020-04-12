@@ -13,7 +13,6 @@ on:
     - '.github/workflows/ci_publish-neural-network.yml'
 
 env:
-  PACKAGE_NAME: GingerbreadAI.NeuralNetwork
   PROJECT_LOCATION: src/Model/GingerbreadAI.Model.NeuralNetwork/
   PROJECT_FILE: GingerbreadAI.Model.NeuralNetwork.csproj
 
@@ -31,10 +30,6 @@ jobs:
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    # - name: Check if package version exists in source
-    #   run: |
-    #     nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/benchiverton/index.json -Username benchiverton -Password ${{ secrets.GITHUB_TOKEN }}
-    #     nuget list ${{ env.PACKAGE_NAME }} -Source "GPR"
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
