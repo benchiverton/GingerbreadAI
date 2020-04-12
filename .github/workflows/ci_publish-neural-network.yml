@@ -13,6 +13,7 @@ on:
     - '.github/workflows/ci_publish-neural-network.yml'
 
 env:
+  PACKAGE_NAME: GingerbreadAI.NeuralNetwork
   PROJECT_LOCATION: src/Model/GingerbreadAI.Model.NeuralNetwork/
   PROJECT_FILE: GingerbreadAI.Model.NeuralNetwork.csproj
 
@@ -28,13 +29,16 @@ jobs:
       with:
         dotnet-version: 3.1.101
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
+    - name: Setup Nuget CLI
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: 'latest'
       env:
-        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    - name: Error if version already exists
-      # if: curl - https://nuget.pkg.github.com/benchiverton/query?q=GingerbreadAI.NeuralNetwork
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check if package version exists in source
       run: |
-        echo "::error ::Package version already exists in source"
-        exit 1
+        nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/benchiverton/index.json -Username benchiverton -Password ${{ secrets.GITHUB_TOKEN }}
+        nuget list ${{ env.PACKAGE_NAME }} -Source "GPR" -AllVersions -Prerelease|findstr /i /r /c:"^${{ env.PACKAGE_NAME }} 0.0.5" -N>nul 2>&1
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
