@@ -32,7 +32,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Error if version already exists
       # if: curl - https://nuget.pkg.github.com/benchiverton/query?q=GingerbreadAI.NeuralNetwork
-      run: print(##[error]Package version already exists in source)
+      run: echo "::error ::Package version already exists in source"
       # suffix the package with the run number if building from a PR
     - name: Pack Pre-Release
       if: github.event_name == 'pull_request' && github.event.action != 'closed'
