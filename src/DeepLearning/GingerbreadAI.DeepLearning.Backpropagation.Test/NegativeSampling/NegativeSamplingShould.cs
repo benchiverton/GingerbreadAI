@@ -15,8 +15,8 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainBasicNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -41,8 +41,8 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainBasicNetworksWithMomentumSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
@@ -68,10 +68,10 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainComplexNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -96,10 +96,10 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainComplexNetworksWithMomentumSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h3 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
@@ -125,8 +125,8 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainNetworksUsingTheSameTargetSortofWell()
         {
-            var input = new Layer(100, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var input = new Layer(100, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -151,8 +151,8 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainNetworksUsingTheSameInputSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
@@ -178,9 +178,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainNetworksUsingDifferentInputsAndOutputsSortofWell()
         {
-            var input = new Layer(100, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var input = new Layer(100, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(50, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var output = new Layer(100, new [] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
 
@@ -216,12 +216,12 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void OnlyChangeRelatedWeights()
         {
-            var input = new Layer(10, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var h2 = new Layer(10, new Layer[] { h1 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var h3 = new Layer(10, new Layer[] { h1 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var h4 = new Layer(10, new Layer[] { h2, h3 }, ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-            var output = new Layer(10, new Layer[] { h4 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var input = new Layer(10, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(10, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h2 = new Layer(10, new [] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h3 = new Layer(10, new [] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h4 = new Layer(10, new [] { h2, h3 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var output = new Layer(10, new [] { h4 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
 

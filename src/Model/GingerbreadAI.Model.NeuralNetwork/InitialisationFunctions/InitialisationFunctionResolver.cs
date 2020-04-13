@@ -8,17 +8,17 @@ namespace GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions
         {
             return initialisationFunctionType switch
             {
-                InitialisationFunctionType.None => (rand, feedingNodeCount, outputNodeCount) 
+                InitialisationFunctionType.None => (rand, feedingNodeCount, layerNodeCount) 
                     => 0d,
-                InitialisationFunctionType.Random => (rand, feedingNodeCount, outputNodeCount)
+                InitialisationFunctionType.Random => (rand, feedingNodeCount, layerNodeCount)
                     => rand.NextDouble() * 2 - 1,
-                InitialisationFunctionType.RandomPositive => (rand, feedingNodeCount, outputNodeCount)
+                InitialisationFunctionType.RandomPositive => (rand, feedingNodeCount, layerNodeCount)
                     => rand.NextDouble(),
-                InitialisationFunctionType.HeUniform => (rand, feedingNodeCount, outputNodeCount)
+                InitialisationFunctionType.HeUniform => (rand, feedingNodeCount, layerNodeCount)
                     => Math.Sqrt(6d / (feedingNodeCount)) * (rand.NextDouble() * 2 - 1),
-                InitialisationFunctionType.GlorotUniform => (rand, feedingNodeCount, outputNodeCount)
-                    => Math.Sqrt(6d / ((double)feedingNodeCount + outputNodeCount)) * (rand.NextDouble() * 2 - 1),
-                InitialisationFunctionType.HeEtAl => (rand, feedingNodeCount, outputNodeCount)
+                InitialisationFunctionType.GlorotUniform => (rand, feedingNodeCount, layerNodeCount)
+                    => Math.Sqrt(6d / ((double)feedingNodeCount + layerNodeCount)) * (rand.NextDouble() * 2 - 1),
+                InitialisationFunctionType.HeEtAl => (rand, feedingNodeCount, layerNodeCount)
                     => (2d * rand.NextDouble() / Math.Sqrt(feedingNodeCount)) - 1d / Math.Sqrt(feedingNodeCount),
                 _ => throw new ArgumentOutOfRangeException(
                         nameof(initialisationFunctionType),

@@ -18,9 +18,12 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
 
             var fileHandler = new FileHandler(inputFile, outputFile);
-            var word2Vec = new Word2VecUsingLibrary(fileHandler, numberOfDimensions: 50, numberOfThreads: 4, numberOfIterations: 4, windowSize: 1, thresholdForOccurrenceOfWords: 0);
+            var word2Vec = new Word2VecUsingLibrary();
+            word2Vec.Setup(fileHandler, dimensions: 5);
 
-            word2Vec.TrainModel();
+            word2Vec.Train(numberOfThreads: 4, numberOfIterations: 16, windowSize: 1, thresholdForOccurrenceOfWords: 0, negativeSamples: 2);
+
+            fileHandler.WriteOutputMatrix(word2Vec.WordCollection, word2Vec.NeuralNetwork);
         }
     }
 }

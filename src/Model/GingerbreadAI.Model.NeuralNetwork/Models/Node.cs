@@ -24,7 +24,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         {
         }
 
-        public Node(IReadOnlyList<Layer> nodeGroupPrev)
+        public Node(IReadOnlyList<Layer> nodeGroupPrev, bool addBiasWeights)
         {
             foreach (var prevNodeLayer in nodeGroupPrev)
             {
@@ -34,9 +34,12 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
                 }
             }
 
-            foreach (var prevNodeLayer in nodeGroupPrev)
+            if (addBiasWeights)
             {
-                BiasWeights.Add(prevNodeLayer, new Weight(0));
+                foreach (var prevNodeLayer in nodeGroupPrev)
+                {
+                    BiasWeights.Add(prevNodeLayer, new Weight(0));
+                }
             }
         }
 
@@ -44,7 +47,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         {
             var output = 0d;
 
-            // TODO: optimise this
             foreach (var weight in Weights)
             {
                 output += weight.Key.Output * weight.Value.Value;

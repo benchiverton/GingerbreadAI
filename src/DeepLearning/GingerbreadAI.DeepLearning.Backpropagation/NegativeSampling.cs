@@ -85,7 +85,10 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
             {
                 var delta = sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
                 Backpropagation.UpdateNodeWeight(inputNode, node.Weights[inputNode], delta, momentumMagnitude);
-                Backpropagation.UpdateBiasNodeWeight(node.BiasWeights[inputLayer], delta, momentumMagnitude);
+                if (node.BiasWeights.TryGetValue(inputLayer, out var biasWeight))
+                {
+                    Backpropagation.UpdateBiasNodeWeight(biasWeight, delta, momentumMagnitude);
+                }
             }
         }
     }

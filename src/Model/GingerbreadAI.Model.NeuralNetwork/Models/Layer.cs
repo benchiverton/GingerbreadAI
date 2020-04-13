@@ -21,7 +21,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
             InitialisationFunctionType = initialisationFunctionType;
         }
 
-        public Layer(int nodeCount, Layer[] previousGroups, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionType)
+        public Layer(int nodeCount, Layer[] previousGroups, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionType, bool addBiasWeights = true)
         {
             ActivationFunctionType = activationFunctionType;
             InitialisationFunctionType = initialisationFunctionType;
@@ -30,7 +30,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
 
             for (var i = 0; i < nodeCount; i++)
             {
-                Nodes[i] = new Node(previousGroups);
+                Nodes[i] = new Node(previousGroups, addBiasWeights);
             }
         }
 
@@ -96,7 +96,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         {
             foreach (var previousLayer in PreviousLayers)
             {
-                CalculateIndexedOutput(previousLayer, inputIndex, inputValue);
+                CalculateIndexedOutput(inputIndex, inputValue);
             }
 
             Nodes[outputIndex].CalculateOutput(ActivationFunction);
@@ -168,37 +168,44 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
             }
         }
 
-        private bool CalculateIndexedOutput(Layer layer, int inputIndex, double inputValue)
+        internal bool CalculateIndexedOutput(int inputIndex, double inputValue)
         {
-            if (!layer.PreviousLayers.Any())
+            if (!PreviousLayers.Any())
             {
-                layer.Nodes[inputIndex].Output = inputValue;
+                Nodes[inputIndex].Output = inputValue;
                 return true;
             }
 
             var shouldPopulateAllOutputs = false;
-            foreach (var prevLayer in layer.PreviousLayers)
+            foreach (var prevLayer in PreviousLayers)
             {
-                var isNextToInput = CalculateIndexedOutput(prevLayer, inputIndex, inputValue);
+                var isPreviousLayerInput = prevLayer.CalculateIndexedOutput(inputIndex, inputValue);
 
-                if (isNextToInput)
+                if (isPreviousLayerInput)
                 {
                     var inputNode = prevLayer.Nodes[inputIndex];
-                    foreach (var node in layer.Nodes)
+                    foreach (var node in Nodes)
                     {
-                        node.Output = ActivationFunction(node.Weights[inputNode].Value * inputNode.Output + node.BiasWeights[prevLayer].Value);
+                        var output = node.Weights[inputNode].Value * inputNode.Output;
+
+                        if(node.BiasWeights.TryGetValue(prevLayer, out var biasWeight))
+                        {
+                            output += biasWeight.Value;
+                        }
+
+                        node.Output = ActivationFunction(output);
                     }
                 }
                 else
                 {
-                    // if not next to input, all outputs need loading - will break if multiple inputs
+                    // if not next to input, all outputs need loading - will break if multiple previous layers & one is the input
                     shouldPopulateAllOutputs = true;
                 }
             }
 
             if (shouldPopulateAllOutputs)
             {
-                foreach (var node in layer.Nodes)
+                foreach (var node in Nodes)
                 {
                     node.CalculateOutput(ActivationFunction);
                 }

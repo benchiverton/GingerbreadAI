@@ -14,12 +14,15 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             var inputFile = $@"{Directory.GetCurrentDirectory()}/TestData/numbers.txt";
             var outputFile = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{DateTime.Now.Ticks}.csv";
 
-            System.IO.Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
+            Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
 
             var fileHandler = new FileHandler(inputFile, outputFile);
-            var word2Vec = new Word2VecUsingLibrary(fileHandler, numberOfDimensions: 50, numberOfThreads: 4, numberOfIterations: 4, windowSize: 1, thresholdForOccurrenceOfWords: 0, useSkipgram: false);
+            var word2Vec = new Word2VecUsingLibrary();
+            word2Vec.Setup(fileHandler);
 
-            word2Vec.TrainModel();
+            word2Vec.Train(numberOfThreads: 4, numberOfIterations: 4, windowSize: 1, thresholdForOccurrenceOfWords: 0, useSkipgram: false);
+
+            fileHandler.WriteOutputMatrix(word2Vec.WordCollection, word2Vec.NeuralNetwork);
         }
     }
 }
