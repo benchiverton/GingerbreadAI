@@ -17,7 +17,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
             }
 
             var orderedOtherWordCosineSimilarity = otherWordCosineSimilarity
-                .OrderBy(owcs => owcs.cosineSimilarity)
+                .OrderByDescending(owcs => owcs.cosineSimilarity)
                 .Select(owcs => owcs.otherWord);
             return orderedOtherWordCosineSimilarity.Take(topn).ToList();
         }

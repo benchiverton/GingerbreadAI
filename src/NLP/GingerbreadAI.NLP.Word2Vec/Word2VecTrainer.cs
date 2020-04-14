@@ -113,6 +113,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                 reader.BaseStream.Seek(_fileHandler.FileSize / numberOfThreads * id, SeekOrigin.Begin);
                 while (true)
                 {
+                    // adjust learning rate
                     if (wordCount - lastWordCount > 10000)
                     {
                         _wordCountActual += wordCount - lastWordCount;
@@ -123,11 +124,13 @@ namespace GingerbreadAI.NLP.Word2Vec
                             learningRate = startingLearningRate * (float)0.0001;
                         }
                     }
+                    // if sentence length is 0, set the sentence
                     if (sentenceLength == 0)
                     {
                         wordCount = SetSentence(WordCollection, reader, wordCount, sentence, random, ref sentenceLength, ref lastLine, thresholdForOccurrenceOfWords);
                         sentencePosition = 0;
                     }
+                    // if sentence length is still 0, the reader must be at the end of the stream
                     if (sentenceLength == 0 || wordCount > sum / numberOfThreads)
                     {
                         _wordCountActual += wordCount - lastWordCount;
@@ -143,6 +146,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                         Console.WriteLine($"Iterations remaining: {localIterations} Thread: {id}");
                         continue;
                     }
+                    // word may not be populated (as frequent words are sub-sampled)
                     var wordIndex = sentence[sentencePosition];
                     if (!wordIndex.HasValue)
                     {
