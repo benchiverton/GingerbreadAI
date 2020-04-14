@@ -16,7 +16,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
     public class Cnn2dLettersUsingBackpropagation
     {
         private const string ResultsDirectory = nameof(Cnn2dLettersUsingBackpropagation);
-        private readonly string _trainingDataDir = $"./{nameof(Cnn2dLettersUsingBackpropagation)}/TrainingData";
         private readonly ITestOutputHelper _testOutputHelper;
 
         public Cnn2dLettersUsingBackpropagation(ITestOutputHelper testOutputHelper)
@@ -35,7 +34,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
             output.AddMomentumRecursively();
             output.Initialise(new Random());
 
-            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers($"train-images-idx3-ubyte.gz", $"train-labels-idx1-ubyte.gz"))
+            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers("train-labels-idx1-ubyte.gz", "train-images-idx3-ubyte.gz"))
             {
                 var targetOutputs = new double[10];
                 targetOutputs[trainingData.label] = 1d;
@@ -44,7 +43,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
 
             var correctResults = new double[10];
             var incorrectResults = new double[10];
-            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers($"t10k-images-idx3-ubyte.gz", $"t10k-labels-idx1-ubyte.gz"))
+            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers("t10k-labels-idx1-ubyte.gz", "t10k-images-idx3-ubyte.gz"))
             {
                 output.CalculateOutputs(trainingData.image);
                 if (output.Nodes[trainingData.label].Output > 0.5)

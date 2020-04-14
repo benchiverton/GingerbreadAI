@@ -104,7 +104,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                 .Replace(')', ' ')
                 .Split(" ", StringSplitOptions.RemoveEmptyEntries)
                 .Select(y => y.ToLower())
-                .Where(i => Regex.IsMatch(i, "[a-z]"));
+                .Where(i => Regex.IsMatch(i, "[a-z0-9]"));
 
         private static Func<long, WordInfo> GetWordInfoCreator(int length)
             => x => new WordInfo(new char[length], new long[length], x);
@@ -125,7 +125,5 @@ namespace GingerbreadAI.NLP.Word2Vec
                 UpsertWord(word, infoCreator, i++);
             }
         }
-
-
     }
 }

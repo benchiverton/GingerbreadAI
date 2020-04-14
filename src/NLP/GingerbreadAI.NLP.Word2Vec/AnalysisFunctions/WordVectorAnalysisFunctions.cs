@@ -10,7 +10,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
         /// Returns the topn most similar words to the one given.
         /// Similarity is calculated using cosine similarity.
         /// </summary>
-        public static IEnumerable<string> GetMostSimilarWords(string word, IEnumerable<(string word, List<double> vector)> wordVectors, int topn = 10)
+        public static IEnumerable<(string word, double similarity)> GetMostSimilarWords(string word, IEnumerable<(string word, List<double> vector)> wordVectors, int topn = 10)
         {
             var wordVectorArray = wordVectors.ToArray();
             var wordVector = wordVectorArray.First(wv => wv.word == word);
@@ -18,7 +18,6 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
             return wordVectorArray.Where(wv => wv.word != word)
                 .Select(otherWordVector => (otherWordVector.word, CalculateCosineSimilarity(wordVector.vector.ToArray(), otherWordVector.vector.ToArray())))
                 .OrderByDescending(owcs => owcs.Item2)
-                .Select(owcs => owcs.word)
                 .Take(topn);
         }
 

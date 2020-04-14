@@ -64,7 +64,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// <summary>
         /// Returns each word in the word collection with their associated vector.
         /// </summary>
-        public static IEnumerable<(string word, IEnumerable<string> similarWords)> GetMostSimilarWords(this WordCollection wordCollection, Layer neuralNetwork, int topn = 10)
+        public static IEnumerable<(string word, IEnumerable<(string word, double similarity)> similarWords)> GetMostSimilarWords(this WordCollection wordCollection, Layer neuralNetwork, int topn = 10)
         {
             foreach (var word in wordCollection.GetWords())
             {

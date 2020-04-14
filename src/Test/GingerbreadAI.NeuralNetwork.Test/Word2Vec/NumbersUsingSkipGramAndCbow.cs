@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using GingerbreadAI.NLP.Word2Vec;
-using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
 using Xunit;
 

@@ -19,9 +19,9 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
             };
 
             var orderedWords = WordVectorAnalysisFunctions.GetMostSimilarWords("target", wordVectors, 3).ToArray();
-            Assert.Equal("same", orderedWords[0]);
-            Assert.Equal("close-ish", orderedWords[1]);
-            Assert.Equal("far", orderedWords[2]);
+            Assert.Equal(("same", 1), orderedWords[0]);
+            Assert.Equal(("close-ish", 0), orderedWords[1]);
+            Assert.Equal(("far", -1), orderedWords[2]);
         }
 
         [Theory]

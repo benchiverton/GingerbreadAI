@@ -74,7 +74,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
                 {
                     foreach (var (word, vector) in wordCollection.GetMostSimilarWords(neuralNetwork, topn))
                     {
-                        writer.WriteLine($"{word},{string.Join(',', vector)}");
+                        writer.WriteLine($"{word},{string.Join(',', vector.Select(v => $"{v.word},{v.similarity:0.00000}"))}");
                     }
                 }
             }

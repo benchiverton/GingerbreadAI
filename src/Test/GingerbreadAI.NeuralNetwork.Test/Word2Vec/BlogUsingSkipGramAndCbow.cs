@@ -4,19 +4,12 @@ using System.Linq;
 using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
     public class BlogUsingSkipGramAndCbow
     {
         private const string ResultsDirectory = nameof(BlogUsingSkipGramAndCbow);
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public BlogUsingSkipGramAndCbow(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
 
         [RunnableInDebugOnly]
         public void Go()
