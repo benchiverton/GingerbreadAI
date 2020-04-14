@@ -1,13 +1,34 @@
-﻿using GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GingerbreadAI.NLP.Word2Vec.Extensions;
 using Xunit;
 
-namespace GingerbreadAI.NLP.Word2Vec.Test
+namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
 {
-    public class HuffmanTreeTests
+    public class WordCollectionExtensionsShould
     {
+        [Fact]
+        public void ReturnCorrectUnigramTable()
+        {
+            var wordCollection = new WordCollection();
+            AddWords(1, wordCollection, "a");
+            AddWords(2, wordCollection, "b");
+            AddWords(3, wordCollection, "c");
+            AddWords(4, wordCollection, "d");
+            AddWords(5, wordCollection, "e");
+            wordCollection.InitWordPositions();
+
+            var table = wordCollection.GetUnigramTable(30, 1);
+
+            Assert.Equal(2, table.Count(x => x == 0));
+            Assert.Equal(4, table.Count(x => x == 1));
+            Assert.Equal(6, table.Count(x => x == 2));
+            Assert.Equal(8, table.Count(x => x == 3));
+            Assert.Equal(10, table.Count(x => x == 4));
+        }
 
         [Fact]
-        public void WillCreateAProperHuffmanTree()
+        public void CreateAProperHuffmanTree()
         {
             var wordCollection = new WordCollection();
             AddWords(5, wordCollection, "f");

@@ -9,11 +9,11 @@ using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
-using GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions;
+using GingerbreadAI.NLP.Word2Vec.Extensions;
 
 namespace GingerbreadAI.NLP.Word2Vec
 {
-    public class Word2VecUsingLibrary
+    public class Word2VecTrainer
     {
         private const int MaxCodeLength = 40;
         private const int TableSize = (int)1e8;
@@ -34,15 +34,14 @@ namespace GingerbreadAI.NLP.Word2Vec
             _table = WordCollection.GetUnigramTable(TableSize);
 
             var inputLayer = new Layer(WordCollection.GetNumberOfUniqueWords(), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var hiddenLayer = new Layer(dimensions, new[] { inputLayer }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform, false);
-            var hiddenLayer2 = new Layer(dimensions, new[] { hiddenLayer }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform, false);
-            NeuralNetwork = new Layer(WordCollection.GetNumberOfUniqueWords(), new[] { hiddenLayer2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None, false);
+            var hiddenLayer = new Layer(dimensions, new[] { inputLayer }, ActivationFunctionType.Linear, InitialisationFunctionType.GlorotUniform, false);
+            NeuralNetwork = new Layer(WordCollection.GetNumberOfUniqueWords(), new[] { hiddenLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl, false);
             NeuralNetwork.Initialise(new Random());
 
             GC.Collect();
         }
 
-        public void Train(
+        public void TrainModel(
             int numberOfThreads = 4,
             int numberOfIterations = 4,
             int maxSentenceLength = 10000,
@@ -109,7 +108,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             var random = new Random();
             var sum = WordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
-            using (var reader = _fileHandler.GetReader())
+            using (var reader = _fileHandler.GetTrainingFileReader())
             {
                 reader.BaseStream.Seek(_fileHandler.FileSize / numberOfThreads * id, SeekOrigin.Begin);
                 while (true)
@@ -129,7 +128,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                         wordCount = SetSentence(WordCollection, reader, wordCount, sentence, random, ref sentenceLength, ref lastLine, thresholdForOccurrenceOfWords);
                         sentencePosition = 0;
                     }
-                    if (reader.EndOfStream || wordCount > sum / numberOfThreads)
+                    if (sentenceLength == 0 || wordCount > sum / numberOfThreads)
                     {
                         _wordCountActual += wordCount - lastWordCount;
                         localIterations--;
@@ -150,7 +149,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                         continue;
                     }
 
-                    TrainNetwork(
+                    TrainModelFromContextWindow(
                         localNetwork,
                         _table,
                         sentence,
@@ -205,7 +204,15 @@ namespace GingerbreadAI.NLP.Word2Vec
                     lineThatGotCutOff = words;
                     break;
                 }
-                loopEnd = HandleWords(wordCollection, reader, ref wordCount, sentence, random, ref sentenceLength, words, thresholdForOccurrenceOfWords);
+                loopEnd = HandleWords(
+                    wordCollection,
+                    reader,
+                    ref wordCount,
+                    sentence,
+                    random,
+                    ref sentenceLength,
+                    words,
+                    thresholdForOccurrenceOfWords);
             }
             return wordCount;
         }
@@ -255,7 +262,10 @@ namespace GingerbreadAI.NLP.Word2Vec
             return false;
         }
 
-        private static void TrainNetwork(
+        /// <summary>
+        /// Iterates through the context window and trains the model from each context word.
+        /// /// </summary>
+        private static void TrainModelFromContextWindow(
             Layer neuralNetwork,
             int[] table,
             int?[] sentence,
@@ -283,7 +293,7 @@ namespace GingerbreadAI.NLP.Word2Vec
 
                         if (indexOfContextWord.HasValue)
                         {
-                            NegativeSampling(
+                            TrainModelFromContextWord(
                                 neuralNetwork,
                                 table,
                                 indexOfCurrentWord,
@@ -299,8 +309,12 @@ namespace GingerbreadAI.NLP.Word2Vec
             }
         }
 
-        // Note: the first negative sample is a positive sample
-        private static void NegativeSampling(
+        /// <summary>
+        /// Trains the model from a context word.
+        /// Positively samples the context word.
+        /// Negatively samples 'negativeSamples - 1' random words (that aren't the context word).
+        /// </summary>
+        private static void TrainModelFromContextWord(
             Layer neuralNetwork,
             int[] table,
             int indexOfCurrentWord,

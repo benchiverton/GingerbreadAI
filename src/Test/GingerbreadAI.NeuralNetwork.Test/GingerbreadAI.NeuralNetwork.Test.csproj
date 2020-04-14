@@ -23,7 +23,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Update="TestData\numbers.txt">
+    <None Update="TrainingData\Numbers\Numbers.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

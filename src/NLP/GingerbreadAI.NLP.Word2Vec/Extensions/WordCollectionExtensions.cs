@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GingerbreadAI.Model.NeuralNetwork.Models;
+using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 
-namespace GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions
+namespace GingerbreadAI.NLP.Word2Vec.Extensions
 {
     public static class WordCollectionExtensions
     {
@@ -10,7 +12,7 @@ namespace GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions
         /// Create unigram table for random sub-sampling.
         /// Frequent words will occupy more positions in the table.
         /// </summary>
-        public static int[] GetUnigramTable(this WordCollection wordCollection, int tableSize)
+        public static int[] GetUnigramTable(this WordCollection wordCollection, int tableSize, double power = 0.75)
         {
             if (wordCollection.GetNumberOfUniqueWords() == 0)
             {
@@ -18,7 +20,6 @@ namespace GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions
                 return new int[0];
             }
 
-            const double power = 0.75;
             var table = new int[tableSize];
             var sumOfOccurenceOfWordsRaisedToPower = wordCollection.GetSumOfOccurenceOfWordsRaisedToPower(power);
 
@@ -30,7 +31,7 @@ namespace GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions
                 if (tablePosition > highestPositionOfWordInTable)
                 {
                     indexOfCurrentWord++;
-                    highestPositionOfWordInTable += (int) Math.Ceiling(Math.Pow(wordCollection.GetOccurrenceOfWord(words[indexOfCurrentWord]), power) / sumOfOccurenceOfWordsRaisedToPower * tableSize);
+                    highestPositionOfWordInTable += (int)Math.Ceiling(Math.Pow(wordCollection.GetOccurrenceOfWord(words[indexOfCurrentWord]), power) / sumOfOccurenceOfWordsRaisedToPower * tableSize);
                 }
 
                 table[tablePosition] = indexOfCurrentWord;
@@ -42,6 +43,40 @@ namespace GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions
             }
 
             return table;
+        }
+
+        /// <summary>
+        /// Returns each word in the word collection with their associated vector.
+        /// </summary>
+        public static List<(string word, List<double> vector)> GetWordVectors(this WordCollection wordCollection, Layer neuralNetwork)
+        {
+            var words = wordCollection.GetWords().ToArray();
+            var hiddenLayer = neuralNetwork.PreviousLayers[0];
+            var inputLayer = hiddenLayer.PreviousLayers[0];
+
+            var vectors = new List<(string, List<double>)>();
+            for (var i = 0; i < wordCollection.GetNumberOfUniqueWords(); i++)
+            {
+                vectors.Add((words[i], hiddenLayer.Nodes.Select(hiddenNode => hiddenNode.Weights[inputLayer.Nodes[i]].Value).ToList()));
+            }
+
+            return vectors;
+        }
+
+
+        /// <summary>
+        /// Returns each word in the word collection with their associated vector.
+        /// </summary>
+        public static List<(string word, List<string> similarWords)> GetMostSimilarWords(this WordCollection wordCollection, Layer neuralNetwork, int topn = 10)
+        {
+            var results = new List<(string, List<string>)>();
+
+            foreach (var word in wordCollection.GetWords())
+            {
+                results.Add((word, WordVectorAnalysisFunctions.GetMostSimilarWords(word, wordCollection.GetWordVectors(neuralNetwork), topn)));
+            }
+
+            return results;
         }
 
         /// <summary>

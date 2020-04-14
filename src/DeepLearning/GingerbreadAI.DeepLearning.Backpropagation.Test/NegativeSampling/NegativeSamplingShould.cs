@@ -21,7 +21,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             output.Initialise(new Random());
 
-            var learningRate = 0.25;
+            var learningRate = 0.1;
             for (var i = 0; i < 2000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
@@ -76,7 +76,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             output.Initialise(new Random());
 
-            var learningRate = 0.25;
+            var learningRate = 0.1;
             for (var i = 0; i < 2000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
@@ -131,7 +131,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             output.Initialise(new Random());
 
-            var learningRate = 0.25;
+            var learningRate = 0.1;
             for (var i = 0; i < 2000; i++)
             {
                 output.NegativeSample(0, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
@@ -157,7 +157,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             output.Initialise(new Random());
 
-            var learningRate = 0.25;
+            var learningRate = 0.1;
             for (var i = 0; i < 2000; i++)
             {
                 output.NegativeSample(2, 0, true, ErrorFunctionType.CrossEntropy, learningRate);
@@ -178,13 +178,13 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainNetworksUsingDifferentInputsAndOutputsSortofWell()
         {
-            var input = new Layer(100, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
-            var h1 = new Layer(50, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
-            var output = new Layer(100, new [] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var input = new Layer(10, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var h1 = new Layer(25, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.GlorotUniform);
+            var output = new Layer(10, new [] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
 
-            var learningRate = 0.25;
+            var learningRate = 0.1;
             for (var i = 0; i < 2000; i++)
             {
                 output.NegativeSample(2, 0, true, ErrorFunctionType.CrossEntropy, learningRate);
@@ -246,7 +246,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
                 initialOutputWeights[i] = dict;
             }
 
-            var learningRate = 0.25;
+            var learningRate = 0.1;
             for (var i = 0; i < 2000; i++)
             {
                 output.NegativeSample(4, 4, true, ErrorFunctionType.CrossEntropy, learningRate);

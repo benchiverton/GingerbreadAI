@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using GingerbreadAI.NLP.Word2Vec;
-using Xunit;
+using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
+using GingerbreadAI.NLP.Word2Vec.Extensions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
@@ -12,18 +13,19 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
         [RunnableInDebugOnly]
         public void Go()
         {
-            var inputFile = $@"{Directory.GetCurrentDirectory()}/TestData/numbers.txt";
-            var outputFile = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{DateTime.Now.Ticks}.csv";
+            var inputFileLoc = TrainingDataManager.GetNumbersFile().FullName;
+            var outputFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{DateTime.Now.Ticks}.csv";
 
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
 
-            var fileHandler = new FileHandler(inputFile, outputFile);
-            var word2Vec = new Word2VecUsingLibrary();
-            word2Vec.Setup(fileHandler, dimensions: 5);
+            var fileHandler = new FileHandler(inputFileLoc, outputFileLoc);
+            var word2Vec = new Word2VecTrainer();
+            word2Vec.Setup(fileHandler);
 
-            word2Vec.Train(numberOfThreads: 4, numberOfIterations: 16, windowSize: 1, thresholdForOccurrenceOfWords: 0, negativeSamples: 2);
+            word2Vec.TrainModel(windowSize: 1, thresholdForOccurrenceOfWords: 0, negativeSamples: 2);
 
-            fileHandler.WriteOutputMatrix(word2Vec.WordCollection, word2Vec.NeuralNetwork);
+            fileHandler.WriteProbabilityMatrix(word2Vec.WordCollection, word2Vec.NeuralNetwork);
+            fileHandler.WriteWordVectors(word2Vec.WordCollection, word2Vec.NeuralNetwork);
         }
     }
 }

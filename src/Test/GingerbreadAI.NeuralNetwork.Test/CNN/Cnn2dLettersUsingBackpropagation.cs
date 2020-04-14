@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
@@ -11,8 +9,6 @@ using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
-using GingerbreadAI.NeuralNetwork.Test.Helpers;
-using MNIST.IO;
 using Xunit.Abstractions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.CNN
@@ -20,7 +16,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
     public class Cnn2dLettersUsingBackpropagation
     {
         private const string ResultsDirectory = nameof(Cnn2dLettersUsingBackpropagation);
-        private const string TestDataDir = @"C:\Projects\AI\TestData\dogs-vs-cats\test";
         private readonly string _trainingDataDir = $"./{nameof(Cnn2dLettersUsingBackpropagation)}/TrainingData";
         private readonly ITestOutputHelper _testOutputHelper;
 
@@ -32,8 +27,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
         [RunnableInDebugOnly]
         public void TrainAgainstHandWrittenNumbers()
         {
-            EnsureDataExists();
-
             var input = new Layer2D((28, 28), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[] { input }.Add2DConvolutionalLayer(32, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             filters.AddPooling((2, 2));
@@ -42,7 +35,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
             output.AddMomentumRecursively();
             output.Initialise(new Random());
 
-            foreach (var trainingData in GetDataSet($"{_trainingDataDir}/train-images-idx3-ubyte.gz", $"{_trainingDataDir}/train-labels-idx1-ubyte.gz"))
+            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers($"train-images-idx3-ubyte.gz", $"train-labels-idx1-ubyte.gz"))
             {
                 var targetOutputs = new double[10];
                 targetOutputs[trainingData.label] = 1d;
@@ -51,7 +44,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
 
             var correctResults = new double[10];
             var incorrectResults = new double[10];
-            foreach (var trainingData in GetDataSet($"{_trainingDataDir}/t10k-images-idx3-ubyte.gz", $"{_trainingDataDir}/t10k-labels-idx1-ubyte.gz"))
+            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers($"t10k-images-idx3-ubyte.gz", $"t10k-labels-idx1-ubyte.gz"))
             {
                 output.CalculateOutputs(trainingData.image);
                 if (output.Nodes[trainingData.label].Output > 0.5)
@@ -73,52 +66,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
             _testOutputHelper.WriteLine($"Accuracy detecting 7: {correctResults[7] / (correctResults[7] + incorrectResults[7])}");
             _testOutputHelper.WriteLine($"Accuracy detecting 8: {correctResults[8] / (correctResults[8] + incorrectResults[8])}");
             _testOutputHelper.WriteLine($"Accuracy detecting 9: {correctResults[9] / (correctResults[9] + incorrectResults[9])}");
-        }
-
-        private void EnsureDataExists()
-        {
-            if (!Directory.Exists(_trainingDataDir))
-            {
-                Directory.CreateDirectory(_trainingDataDir);
-            }
-
-            var directoryFiles = new DirectoryInfo(_trainingDataDir).EnumerateFiles().Select(f => f.Name).ToArray();
-
-            if (!directoryFiles.Contains("train-images-idx3-ubyte.gz"))
-            {
-                DownloadHelpers.DownloadFile("http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz", $"{_trainingDataDir}/train-images-idx3-ubyte.gz");
-            }
-            if (!directoryFiles.Contains("train-labels-idx1-ubyte.gz"))
-            {
-                DownloadHelpers.DownloadFile("http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz", $"{_trainingDataDir}/train-labels-idx1-ubyte.gz");
-            }
-            if (!directoryFiles.Contains("t10k-images-idx3-ubyte.gz"))
-            {
-                DownloadHelpers.DownloadFile("http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz", $"{_trainingDataDir}/t10k-images-idx3-ubyte.gz");
-            }
-            if (!directoryFiles.Contains("t10k-images-idx1-ubyte.gz"))
-            {
-                DownloadHelpers.DownloadFile("http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz", $"{_trainingDataDir}/t10k-labels-idx1-ubyte.gz");
-            }
-        }
-
-        private IEnumerable<(double[] image, int label)> GetDataSet(string imageFileName, string labelFileName)
-        {
-            var trainingDataSet = FileReaderMNIST.LoadImagesAndLables(labelFileName, imageFileName);
-
-            foreach (var trainingData in trainingDataSet)
-            {
-                var trainingDataAsDoubleArray = new double[784];
-                var trainingDataAsDouble = trainingData.AsDouble();
-                for (var i = 0; i < 28; i++)
-                {
-                    for (var j = 0; j < 28; j++)
-                    {
-                        trainingDataAsDoubleArray[j + 28 * i] = trainingDataAsDouble[i, j];
-                    }
-                }
-                yield return (trainingDataAsDoubleArray, trainingData.Label);
-            }
         }
     }
 }

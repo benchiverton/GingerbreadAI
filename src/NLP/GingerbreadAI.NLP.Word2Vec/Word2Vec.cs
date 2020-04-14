@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GingerbreadAI.NLP.Word2Vec.WordCollectionExtensions;
+using GingerbreadAI.NLP.Word2Vec.Extensions;
 
 namespace GingerbreadAI.NLP.Word2Vec
 {
@@ -69,7 +69,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         {
             Setup();
             Train();
-            _fileHandler.WriteOutput(_wordCollection, _numberOfDimensions, _hiddenLayerWeights);
+            _fileHandler.WriteWordVectors(_wordCollection, _numberOfDimensions, _hiddenLayerWeights);
             GC.Collect();
         }
 
@@ -167,7 +167,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             var neu1 = new float[_numberOfDimensions];
             var sum = _wordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
-            using (var reader = _fileHandler.GetReader())
+            using (var reader = _fileHandler.GetTrainingFileReader())
             {
                 reader.BaseStream.Seek(_fileHandler.FileSize / _numberOfThreads * id, SeekOrigin.Begin);
                 while (true)
