@@ -6,23 +6,23 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
 {
     public static class WordVectorAnalysisFunctions
     {
-        public static List<string> GetMostSimilarWords(string word, List<(string word, List<double> vector)> wordVectors, int topn = 10)
+        /// <summary>
+        /// Returns the topn most similar words to the one given.
+        /// Similarity is calculated using cosine similarity.
+        /// </summary>
+        public static IEnumerable<string> GetMostSimilarWords(string word, IEnumerable<(string word, List<double> vector)> wordVectors, int topn = 10)
         {
-            var wordVector = wordVectors.First(wv => wv.word == word);
+            var wordVectorArray = wordVectors.ToArray();
+            var wordVector = wordVectorArray.First(wv => wv.word == word);
 
-            var otherWordCosineSimilarity = new List<(string otherWord, double cosineSimilarity)>();
-            foreach (var otherWordVector in wordVectors.Where(wv => wv.word != word))
-            {
-                otherWordCosineSimilarity.Add((otherWordVector.word, CalculateCosineSimilarity(wordVector.vector.ToArray(), otherWordVector.vector.ToArray())));
-            }
-
-            var orderedOtherWordCosineSimilarity = otherWordCosineSimilarity
-                .OrderByDescending(owcs => owcs.cosineSimilarity)
-                .Select(owcs => owcs.otherWord);
-            return orderedOtherWordCosineSimilarity.Take(topn).ToList();
+            return wordVectorArray.Where(wv => wv.word != word)
+                .Select(otherWordVector => (otherWordVector.word, CalculateCosineSimilarity(wordVector.vector.ToArray(), otherWordVector.vector.ToArray())))
+                .OrderByDescending(owcs => owcs.Item2)
+                .Select(owcs => owcs.word)
+                .Take(topn);
         }
 
-        private static double CalculateCosineSimilarity(double[] vectorA, double[] vectorB)
+        internal static double CalculateCosineSimilarity(double[] vectorA, double[] vectorB)
         {
             if (vectorA.Length != vectorB.Length)
             {

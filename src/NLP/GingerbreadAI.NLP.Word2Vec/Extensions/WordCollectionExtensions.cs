@@ -48,35 +48,28 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// <summary>
         /// Returns each word in the word collection with their associated vector.
         /// </summary>
-        public static List<(string word, List<double> vector)> GetWordVectors(this WordCollection wordCollection, Layer neuralNetwork)
+        public static IEnumerable<(string word, List<double> vector)> GetWordVectors(this WordCollection wordCollection, Layer neuralNetwork)
         {
             var words = wordCollection.GetWords().ToArray();
             var hiddenLayer = neuralNetwork.PreviousLayers[0];
             var inputLayer = hiddenLayer.PreviousLayers[0];
 
-            var vectors = new List<(string, List<double>)>();
             for (var i = 0; i < wordCollection.GetNumberOfUniqueWords(); i++)
             {
-                vectors.Add((words[i], hiddenLayer.Nodes.Select(hiddenNode => hiddenNode.Weights[inputLayer.Nodes[i]].Value).ToList()));
+                yield return (words[i], hiddenLayer.Nodes.Select(hiddenNode => hiddenNode.Weights[inputLayer.Nodes[i]].Value).ToList());
             }
-
-            return vectors;
         }
 
 
         /// <summary>
         /// Returns each word in the word collection with their associated vector.
         /// </summary>
-        public static List<(string word, List<string> similarWords)> GetMostSimilarWords(this WordCollection wordCollection, Layer neuralNetwork, int topn = 10)
+        public static IEnumerable<(string word, IEnumerable<string> similarWords)> GetMostSimilarWords(this WordCollection wordCollection, Layer neuralNetwork, int topn = 10)
         {
-            var results = new List<(string, List<string>)>();
-
             foreach (var word in wordCollection.GetWords())
             {
-                results.Add((word, WordVectorAnalysisFunctions.GetMostSimilarWords(word, wordCollection.GetWordVectors(neuralNetwork), topn)));
+                yield return (word, WordVectorAnalysisFunctions.GetMostSimilarWords(word, wordCollection.GetWordVectors(neuralNetwork), topn));
             }
-
-            return results;
         }
 
         /// <summary>

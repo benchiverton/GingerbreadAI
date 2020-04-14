@@ -18,7 +18,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             _testOutputHelper = testOutputHelper;
         }
 
-        [Fact]
+        [RunnableInDebugOnly]
         public void Go()
         {
             var inputFileLoc = TrainingDataManager.GetBlogAuthorshipCorpusFiles().First(f => f.Length >= 1e5 && f.Length <= 2e5).FullName;
@@ -31,8 +31,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             word2Vec.TrainModel();
 
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
-            fileHandler.WriteWordVectors(word2Vec.WordCollection, word2Vec.NeuralNetwork);
-            fileHandler.WriteSimilarWords(word2Vec.WordCollection, word2Vec.NeuralNetwork);
+            fileHandler.WriteSimilarWords(word2Vec.WordCollection, word2Vec.NeuralNetwork, 3);
         }
     }
 }

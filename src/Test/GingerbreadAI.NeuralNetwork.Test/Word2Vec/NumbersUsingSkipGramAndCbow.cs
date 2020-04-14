@@ -11,7 +11,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
     {
         private const string ResultsDirectory = nameof(NumbersUsingSkipGramAndCbow);
 
-        [Fact]
+        [RunnableInDebugOnly]
         public void Go()
         {
             var inputFileLoc = TrainingDataManager.GetNumbersFile().FullName;

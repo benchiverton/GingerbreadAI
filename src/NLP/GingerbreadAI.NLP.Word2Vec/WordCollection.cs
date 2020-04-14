@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GingerbreadAI.NLP.Word2Vec
 {
@@ -86,17 +87,24 @@ namespace GingerbreadAI.NLP.Word2Vec
             _words[word].CodeLength = index;
         }
 
-        public static string Clean(string input)
-            => input.Replace("\r", " ")
-                    .Replace("\n", " ")
-                    .Replace("\t", " ")
-                    .Replace(",", " ")
-                    .Replace("\"", " ")
-                    .ToLower();
-
         public static IEnumerable<string> ParseWords(string input)
-            => input.Split(new[] { "\r", "\n", "\t", " ", ",", "\"" },
-                StringSplitOptions.RemoveEmptyEntries).Select(y => y.ToLower());
+            => input
+                .Replace("<", " <")
+                .Replace(">", "> ")
+                .Replace(',', ' ')
+                .Replace('.', ' ')
+                .Replace('!', ' ')
+                .Replace('?', ' ')
+                .Replace('\r', ' ')
+                .Replace('\n', ' ')
+                .Replace('\t', ' ')
+                .Replace('"', ' ')
+                .Replace('“', ' ')
+                .Replace('(', ' ')
+                .Replace(')', ' ')
+                .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+                .Select(y => y.ToLower())
+                .Where(i => Regex.IsMatch(i, "[a-z]"));
 
         private static Func<long, WordInfo> GetWordInfoCreator(int length)
             => x => new WordInfo(new char[length], new long[length], x);
@@ -114,7 +122,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             foreach (var word in words)
             {
                 if (string.IsNullOrWhiteSpace(word)) continue;
-                UpsertWord(Clean(word), infoCreator, i++);
+                UpsertWord(word, infoCreator, i++);
             }
         }
 

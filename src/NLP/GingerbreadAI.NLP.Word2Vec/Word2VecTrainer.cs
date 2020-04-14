@@ -194,19 +194,19 @@ namespace GingerbreadAI.NLP.Word2Vec
             if (lineThatGotCutOff != null && lineThatGotCutOff.Any())
             {
                 loopEnd = HandleWords(
-                    wordCollection, 
-                    reader, 
+                    wordCollection,
+                    reader,
                     sentence,
                     random,
                     ref sentenceLength,
-                    lineThatGotCutOff, 
+                    lineThatGotCutOff,
                     thresholdForOccurrenceOfWords);
                 lineThatGotCutOff = null;
             }
 
             while (!loopEnd && (line = reader.ReadLine()) != null)
             {
-                var words = WordCollection.ParseWords(line).Select(WordCollection.Clean).ToArray();
+                var words = WordCollection.ParseWords(line).ToArray();
                 if (words.Length > sentence.Length)
                 {
                     continue;
@@ -355,12 +355,22 @@ namespace GingerbreadAI.NLP.Word2Vec
                 if (useSkipgram)
                 {
                     // current -> context
-                    neuralNetwork.NegativeSample(indexOfCurrentWord, target, isPositiveSample, ErrorFunctionType.CrossEntropy, learningRate);
+                    neuralNetwork.NegativeSample(
+                        indexOfCurrentWord,
+                        target,
+                        isPositiveSample,
+                        ErrorFunctionType.CrossEntropy,
+                        learningRate);
                 }
                 if (useCbow)
                 {
                     // context -> current
-                    neuralNetwork.NegativeSample(target, indexOfCurrentWord, isPositiveSample, ErrorFunctionType.CrossEntropy, learningRate);
+                    neuralNetwork.NegativeSample(
+                        target,
+                        indexOfCurrentWord,
+                        isPositiveSample,
+                        ErrorFunctionType.CrossEntropy,
+                        learningRate);
                 }
             }
         }

@@ -78,12 +78,10 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
 
         private static void NegativeSampleFirstHiddenLayer(Layer layer, Layer inputLayer, int inputIndex, Dictionary<Node, double> backwardsPassDeltas, double momentumMagnitude)
         {
-            var sumDeltaWeights = backwardsPassDeltas.Sum(backPassDelta => backPassDelta.Value);
-
             var inputNode = inputLayer.Nodes[inputIndex];
             foreach (var node in layer.Nodes)
             {
-                var delta = sumDeltaWeights * layer.ActivationFunctionDifferential(node.Output);
+                var delta = Backpropagation.CalculateDelta(layer, backwardsPassDeltas, node);
                 Backpropagation.UpdateNodeWeight(inputNode, node.Weights[inputNode], delta, momentumMagnitude);
                 if (node.BiasWeights.TryGetValue(inputLayer, out var biasWeight))
                 {

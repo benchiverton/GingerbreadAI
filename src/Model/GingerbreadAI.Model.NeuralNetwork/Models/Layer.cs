@@ -188,7 +188,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
                     {
                         var output = node.Weights[inputNode].Value * inputNode.Output;
 
-                        if(node.BiasWeights.TryGetValue(prevLayer, out var biasWeight))
+                        if (node.BiasWeights.TryGetValue(prevLayer, out var biasWeight))
                         {
                             output += biasWeight.Value;
                         }
