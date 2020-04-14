@@ -106,7 +106,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             var localNetwork = NeuralNetwork.CloneWithSameWeightValueReferences();
 
             var random = new Random();
-            var sum = WordCollection.GetTotalNumberOfWords();
+            var totalNumberOfWords = WordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
             using (var reader = _fileHandler.GetTrainingFileReader())
             {
@@ -118,7 +118,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                     {
                         _wordCountActual += wordCount - lastWordCount;
                         lastWordCount = wordCount;
-                        learningRate = startingLearningRate * (1 - _wordCountActual / (float)(numberOfIterations * sum + 1));
+                        learningRate = startingLearningRate * (1 - _wordCountActual / (float)(numberOfIterations * totalNumberOfWords + 1));
                         if (learningRate < startingLearningRate * (float)0.0001)
                         {
                             learningRate = startingLearningRate * (float)0.0001;
@@ -127,11 +127,12 @@ namespace GingerbreadAI.NLP.Word2Vec
                     // if sentence length is 0, set the sentence
                     if (sentenceLength == 0)
                     {
-                        wordCount = SetSentence(WordCollection, reader, wordCount, sentence, random, ref sentenceLength, ref lastLine, thresholdForOccurrenceOfWords);
+                        SetSentence(WordCollection, reader, sentence, random, ref sentenceLength, ref lastLine, thresholdForOccurrenceOfWords);
                         sentencePosition = 0;
                     }
-                    // if sentence length is still 0, the reader must be at the end of the stream
-                    if (sentenceLength == 0 || wordCount > sum / numberOfThreads)
+                    // if sentence length is still 0, no sentence could be set (last iteration was the end of the stream)
+                    // if wordCount > sum / numberOfThreads, we are 'leaking' into another threads work
+                    if (sentenceLength == 0 || wordCount > totalNumberOfWords / numberOfThreads)
                     {
                         _wordCountActual += wordCount - lastWordCount;
                         localIterations--;
@@ -168,6 +169,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                         random);
 
                     sentencePosition++;
+                    wordCount++;
 
                     if (sentencePosition >= sentenceLength)
                     {
@@ -178,10 +180,9 @@ namespace GingerbreadAI.NLP.Word2Vec
             GC.Collect();
         }
 
-        private static int SetSentence(
+        private static void SetSentence(
             WordCollection wordCollection,
             StreamReader reader,
-            int wordCount,
             int?[] sentence,
             Random random,
             ref int sentenceLength,
@@ -192,7 +193,14 @@ namespace GingerbreadAI.NLP.Word2Vec
             var loopEnd = false;
             if (lineThatGotCutOff != null && lineThatGotCutOff.Any())
             {
-                loopEnd = HandleWords(wordCollection, reader, ref wordCount, sentence, random, ref sentenceLength, lineThatGotCutOff, thresholdForOccurrenceOfWords);
+                loopEnd = HandleWords(
+                    wordCollection, 
+                    reader, 
+                    sentence,
+                    random,
+                    ref sentenceLength,
+                    lineThatGotCutOff, 
+                    thresholdForOccurrenceOfWords);
                 lineThatGotCutOff = null;
             }
 
@@ -211,20 +219,17 @@ namespace GingerbreadAI.NLP.Word2Vec
                 loopEnd = HandleWords(
                     wordCollection,
                     reader,
-                    ref wordCount,
                     sentence,
                     random,
                     ref sentenceLength,
                     words,
                     thresholdForOccurrenceOfWords);
             }
-            return wordCount;
         }
 
         private static bool HandleWords(
             WordCollection wordCollection,
             StreamReader reader,
-            ref int wordCount,
             int?[] sentence,
             Random random,
             ref int sentenceLength,
@@ -239,7 +244,6 @@ namespace GingerbreadAI.NLP.Word2Vec
                 {
                     continue;
                 }
-                wordCount++;
 
                 //Sub-sampling of frequent words
                 if (thresholdForOccurrenceOfWords > 0)

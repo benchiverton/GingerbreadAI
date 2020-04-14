@@ -3,6 +3,7 @@ using System.IO;
 using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
+using Xunit;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
@@ -10,7 +11,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
     {
         private const string ResultsDirectory = nameof(NumbersUsingSkipGramAndCbow);
 
-        [RunnableInDebugOnly]
+        [Fact]
         public void Go()
         {
             var inputFileLoc = TrainingDataManager.GetNumbersFile().FullName;

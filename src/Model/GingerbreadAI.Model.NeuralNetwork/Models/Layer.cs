@@ -96,7 +96,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         {
             foreach (var previousLayer in PreviousLayers)
             {
-                CalculateIndexedOutput(inputIndex, inputValue);
+                previousLayer.CalculateIndexedOutput(inputIndex, inputValue);
             }
 
             Nodes[outputIndex].CalculateOutput(ActivationFunction);

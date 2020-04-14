@@ -22,7 +22,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
             output.Initialise(new Random());
 
             var learningRate = 0.1;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
                 output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate);
@@ -49,7 +49,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             var learningRate = 0.01;
             var momentum = 0.9;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
                 output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
@@ -77,7 +77,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
             output.Initialise(new Random());
 
             var learningRate = 0.1;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
                 output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate);
@@ -106,7 +106,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             var learningRate = 0.01;
             var momentum = 0.9;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
                 output.NegativeSample(1, 1, false, ErrorFunctionType.CrossEntropy, learningRate, momentum);
@@ -132,7 +132,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
             output.Initialise(new Random());
 
             var learningRate = 0.1;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(0, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
                 output.NegativeSample(1, 2, true, ErrorFunctionType.CrossEntropy, learningRate);
@@ -158,7 +158,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
             output.Initialise(new Random());
 
             var learningRate = 0.1;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(2, 0, true, ErrorFunctionType.CrossEntropy, learningRate);
                 output.NegativeSample(2, 1, true, ErrorFunctionType.CrossEntropy, learningRate);
@@ -185,7 +185,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
             output.Initialise(new Random());
 
             var learningRate = 0.1;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(2, 0, true, ErrorFunctionType.CrossEntropy, learningRate);
                 output.NegativeSample(2, 1, true, ErrorFunctionType.CrossEntropy, learningRate);
@@ -247,7 +247,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
             }
 
             var learningRate = 0.1;
-            for (var i = 0; i < 2000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(4, 4, true, ErrorFunctionType.CrossEntropy, learningRate);
             }
