@@ -15,7 +15,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions
             return errorFunctionType switch
             {
                 ErrorFunctionType.MSE => (target, actual) => actual - target,
-                ErrorFunctionType.CrossEntropy => (target, actual) => Math.Abs(actual) % 1 < 0.0000001 ? 0 : -(target / actual) + (1 - target) / (1 - actual),
+                ErrorFunctionType.CrossEntropy => (target, actual) => actual % 1 < 0.0000001 ? 0 : -(target / actual) + (1 - target) / (1 - actual),
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(errorFunctionType),
                     errorFunctionType,

@@ -52,9 +52,9 @@ namespace GingerbreadAI.NeuralNetwork.Test
         /// <summary>
         /// Returns a file that contains the string '1 2 3 4 5 6 7 8 9 10' on 10,000 lines.
         /// </summary>
-        public static FileInfo GetNumbersFile()
+        public static FileInfo GetAlphabetFile()
         {
-            return new FileInfo($"{TrainingDataDir}/Numbers/Numbers.txt");
+            return new FileInfo($"{TrainingDataDir}/Alphabet/Alphabet.txt");
         }
 
         private static void EnsureMNISTHandwrittenNumbersDataExists(string dataDirectory)

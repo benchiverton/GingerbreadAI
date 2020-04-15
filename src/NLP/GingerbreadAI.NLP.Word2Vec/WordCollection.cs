@@ -104,7 +104,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                 .Replace(')', ' ')
                 .Split(" ", StringSplitOptions.RemoveEmptyEntries)
                 .Select(y => y.ToLower())
-                .Where(i => Regex.IsMatch(i, "[a-z0-9]"));
+                .Where(i => Regex.IsMatch(i, "[a-z]"));
 
         private static Func<long, WordInfo> GetWordInfoCreator(int length)
             => x => new WordInfo(new char[length], new long[length], x);

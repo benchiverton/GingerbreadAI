@@ -5,14 +5,14 @@ using GingerbreadAI.NLP.Word2Vec.Extensions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
-    public class NumbersUsingCbow
+    public class AlphabetUsingCbow
     {
-        private const string ResultsDirectory = nameof(NumbersUsingCbow);
+        private const string ResultsDirectory = nameof(AlphabetUsingCbow);
 
         [RunnableInDebugOnly]
         public void Go()
         {
-            var inputFileLoc = TrainingDataManager.GetNumbersFile().FullName;
+            var inputFileLoc = TrainingDataManager.GetAlphabetFile().FullName;
             var outputFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{DateTime.Now.Ticks}.csv";
 
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
