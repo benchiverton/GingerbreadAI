@@ -15,7 +15,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
         [RunnableInDebugOnly]
         public void Go()
         {
-            var inputFileLoc = TrainingDataManager.GetBlogAuthorshipCorpusFiles().First(f => f.Length >= 1e5 && f.Length <= 2e5).FullName;
+            var inputFileLoc = TrainingDataManager.GetBlogAuthorshipCorpusFiles().First(f => f.Length >= 3e5 && f.Length <= 4e5).FullName;
             var outputFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{DateTime.Now.Ticks}.csv";
 
             var fileHandler = new FileHandler(inputFileLoc, outputFileLoc);
@@ -25,7 +25,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             word2Vec.TrainModel(numberOfIterations: 16);
 
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
-            fileHandler.WriteSimilarWords(word2Vec.WordCollection, word2Vec.NeuralNetwork, 3);
             fileHandler.WriteWordClusterLabels(
                 word2Vec.WordCollection,
                 word2Vec.NeuralNetwork,

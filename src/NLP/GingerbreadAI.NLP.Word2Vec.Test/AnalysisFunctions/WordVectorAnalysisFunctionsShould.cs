@@ -29,7 +29,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
 
         [Theory]
         [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
-        public void CorrectlyGetClusterLabelsForWords(List<(string word, double[] vector)> wordVectorWeights, Dictionary<string, int> expectedResults)
+        public void CorrectlyGetClusterLabels(List<(string word, double[] vector)> wordVectorWeights, Dictionary<string, int> expectedResults)
         {
             var labels = WordVectorAnalysisFunctions.GetClusterLabels(
                 wordVectorWeights,

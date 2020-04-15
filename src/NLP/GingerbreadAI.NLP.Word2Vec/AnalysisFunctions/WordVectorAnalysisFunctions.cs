@@ -41,27 +41,31 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
             var distanceFunction = DistanceFunctionResolver.ResolveDistanceFunction(distanceFunctionType);
 
             var clusterIndex = -1;
-            foreach (var wordVectorWeight in wordVectors)
+            foreach (var wordVector in wordVectors)
             {
-                if (clusterLabels.ContainsKey(wordVectorWeight.word))
+                if (clusterLabels.ContainsKey(wordVector.word))
                 {
                     continue;
                 }
-                clusterLabels.Add(wordVectorWeight.word, -1);
+                clusterLabels.Add(wordVector.word, -1);
 
-                var neighbors = GetNeighborsAndWeight(wordVectorWeight, wordVectors, distanceFunction, epsilon);
+                var neighbors = GetNeighborsAndWeight(
+                    wordVector, 
+                    wordVectors, 
+                    distanceFunction, 
+                    epsilon);
 
-                if (neighbors.totalWeight < minimumSamples)
+                if (neighbors.Count < minimumSamples)
                 {
                     continue;
                 }
 
                 clusterIndex += 1;
-                clusterLabels[wordVectorWeight.word] = clusterIndex;
+                clusterLabels[wordVector.word] = clusterIndex;
 
-                for (var i = 0; i < neighbors.neighbors.Count; i++)
+                for (var i = 0; i < neighbors.Count; i++)
                 {
-                    var currentNeighbor = neighbors.neighbors[i];
+                    var currentNeighbor = neighbors[i];
                     if (clusterLabels.ContainsKey(currentNeighbor.word))
                     {
                         if (clusterLabels[currentNeighbor.word] == -1)
@@ -79,9 +83,9 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                         distanceFunction,
                         epsilon);
 
-                    if (currentNeighborsNeighbors.totalWeight >= minimumSamples)
+                    if (currentNeighborsNeighbors.Count >= minimumSamples)
                     {
-                        neighbors.neighbors = neighbors.neighbors.Union(currentNeighborsNeighbors.neighbors).ToList();
+                        neighbors = neighbors.Union(currentNeighborsNeighbors).ToList();
                     }
                 }
             }
@@ -89,28 +93,23 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
             return clusterLabels;
         }
 
-        private static (List<(string word, double[] vector)> neighbors, int totalWeight) GetNeighborsAndWeight(
+        private static List<(string word, double[] vector)> GetNeighborsAndWeight(
             (string word, double[] vector) currentWordVectorWeight,
             IEnumerable<(string word, double[] vector)> wordVectorWeights,
             Func<double[], double[], double> distanceFunction,
             double epsilon)
         {
             var neighbors = new List<(string word, double[] vector)>();
-            var totalWeight = 0;
             foreach (var wordVector in wordVectorWeights)
             {
                 var distance = distanceFunction.Invoke(currentWordVectorWeight.vector, wordVector.vector);
                 if (distance < epsilon)
                 {
                     neighbors.Add(wordVector);
-                    totalWeight += 1;
                 }
             }
 
-            // remove current word from neighbors
-            neighbors.Remove(currentWordVectorWeight);
-
-            return (neighbors, totalWeight);
+            return neighbors;
         }
     }
 }
