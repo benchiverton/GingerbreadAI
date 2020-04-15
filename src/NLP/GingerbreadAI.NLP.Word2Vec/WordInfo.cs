@@ -8,7 +8,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         public char[] Code { get; }
         public long[] Point { get; }
         public long Position { get; set; }
-        public long Count { get; private set; }
+        public int Count { get; private set; }
         public int CodeLength { get; set; }
 
         public void IncrementCount() => Count++;

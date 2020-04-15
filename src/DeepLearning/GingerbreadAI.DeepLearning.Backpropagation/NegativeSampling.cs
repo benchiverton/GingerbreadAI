@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
-using GingerbreadAI.DeepLearning.Backpropagation.Interfaces;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 
 namespace GingerbreadAI.DeepLearning.Backpropagation

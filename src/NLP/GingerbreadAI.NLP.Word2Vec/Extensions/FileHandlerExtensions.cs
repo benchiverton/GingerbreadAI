@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GingerbreadAI.Model.NeuralNetwork.Models;
+using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
+using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
 
 namespace GingerbreadAI.NLP.Word2Vec.Extensions
 {
@@ -47,7 +49,10 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// <summary>
         /// Writes each word and it's associated vector.
         /// </summary>
-        public static void WriteWordVectors(this FileHandler fileHandler, WordCollection wordCollection, Layer neuralNetwork)
+        public static void WriteWordVectors(
+            this FileHandler fileHandler,
+            WordCollection wordCollection,
+            Layer neuralNetwork)
         {
             using (var fs = fileHandler.GetOutputFileStream())
             {
@@ -65,7 +70,11 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// <summary>
         /// Writes each word and the top n words that it is most similar to.
         /// </summary>
-        public static void WriteSimilarWords(this FileHandler fileHandler, WordCollection wordCollection, Layer neuralNetwork, int topn = 10)
+        public static void WriteSimilarWords(
+            this FileHandler fileHandler,
+            WordCollection wordCollection, 
+            Layer neuralNetwork, 
+            int topn = 10)
         {
             using (var fs = fileHandler.GetOutputFileStream())
             {
@@ -81,9 +90,41 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         }
 
         /// <summary>
+        /// Writes each word and the top n words that it is most similar to.
+        /// </summary>
+        public static void WriteWordClusterLabels(
+            this FileHandler fileHandler, 
+            WordCollection wordCollection, 
+            Layer neuralNetwork, 
+            double epsilon = 0.5,
+            int minimumSamples = 5,
+            DistanceFunctionType distanceFunctionType = DistanceFunctionType.Euclidean)
+        {
+            using (var fs = fileHandler.GetOutputFileStream())
+            {
+                fs.Seek(0, SeekOrigin.End);
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    var wordVectorWeights = wordCollection.GetWordVectors(neuralNetwork);
+                    foreach (var (word, clusterIndex) in WordVectorAnalysisFunctions.GetClusterLabels(
+                        wordVectorWeights.ToList(),
+                        epsilon,
+                        minimumSamples,
+                        distanceFunctionType))
+                    {
+                        writer.WriteLine($"{word},{clusterIndex}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Writes a matrix where x and y axis are the words in the collection, and the point (x, y) is E(x|y).
         /// </summary>
-        public static void WriteProbabilityMatrix(this FileHandler fileHandler, WordCollection wordCollection, Layer neuralNetwork)
+        public static void WriteProbabilityMatrix(
+            this FileHandler fileHandler,
+            WordCollection wordCollection, 
+            Layer neuralNetwork)
         {
             using (var fs = fileHandler.GetOutputFileStream())
             {

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using GingerbreadAI.NLP.Word2Vec;
+using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
 using Xunit;
 
@@ -21,10 +22,16 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             var word2Vec = new Word2VecTrainer();
             word2Vec.Setup(fileHandler);
 
-            word2Vec.TrainModel();
+            word2Vec.TrainModel(numberOfIterations: 16);
 
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
             fileHandler.WriteSimilarWords(word2Vec.WordCollection, word2Vec.NeuralNetwork, 3);
+            fileHandler.WriteWordClusterLabels(
+                word2Vec.WordCollection,
+                word2Vec.NeuralNetwork,
+                epsilon: 0.25,
+                minimumSamples: 3,
+                distanceFunctionType: DistanceFunctionType.Cosine);
         }
     }
 }

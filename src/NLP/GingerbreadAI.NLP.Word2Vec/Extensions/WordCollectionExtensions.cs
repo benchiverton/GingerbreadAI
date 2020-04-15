@@ -48,7 +48,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// <summary>
         /// Returns each word in the word collection with their associated vector.
         /// </summary>
-        public static IEnumerable<(string word, List<double> vector)> GetWordVectors(this WordCollection wordCollection, Layer neuralNetwork)
+        public static IEnumerable<(string word, double[] vector)> GetWordVectors(this WordCollection wordCollection, Layer neuralNetwork)
         {
             var words = wordCollection.GetWords().ToArray();
             var hiddenLayer = neuralNetwork.PreviousLayers[0];
@@ -56,10 +56,9 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
 
             for (var i = 0; i < wordCollection.GetNumberOfUniqueWords(); i++)
             {
-                yield return (words[i], hiddenLayer.Nodes.Select(hiddenNode => hiddenNode.Weights[inputLayer.Nodes[i]].Value).ToList());
+                yield return (words[i], hiddenLayer.Nodes.Select(hiddenNode => hiddenNode.Weights[inputLayer.Nodes[i]].Value).ToArray());
             }
         }
-
 
         /// <summary>
         /// Returns each word in the word collection with their associated vector.
