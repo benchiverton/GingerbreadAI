@@ -26,23 +26,5 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
             Assert.Equal(-1d, orderedWords[2].similarity, 8);
             Assert.Equal("far", orderedWords[2].word);
         }
-
-        [Theory]
-        [MemberData(nameof(GetCorrectlyCalculateCosineSimilarityTestCases))]
-        public void CorrectlyCalculateCosineSimilarity(double[] vectorA, double[] vectorB, double expectedSimilarity)
-        {
-            var calculatedSimilarity = WordVectorAnalysisFunctions.CalculateCosineSimilarity(vectorA, vectorB);
-
-            Assert.Equal(expectedSimilarity, calculatedSimilarity, 8);
-        }
-
-        public static IEnumerable<object[]> GetCorrectlyCalculateCosineSimilarityTestCases()
-        {
-            yield return new object[] { new[] { 1d }, new[] { 1d }, 1d };
-            yield return new object[] { new[] { 1d }, new[] { -1d }, -1d };
-            yield return new object[] { new[] { 1d, 1d }, new[] { 1d, 1d }, 1d };
-            yield return new object[] { new[] { 1d, 1d }, new[] { 1d, -1d }, 0d };
-            yield return new object[] { new[] { 1d, 1d }, new[] { -1d, -1d }, -1d };
-        }
     }
 }
