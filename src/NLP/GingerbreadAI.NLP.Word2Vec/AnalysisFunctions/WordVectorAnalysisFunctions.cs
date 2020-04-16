@@ -80,9 +80,9 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                             clusterIndexMap.Add(localClusterIndex, localClusterIndex);
                             return localClusterIndex;
                         }),
-                        (key, existingClusterId) =>
+                        (key, existingClusterIndex) =>
                         {
-                            localClusterIndex = clusterIndexMap[existingClusterId];
+                            localClusterIndex = clusterIndexMap[existingClusterIndex];
                             return localClusterIndex;
                         });
 
@@ -103,9 +103,9 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                         clusterLabels.AddOrUpdate(
                             currentNeighbor.word,
                             localClusterIndex,
-                            (key, existingClusterId) =>
+                            (key, existingClusterIndex) =>
                             {
-                                UpdateClusterIndexMap(localClusterIndex, existingClusterId, clusterIndexMap);
+                                UpdateClusterIndexMap(localClusterIndex, existingClusterIndex, clusterIndexMap);
                                 return localClusterIndex;
                             });
 
@@ -150,20 +150,19 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
         }
 
         /// <summary>
-        /// Resolves the index of the cluster that should be used locally.
+        /// Updates the label cluster map for the higher index to the lower index.
         /// </summary>
-        /// <returns></returns>
-        private static void UpdateClusterIndexMap(int localClusterIndex, int existingClusterId, IDictionary<int, int> labelClusterMap)
+        private static void UpdateClusterIndexMap(int localClusterIndex, int existingClusterIndex, IDictionary<int, int> labelClusterMap)
         {
-            if (existingClusterId == localClusterIndex) return;
+            if (existingClusterIndex == localClusterIndex) return;
 
-            if (existingClusterId < localClusterIndex)
+            if (existingClusterIndex < localClusterIndex)
             {
-                labelClusterMap[localClusterIndex] = existingClusterId;
+                labelClusterMap[localClusterIndex] = existingClusterIndex;
             }
-            else if (localClusterIndex < existingClusterId)
+            else if (localClusterIndex < existingClusterIndex)
             {
-                labelClusterMap[existingClusterId] = localClusterIndex;
+                labelClusterMap[existingClusterIndex] = localClusterIndex;
             }
         }
 
