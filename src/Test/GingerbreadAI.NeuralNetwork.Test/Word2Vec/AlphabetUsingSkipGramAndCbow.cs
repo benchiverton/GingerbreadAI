@@ -21,10 +21,12 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             word2Vec.Setup(fileHandler);
 
             word2Vec.TrainModel(windowSize: 1, thresholdForOccurrenceOfWords: 0, negativeSamples: 2);
-            
+
+            var wordVectors = word2Vec.WordCollection.GetWordVectors(word2Vec.NeuralNetwork);
+
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
             fileHandler.WriteProbabilityMatrix(word2Vec.WordCollection, word2Vec.NeuralNetwork);
-            fileHandler.WriteWordVectors(word2Vec.WordCollection, word2Vec.NeuralNetwork);
+            fileHandler.WriteWordVectors(wordVectors);
         }
     }
 }

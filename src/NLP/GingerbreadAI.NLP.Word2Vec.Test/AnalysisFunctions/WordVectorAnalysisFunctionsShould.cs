@@ -10,7 +10,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
         [Fact]
         public void CorrectlyGetMostSimilarWords()
         {
-            var wordVectors = new (string word, double[] vector) []
+            var wordVectors = new (string word, double[] vector)[]
             {
                 ("target", new [] {1d, 1d}),
                 ("far", new [] {-1d, -1d}),
@@ -29,7 +29,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
 
         [Theory]
         [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
-        public void CorrectlyGetClusterLabels(List<(string word, double[] vector)> wordVectorWeights, Dictionary<string, int> expectedResults)
+        public void CorrectlyGetClusterLabels(List<(string word, double[] vector)> wordVectorWeights, (string[] elements, bool isNoise)[] expectedGroups)
         {
             var labels = WordVectorAnalysisFunctions.GetClusterLabels(
                 wordVectorWeights,
@@ -37,9 +37,15 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                 2
             );
 
-            foreach (var (word, clusterIndex) in labels)
+            foreach (var group in expectedGroups)
             {
-                Assert.Equal(expectedResults[word], clusterIndex);
+                var groupLabel = group.isNoise
+                    ? -1
+                    : labels.First(l => l.Key == group.elements[0]).Value;
+                foreach (var label in labels.Where(l => group.elements.Contains(l.Key)))
+                {
+                    Assert.Equal(groupLabel, label.Value);
+                }
             }
         }
 
@@ -56,14 +62,11 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                     ("e", new[] {8d, 8d}),
                     ("f", new[] {25d, 80d})
                 },
-                new Dictionary<string, int>
+                new (string[] elements, bool isNoise)[]
                 {
-                    ["a"] = 0,
-                    ["b"] = 0,
-                    ["c"] = 0,
-                    ["d"] = 1,
-                    ["e"] = 1,
-                    ["f"] = -1
+                    (new [] {"a", "b", "c"}, false),
+                    (new [] {"d", "e"}, false),
+                    (new [] {"f"}, true),
                 }
             };
             yield return new object[]
@@ -77,35 +80,29 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                     ("f", new[] {25d, 80d}),
                     ("c", new[] {4d, 4d}),
                 },
-                new Dictionary<string, int>
+                new (string[] elements, bool isNoise)[]
                 {
-                    ["a"] = 0,
-                    ["b"] = 0,
-                    ["c"] = 0,
-                    ["d"] = 1,
-                    ["e"] = 1,
-                    ["f"] = -1
+                    (new [] {"a", "b", "c"}, false),
+                    (new [] {"d", "e"}, false),
+                    (new [] {"f"}, true),
                 }
             };
             yield return new object[]
             {
                 new List<(string word, double[] vector)>
                 {
-                    ("f", new[] {25d, 80d}),
-                    ("e", new[] {8d, 8d}),
-                    ("d", new[] {8d, 7d}),
-                    ("c", new[] {2d, 3d}),
-                    ("b", new[] {2d, 2d}),
-                    ("a", new[] {1d, 2d}),
+                    ("a", new[] {25d, 80d}),
+                    ("b", new[] {8d, 8d}),
+                    ("c", new[] {8d, 7d}),
+                    ("d", new[] {2d, 3d}),
+                    ("e", new[] {2d, 2d}),
+                    ("f", new[] {1d, 2d}),
                 },
-                new Dictionary<string, int>
+                new (string[] elements, bool isNoise)[]
                 {
-                    ["a"] = 1,
-                    ["b"] = 1,
-                    ["c"] = 1,
-                    ["d"] = 0,
-                    ["e"] = 0,
-                    ["f"] = -1
+                    (new [] {"a"}, true),
+                    (new [] {"b", "c"}, false),
+                    (new [] {"d", "e", "f"}, false),
                 }
             };
         }

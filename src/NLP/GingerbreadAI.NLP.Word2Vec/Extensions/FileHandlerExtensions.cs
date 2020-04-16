@@ -51,15 +51,14 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// </summary>
         public static void WriteWordVectors(
             this FileHandler fileHandler,
-            WordCollection wordCollection,
-            Layer neuralNetwork)
+            IEnumerable<(string word, double[] vector)> wordVectors)
         {
             using (var fs = fileHandler.GetOutputFileStream())
             {
                 fs.Seek(0, SeekOrigin.End);
                 using (var writer = new StreamWriter(fs, Encoding.UTF8))
                 {
-                    foreach (var (word, vector) in wordCollection.GetWordVectors(neuralNetwork))
+                    foreach (var (word, vector) in wordVectors)
                     {
                         writer.WriteLine($"{word},{string.Join(',', vector)}");
                     }
@@ -72,8 +71,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// </summary>
         public static void WriteSimilarWords(
             this FileHandler fileHandler,
-            WordCollection wordCollection, 
-            Layer neuralNetwork, 
+            IEnumerable<(string word, double[] vector)> wordVectors,
             int topn = 10)
         {
             using (var fs = fileHandler.GetOutputFileStream())
@@ -81,9 +79,10 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
                 fs.Seek(0, SeekOrigin.End);
                 using (var writer = new StreamWriter(fs, Encoding.UTF8))
                 {
-                    foreach (var (word, vector) in wordCollection.GetMostSimilarWords(neuralNetwork, topn))
+                    foreach (var word in wordVectors.Select(wv => wv.word))
                     {
-                        writer.WriteLine($"{word},{string.Join(',', vector.Select(v => $"{v.word},{v.similarity:0.00000}"))}");
+                        var similarWords = WordVectorAnalysisFunctions.GetMostSimilarWords(word, wordVectors, topn);
+                        writer.WriteLine($"{word},{string.Join(',', similarWords.Select(sw => $"{sw.word},{sw.similarity:0.00000}"))}");
                     }
                 }
             }
@@ -94,23 +93,23 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// </summary>
         public static void WriteWordClusterLabels(
             this FileHandler fileHandler, 
-            WordCollection wordCollection, 
-            Layer neuralNetwork, 
+            IEnumerable<(string word, double[] vector)> wordVectors,
             double epsilon = 0.5,
             int minimumSamples = 5,
-            DistanceFunctionType distanceFunctionType = DistanceFunctionType.Euclidean)
+            DistanceFunctionType distanceFunctionType = DistanceFunctionType.Euclidean,
+            int concurrentThreads = 4)
         {
             using (var fs = fileHandler.GetOutputFileStream())
             {
                 fs.Seek(0, SeekOrigin.End);
                 using (var writer = new StreamWriter(fs, Encoding.UTF8))
                 {
-                    var wordVectorWeights = wordCollection.GetWordVectors(neuralNetwork);
                     foreach (var (word, clusterIndex) in WordVectorAnalysisFunctions.GetClusterLabels(
-                        wordVectorWeights.ToList(),
+                        wordVectors.ToList(),
                         epsilon,
                         minimumSamples,
-                        distanceFunctionType))
+                        distanceFunctionType,
+                        concurrentThreads))
                     {
                         writer.WriteLine($"{word},{clusterIndex}");
                     }
