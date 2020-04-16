@@ -40,9 +40,10 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
             DistanceFunctionType distanceFunctionType = DistanceFunctionType.Euclidean,
             int concurrentThreads = 4)
         {
-            var clusterLabels = new ConcurrentDictionary<string, int>();
-            var labelMap = new Dictionary<int, int> { { -1, -1 } };
             var distanceFunction = DistanceFunctionResolver.ResolveDistanceFunction(distanceFunctionType);
+
+            var clusterLabels = new ConcurrentDictionary<string, int>();
+            var clusterIndexMap = new Dictionary<int, int> { { -1, -1 } };
             var clusterIndex = 0;
             var sampleSize = (int)Math.Ceiling((double)wordVectors.Count / concurrentThreads);
 
@@ -76,35 +77,35 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                         (key =>
                         {
                             localClusterIndex = clusterIndex++;
-                            labelMap.Add(localClusterIndex, localClusterIndex);
+                            clusterIndexMap.Add(localClusterIndex, localClusterIndex);
                             return localClusterIndex;
                         }),
-                        (key, oldValue) =>
+                        (key, existingClusterId) =>
                         {
-                            localClusterIndex = oldValue;
+                            localClusterIndex = clusterIndexMap[existingClusterId];
                             return localClusterIndex;
                         });
 
                     for (var i = 0; i < neighbors.Count; i++)
                     {
                         var currentNeighbor = neighbors[i];
-                        if (clusterLabels.ContainsKey(currentNeighbor.word))
+                        if (clusterLabels.TryGetValue(currentNeighbor.word, out var existingClusterId))
                         {
-                            if (clusterLabels[currentNeighbor.word] == -1)
+                            if (existingClusterId != -1)
                             {
-                                clusterLabels[currentNeighbor.word] = localClusterIndex;
+                                UpdateClusterIndexMap(localClusterIndex, existingClusterId, clusterIndexMap);
+                                localClusterIndex = clusterIndexMap[existingClusterId];
                             }
-
+                            clusterLabels[currentNeighbor.word] = localClusterIndex;
                             continue;
                         }
 
                         clusterLabels.AddOrUpdate(
                             currentNeighbor.word,
                             localClusterIndex,
-                            (key, oldValue) =>
+                            (key, existingClusterId) =>
                             {
-                                labelMap[localClusterIndex] = oldValue;
-                                localClusterIndex = oldValue;
+                                UpdateClusterIndexMap(localClusterIndex, existingClusterId, clusterIndexMap);
                                 return localClusterIndex;
                             });
 
@@ -122,9 +123,11 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                 }
             });
 
+            FlattenLabelClusterMap(clusterIndexMap);
+
             return clusterLabels.ToDictionary(
                 x => x.Key,
-                x => labelMap[x.Value]);
+                x => clusterIndexMap[x.Value]);
         }
 
         private static List<(string word, double[] vector)> GetNeighborsAndWeight(
@@ -144,6 +147,42 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
             }
 
             return neighbors;
+        }
+
+        /// <summary>
+        /// Resolves the index of the cluster that should be used locally.
+        /// </summary>
+        /// <returns></returns>
+        private static void UpdateClusterIndexMap(int localClusterIndex, int existingClusterId, IDictionary<int, int> labelClusterMap)
+        {
+            if (existingClusterId == localClusterIndex) return;
+
+            if (existingClusterId < localClusterIndex)
+            {
+                labelClusterMap[localClusterIndex] = existingClusterId;
+            }
+            else if (localClusterIndex < existingClusterId)
+            {
+                labelClusterMap[existingClusterId] = localClusterIndex;
+            }
+        }
+
+        /// <summary>
+        /// Flattens the Label Cluster Map so that each label maps to the original cluster index.
+        /// eg: (0,0) (1,0) (2,1) => (0,0) (1,0) (2,0).
+        /// </summary>
+        private static void FlattenLabelClusterMap(IDictionary<int, int> labelClusterMap)
+        {
+            foreach (var label in labelClusterMap.Keys.ToArray())
+            {
+                var i = labelClusterMap[label];
+                while (labelClusterMap[i] != i)
+                {
+                    i = labelClusterMap[i];
+                }
+
+                labelClusterMap[label] = i;
+            }
         }
     }
 }

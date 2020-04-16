@@ -32,7 +32,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
                 epsilon: 0.25,
                 minimumSamples: 3,
                 distanceFunctionType: DistanceFunctionType.Cosine,
-                concurrentThreads: 1);
+                concurrentThreads: 4);
         }
     }
 }
