@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.Model.NeuralNetwork.Models;
-using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 
 namespace GingerbreadAI.NLP.Word2Vec.Extensions
 {

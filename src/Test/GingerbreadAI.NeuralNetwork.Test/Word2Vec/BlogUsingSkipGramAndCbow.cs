@@ -12,7 +12,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
     {
         private const string ResultsDirectory = nameof(BlogUsingSkipGramAndCbow);
 
-        [Fact]
+        [RunnableInDebugOnly]
         public void Go()
         {
             var inputFileLoc = TrainingDataManager.GetBlogAuthorshipCorpusFiles().First(f => f.Length >= 1e5 && f.Length <= 2e5).FullName;
