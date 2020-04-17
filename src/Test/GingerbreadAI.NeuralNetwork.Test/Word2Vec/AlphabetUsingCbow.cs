@@ -11,9 +11,10 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
         [RunnableInDebugOnly]
         public void Go()
         {
+            var id = DateTime.Now.Ticks;
             var inputFileLoc = TrainingDataManager.GetAlphabetFile().FullName;
-            var embeddingsFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/wordEmbeddings-{DateTime.Now.Ticks}.csv";
-            var reportFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/report-{DateTime.Now.Ticks}.csv";
+            var embeddingsFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/wordEmbeddings-{id}.csv";
+            var reportFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/report-{id}.csv";
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
 
             var word2Vec = new Word2VecTrainer();
