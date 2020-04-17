@@ -14,19 +14,17 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
         public void Go()
         {
             var inputFileLoc = TrainingDataManager.GetAlphabetFile().FullName;
-            var outputFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{DateTime.Now.Ticks}.csv";
-
-            var fileHandler = new FileHandler(inputFileLoc, outputFileLoc);
-            var word2Vec = new Word2VecTrainer();
-            word2Vec.Setup(fileHandler);
-
-            word2Vec.TrainModel(windowSize: 1, thresholdForOccurrenceOfWords: 0, negativeSamples: 2);
-
-            var wordVectors = word2Vec.WordCollection.GetWordVectors(word2Vec.NeuralNetwork);
-
+            var embeddingsFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/wordEmbeddings-{DateTime.Now.Ticks}.csv";
+            var reportFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/report-{DateTime.Now.Ticks}.csv";
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
-            fileHandler.WriteProbabilityMatrix(word2Vec.WordCollection, word2Vec.NeuralNetwork);
-            fileHandler.WriteWordVectors(wordVectors);
+            
+            var word2Vec = new Word2VecTrainer();
+            word2Vec.Setup(inputFileLoc);
+            word2Vec.TrainModel(windowSize: 1, thresholdForOccurrenceOfWords: 0, useSkipgram: false);
+            word2Vec.WriteWordEmbeddings(embeddingsFileLoc);
+
+            var reportHandler = new ReportWriter(reportFileLoc);
+            reportHandler.WriteProbabilityMatrix(word2Vec.WordCollection, word2Vec.NeuralNetwork);
         }
     }
 }

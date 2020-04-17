@@ -1,30 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
-using Xunit;
 
-namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
+namespace GingerbreadAI.NeuralNetwork.Test.WordEmbeddings
 {
-    public class BlogUsingSkipGramAndCbow
+    public class AnalyseWordEmbeddings
     {
-        private const string ResultsDirectory = nameof(BlogUsingSkipGramAndCbow);
+        private const string ResultsDirectory = nameof(AnalyseWordEmbeddings);
 
         [RunnableInDebugOnly]
         public void Go()
         {
-            var inputFileLoc = TrainingDataManager.GetBlogAuthorshipCorpusFiles().First(f => f.Length >= 1e5 && f.Length <= 2e5).FullName;
-            var embeddingsFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/wordEmbeddings-{DateTime.Now.Ticks}.csv";
+            var embeddingsFileLoc = @"C:\Projects\AI\GingerbreadAI\src\Test\GingerbreadAI.NeuralNetwork.Test\bin\Debug\netcoreapp3.1\BlogUsingSkipGramAndCbow\wordEmbeddings-637227200041708622.csv";
             var reportFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/report-{DateTime.Now.Ticks}.csv";
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
-
-            var word2Vec = new Word2VecTrainer();
-            word2Vec.Setup(inputFileLoc, minWordOccurrences: 3);
-            word2Vec.TrainModel(numberOfIterations: 16);
-            word2Vec.WriteWordEmbeddings(embeddingsFileLoc);
 
             var wordEmbeddings = new List<WordEmbedding>();
             wordEmbeddings.PopulateWordEmbeddingsFromFile(embeddingsFileLoc);

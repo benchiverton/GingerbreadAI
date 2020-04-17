@@ -18,18 +18,18 @@ namespace GingerbreadAI.NLP.Word2Vec
         private const int MaxCodeLength = 40;
         private const int TableSize = (int)1e8;
 
-        private FileHandler _fileHandler;
+        private TrainingFileHandler _trainingFileHandler;
         private int _wordCountActual;
         private int[] _table;
 
         public WordCollection WordCollection { get; private set; }
         public Layer NeuralNetwork { get; private set; }
 
-        public void Setup(FileHandler fileHandler, int dimensions = 50, int minWordOccurrences = 5)
+        public void Setup(string trainingFileLocation, int dimensions = 50, int minWordOccurrences = 5)
         {
-            _fileHandler = fileHandler;
+            _trainingFileHandler = new TrainingFileHandler(trainingFileLocation);
 
-            WordCollection = _fileHandler.GetWordDictionaryFromFile(MaxCodeLength);
+            WordCollection = _trainingFileHandler.GetWordDictionaryFromFile(MaxCodeLength);
             WordCollection.RemoveWordsWithCountLessThanMinCount(minWordOccurrences);
             _table = WordCollection.GetUnigramTable(TableSize);
 
@@ -84,6 +84,21 @@ namespace GingerbreadAI.NLP.Word2Vec
             GC.Collect();
         }
 
+        public void WriteWordEmbeddings(string embeddingsFileLocation)
+        {
+            var words = WordCollection.GetWords().ToArray();
+            var hiddenLayer = NeuralNetwork.PreviousLayers[0];
+            var inputLayer = hiddenLayer.PreviousLayers[0];
+
+            var wordEmbeddings = new List<WordEmbedding>();
+            for (var i = 0; i < WordCollection.GetNumberOfUniqueWords(); i++)
+            {
+                wordEmbeddings.Add(new WordEmbedding(words[i], hiddenLayer.Nodes.Select(hiddenNode => hiddenNode.Weights[inputLayer.Nodes[i]].Value).ToArray()));
+            }
+
+            wordEmbeddings.WriteWordEmbeddingsToFile(embeddingsFileLocation);
+        }
+
         private void TrainModelThreadStart(
             int id,
             int numberOfThreads,
@@ -108,9 +123,9 @@ namespace GingerbreadAI.NLP.Word2Vec
             var random = new Random();
             var totalNumberOfWords = WordCollection.GetTotalNumberOfWords();
             string[] lastLine = null;
-            using (var reader = _fileHandler.GetTrainingFileReader())
+            using (var reader = _trainingFileHandler.GetTrainingFileReader())
             {
-                reader.BaseStream.Seek(_fileHandler.FileSize / numberOfThreads * id, SeekOrigin.Begin);
+                reader.BaseStream.Seek(_trainingFileHandler.TrainingFileSize / numberOfThreads * id, SeekOrigin.Begin);
                 while (true)
                 {
                     // adjust learning rate
@@ -143,7 +158,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                         wordCount = 0;
                         lastWordCount = 0;
                         sentenceLength = 0;
-                        reader.BaseStream.Seek(_fileHandler.FileSize / numberOfThreads * id, SeekOrigin.Begin);
+                        reader.BaseStream.Seek(_trainingFileHandler.TrainingFileSize / numberOfThreads * id, SeekOrigin.Begin);
                         Console.WriteLine($"Iterations remaining: {localIterations} Thread: {id}");
                         continue;
                     }
