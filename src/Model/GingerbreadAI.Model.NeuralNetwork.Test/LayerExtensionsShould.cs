@@ -94,7 +94,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
             _output.Initialise(random);
             _output.CalculateOutputs(inputs);
 
-            var copiedOutput = _output.CloneWithSameWeightValueReferences();
+            var copiedOutput = _output.CloneWithDifferentOutputs();
             copiedOutput.Initialise(random);
             copiedOutput.CalculateOutputs(inputs);
 

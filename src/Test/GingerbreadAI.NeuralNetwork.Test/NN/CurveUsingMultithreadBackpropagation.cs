@@ -69,7 +69,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
         private void TrainNetwork(Layer outputLayer, double[] inputs, List<double> accuracyResults, int threadCount, int currentThread)
         {
             var rand = new Random();
-            var output = outputLayer.CloneWithSameWeightValueReferences();
+            var output = outputLayer.CloneWithDifferentOutputs();
 
             for (var i = 0; i < 10000; i++)
             {

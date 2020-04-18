@@ -36,7 +36,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             var input = new Layer2D((10, 10), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[] { input }.Add2DConvolutionalLayer(16, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             filters.AddPooling((2, 2));
-            var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.Tanh, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
@@ -61,11 +61,11 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             timer.Stop();
 
             output.CalculateOutputs(SquareAsArray);
-            _testOutputHelper.WriteLine($"Results after training from Square: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            _testOutputHelper.WriteLine($"Results after training from Square: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle: {output.Nodes[2].Output:0.000}");
             output.CalculateOutputs(CircleAsArray);
-            _testOutputHelper.WriteLine($"Results after training from Circle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            _testOutputHelper.WriteLine($"Results after training from Circle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle: {output.Nodes[2].Output:0.000}");
             output.CalculateOutputs(TriangleAsArray);
-            _testOutputHelper.WriteLine($"Results after training from Triangle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            _testOutputHelper.WriteLine($"Results after training from Triangle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle: {output.Nodes[2].Output:0.000}");
         }
 
         private void OnTimerElapsed(object source, ElapsedEventArgs e)

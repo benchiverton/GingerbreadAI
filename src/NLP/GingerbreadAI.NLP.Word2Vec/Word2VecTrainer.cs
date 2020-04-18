@@ -118,7 +118,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             var lastWordCount = 0;
             var sentence = new int?[maxSentenceLength];
             var localIterations = numberOfIterations;
-            var localNetwork = NeuralNetwork.CloneWithSameWeightValueReferences();
+            var localNetwork = NeuralNetwork.CloneWithDifferentOutputs();
 
             var random = new Random();
             var totalNumberOfWords = WordCollection.GetTotalNumberOfWords();
