@@ -5,7 +5,6 @@ using System.Linq;
 using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
-using Xunit;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
