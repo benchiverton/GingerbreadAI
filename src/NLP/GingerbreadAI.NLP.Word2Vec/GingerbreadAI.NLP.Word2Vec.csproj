@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>GingerbreadAI.Word2Vec</PackageId>
+    <Version>0.0.1</Version>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
+    <Authors>Benjamin Chiverton</Authors>
+    <PackageDescription>Implemenation of Word2Vec using GingerbreadAI's Neural Network model.</PackageDescription>
+    <RepositoryUrl>https://github.com/benchiverton/GingerbreadAI</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
