@@ -4,16 +4,16 @@ on:
   push:
     branches: [ master ]
     paths:
-    - 'src/DeepLearning/GingerbreadAI.NLP.Word2Vec/**'
+    - 'src/NLP/GingerbreadAI.NLP.Word2Vec/**'
     - '.github/workflows/ci_publish-word2vec.yml'
   pull_request:
     branches: [ master ]
     paths:
-    - 'src/DeepLearning/GingerbreadAI.NLP.Word2Vec/**'
+    - 'src/NLP/GingerbreadAI.NLP.Word2Vec/**'
     - '.github/workflows/ci_publish-word2vec.yml'
 
 env:
-  PROJECT_LOCATION: src/DeepLearning/GingerbreadAI.NLP.Word2Vec/
+  PROJECT_LOCATION: src/NLP/GingerbreadAI.NLP.Word2Vec/
   PROJECT_FILE: GingerbreadAI.NLP.Word2Vec.csproj
 
 jobs:
