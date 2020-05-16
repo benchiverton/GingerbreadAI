@@ -44,6 +44,21 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         }
 
         /// <summary>
+        /// Returns the Term Frequency-Inverse Document Frequency (TF-IDF) of a word in a document in relation to a collection of documents.
+        /// </summary>
+        public static double CalculateTFIDF(this WordCollection wordCollection, string word, List<WordCollection> allDocuments)
+        {
+            var termFrequency = wordCollection.GetOccurrenceOfWord(word);
+
+            var totalDocuments = allDocuments.Count;
+            var totalDocumentsWithWord = allDocuments.Count(wc => wc.GetWords().Contains(word));
+            // adjust denominator to avoid division by 0.
+            var inverseDocumentFrequency = Math.Log((double)totalDocuments / (1 + totalDocumentsWithWord));
+
+            return termFrequency * inverseDocumentFrequency;
+        }
+
+        /// <summary>
         /// Create binary Huffman tree using the word counts.
         /// Frequent words will have short unique binary codes.
         /// Huffman encoding is used for loss-less compression.

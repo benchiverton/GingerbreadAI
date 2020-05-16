@@ -13,6 +13,7 @@ namespace GingerbreadAI.NeuralNetwork.Test
 
         private const string MNISTHandwrittenNumbersDir = "MNISTHandwrittenNumbersData";
         private const string BlogAuthorshipCorpusDir = "BlogAuthorshipCorpus";
+        private const string CoronavirusDir = "Coronavirus";
 
         // http://yann.lecun.com/exdb/mnist/
         public static IEnumerable<(double[] image, int label)> GetMNISTHandwrittenNumbers(string labelFileName, string imageFileName)
@@ -20,7 +21,7 @@ namespace GingerbreadAI.NeuralNetwork.Test
             var dataDirectory = $"{TrainingDataDir}/{MNISTHandwrittenNumbersDir}";
 
             EnsureMNISTHandwrittenNumbersDataExists(dataDirectory);
-            
+
             var trainingDataSet = FileReaderMNIST.LoadImagesAndLables($"{dataDirectory}/{labelFileName}", $"{dataDirectory}/{imageFileName}");
 
             foreach (var trainingData in trainingDataSet)
@@ -47,7 +48,7 @@ namespace GingerbreadAI.NeuralNetwork.Test
 
             return new DirectoryInfo($"{dataDirectory}/blogs").EnumerateFiles();
         }
-
+        
         /// <summary>
         /// Returns a file that contains the string '1 2 3 4 5 6 7 8 9 10' on 10,000 lines.
         /// </summary>

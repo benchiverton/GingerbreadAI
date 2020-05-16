@@ -4,29 +4,29 @@ using System.Text;
 
 namespace GingerbreadAI.NLP.Word2Vec
 {
-    public class TrainingFileHandler
+    public class FileHandler
     {
-        private readonly string _trainingFile;
+        private readonly string _file;
 
-        public TrainingFileHandler(string trainingFile)
+        public FileHandler(string file)
         {
-            _trainingFile = trainingFile;
+            _file = file;
 
-            TrainingFileSize = new FileInfo(_trainingFile).Length;
+            FileSize = new FileInfo(_file).Length;
         }
 
-        public long TrainingFileSize { get; }
+        public long FileSize { get; }
 
         public WordCollection GetWordDictionaryFromFile(int maxCodeLength)
         {
             var wordCollection = new WordCollection();
 
-            if (!File.Exists(_trainingFile))
+            if (!File.Exists(_file))
             {
-                throw new InvalidOperationException($"Unable to find {_trainingFile}");
+                throw new InvalidOperationException($"Unable to find {_file}");
             }
 
-            using (var fileStream = new FileStream(_trainingFile, FileMode.OpenOrCreate, FileAccess.Read))
+            using (var fileStream = new FileStream(_file, FileMode.OpenOrCreate, FileAccess.Read))
             {
                 using (var reader = new StreamReader(fileStream, Encoding.UTF8))
                 {
@@ -48,7 +48,7 @@ namespace GingerbreadAI.NLP.Word2Vec
 
         public StreamReader GetTrainingFileReader()
         {
-            return File.OpenText(_trainingFile);
+            return File.OpenText(_file);
         }
     }
 }

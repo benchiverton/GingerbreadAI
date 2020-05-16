@@ -1,37 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
+using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using Xunit;
 
 namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
 {
-    public class WordEmbeddingAnalysisFunctionsShould
+    public class DBSCANShould
     {
-        [Fact]
-        public void CorrectlyGetMostSimilarWords()
-        {
-            var wordVectors = new WordEmbedding[]
-            {
-                new WordEmbedding("target", new [] {1d, 1d}),
-                new WordEmbedding("far", new [] {-1d, -1d}),
-                new WordEmbedding("close-ish", new [] {-1d, 1d}),
-                new WordEmbedding("same", new [] {1d, 1d}),
-            };
-
-            var orderedWords = WordEmbeddingAnalysisFunctions.GetMostSimilarWords("target", wordVectors, 3).ToArray();
-            Assert.Equal(1d, orderedWords[0].similarity, 8);
-            Assert.Equal("same", orderedWords[0].word);
-            Assert.Equal(0d, orderedWords[1].similarity, 8);
-            Assert.Equal("close-ish", orderedWords[1].word);
-            Assert.Equal(-1d, orderedWords[2].similarity, 8);
-            Assert.Equal("far", orderedWords[2].word);
-        }
 
         [Theory]
         [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
         public void CorrectlyGetClusterLabels(List<WordEmbedding> wordEmbeddings, (string[] elements, bool isNoise)[] expectedGroups)
         {
-            var labels = WordEmbeddingAnalysisFunctions.GetClusterLabels(
+            var labels = DBSCAN.GetLabelClusterIndexMap(
                 wordEmbeddings,
                 3,
                 2,
@@ -54,7 +36,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
         [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
         public void CorrectlyGetClusterLabelsConcurrently(List<WordEmbedding> wordVectorWeights, (string[] elements, bool isNoise)[] expectedGroups)
         {
-            var labels = WordEmbeddingAnalysisFunctions.GetClusterLabels(
+            var labels = DBSCAN.GetLabelClusterIndexMap(
                 wordVectorWeights,
                 3,
                 2

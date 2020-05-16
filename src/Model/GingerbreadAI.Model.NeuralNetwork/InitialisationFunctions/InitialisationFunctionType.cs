@@ -8,5 +8,6 @@
         HeUniform = 3,
         GlorotUniform = 4,
         HeEtAl = 5,
+        RandomGuassian = 6,
     }
 }

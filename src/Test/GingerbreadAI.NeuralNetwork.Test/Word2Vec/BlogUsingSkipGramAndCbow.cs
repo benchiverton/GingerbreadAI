@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GingerbreadAI.NLP.Word2Vec;
+using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
+using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
@@ -23,19 +25,25 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 
             var word2Vec = new Word2VecTrainer();
             word2Vec.Setup(inputFileLoc, minWordOccurrences: 3);
-            word2Vec.TrainModel(numberOfIterations: 16);
+            word2Vec.TrainModel();
             word2Vec.WriteWordEmbeddings(embeddingsFileLoc);
 
             var wordEmbeddings = new List<WordEmbedding>();
             wordEmbeddings.PopulateWordEmbeddingsFromFile(embeddingsFileLoc);
 
-            var reportHandler = new ReportWriter(reportFileLoc);
-            reportHandler.WriteWordClusterLabels(
+            // TODO
+            //var tsne = new TSNE(2, distanceFunctionType: DistanceFunctionType.Cosine);
+            //tsne.ReduceDimensions(wordEmbeddings);
+
+            var labelClusterIndexMap = DBSCAN.GetLabelClusterIndexMap(
                 wordEmbeddings,
-                epsilon: 0.25,
+                epsilon: 0.1,
                 minimumSamples: 3,
                 distanceFunctionType: DistanceFunctionType.Cosine,
                 concurrentThreads: 4);
+
+            var reportHandler = new ReportWriter(reportFileLoc);
+            reportHandler.WriteLabelsWithClusterIndex(labelClusterIndexMap, wordEmbeddings.Select(we => we.Label));
         }
     }
 }

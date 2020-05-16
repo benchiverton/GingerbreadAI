@@ -9,6 +9,7 @@ using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
+using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
 
 namespace GingerbreadAI.NLP.Word2Vec
@@ -18,7 +19,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         private const int MaxCodeLength = 40;
         private const int TableSize = (int)1e8;
 
-        private TrainingFileHandler _trainingFileHandler;
+        private FileHandler _trainingFileHandler;
         private int _wordCountActual;
         private int[] _table;
 
@@ -27,7 +28,7 @@ namespace GingerbreadAI.NLP.Word2Vec
 
         public void Setup(string trainingFileLocation, int dimensions = 50, int minWordOccurrences = 5)
         {
-            _trainingFileHandler = new TrainingFileHandler(trainingFileLocation);
+            _trainingFileHandler = new FileHandler(trainingFileLocation);
 
             WordCollection = _trainingFileHandler.GetWordDictionaryFromFile(MaxCodeLength);
             WordCollection.RemoveWordsWithCountLessThanMinCount(minWordOccurrences);
@@ -125,7 +126,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             string[] lastLine = null;
             using (var reader = _trainingFileHandler.GetTrainingFileReader())
             {
-                reader.BaseStream.Seek(_trainingFileHandler.TrainingFileSize / numberOfThreads * id, SeekOrigin.Begin);
+                reader.BaseStream.Seek(_trainingFileHandler.FileSize / numberOfThreads * id, SeekOrigin.Begin);
                 while (true)
                 {
                     // adjust learning rate
@@ -158,7 +159,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                         wordCount = 0;
                         lastWordCount = 0;
                         sentenceLength = 0;
-                        reader.BaseStream.Seek(_trainingFileHandler.TrainingFileSize / numberOfThreads * id, SeekOrigin.Begin);
+                        reader.BaseStream.Seek(_trainingFileHandler.FileSize / numberOfThreads * id, SeekOrigin.Begin);
                         Console.WriteLine($"Iterations remaining: {localIterations} Thread: {id}");
                         continue;
                     }
@@ -195,7 +196,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             GC.Collect();
         }
 
-        private static void SetSentence(
+        internal static void SetSentence(
             WordCollection wordCollection,
             StreamReader reader,
             int?[] sentence,
