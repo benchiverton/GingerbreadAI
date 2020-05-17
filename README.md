@@ -58,6 +58,14 @@ Longer running tests that produce a report need to be run in debug mode, and can
 
 See the list of [contributors](https://github.com/benchiverton/GingerbreadAI/contributors) who participated in this project.
 
+## Contributing
+
+See our [Contributing Guidelines](CONTRIBUTING.md).
+
+## Code of Conduct
+
+See our [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
