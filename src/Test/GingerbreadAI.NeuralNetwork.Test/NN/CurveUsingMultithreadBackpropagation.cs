@@ -28,7 +28,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
         [RunnableInDebugOnly]
         public void ApproximateCurveUsingMultipleThreads()
         {
-            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var input = new Layer(1, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var inner = new Layer(20, new[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.HeEtAl);
             var outputLayer = new Layer(1, new[] { inner }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             outputLayer.AddMomentumRecursively();
@@ -85,7 +85,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
             }
         }
 
-        private void SetResults(double[] inputs, Layer output, double[] targetArray)
+        private static void SetResults(double[] inputs, Layer output, double[] targetArray)
         {
             for (var i = 0; i < inputs.Length; i++)
             {

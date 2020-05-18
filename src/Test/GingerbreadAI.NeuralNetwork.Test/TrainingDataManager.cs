@@ -13,7 +13,6 @@ namespace GingerbreadAI.NeuralNetwork.Test
 
         private const string MNISTHandwrittenNumbersDir = "MNISTHandwrittenNumbersData";
         private const string BlogAuthorshipCorpusDir = "BlogAuthorshipCorpus";
-        private const string CoronavirusDir = "Coronavirus";
 
         // http://yann.lecun.com/exdb/mnist/
         public static IEnumerable<(double[] image, int label)> GetMNISTHandwrittenNumbers(string labelFileName, string imageFileName)

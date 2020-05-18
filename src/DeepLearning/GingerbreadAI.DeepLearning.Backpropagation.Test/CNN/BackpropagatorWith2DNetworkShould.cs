@@ -15,12 +15,6 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
 {
     public class BackpropagatorWith2DNetworkShould
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public BackpropagatorWith2DNetworkShould(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
 
         [Fact]
         public void TrainFilterToFeatureSortOfWell()

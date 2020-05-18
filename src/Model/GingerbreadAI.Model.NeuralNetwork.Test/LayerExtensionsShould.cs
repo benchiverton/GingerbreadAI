@@ -11,24 +11,20 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
 {
     public class LayerExtensionsShould
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
         private readonly Layer _input;
         private readonly Layer _hidden1;
         private readonly Layer _hidden2;
         private readonly Layer _output;
 
-        public LayerExtensionsShould(ITestOutputHelper testOutputHelper)
+        public LayerExtensionsShould()
         {
-            _testOutputHelper = testOutputHelper;
-
             _input = new Layer(5, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
             _hidden1 = new Layer(10, new[] { _input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
             _hidden2 = new Layer(15, new[] { _input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
             _output = new Layer(20, new[] { _hidden1, _hidden2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
         }
 
-        //[Fact]
+        [Fact]
         public void DeepCopyCorrectly()
         {
             _output.Initialise(new Random());
@@ -161,12 +157,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
                     Assert.Equal(_output.Nodes[i].BiasWeights.Values.ToArray()[j].Value, copiedOutput.Nodes[i].BiasWeights.Values.ToArray()[j].Value);
                 }
             }
-        }
-
-        [Fact(Skip = "Debug only")]
-        public void SaveCorrectly()
-        {
-            // TODO
         }
     }
 }

@@ -29,6 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.Model.Convolu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test", "Model\GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test\GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.csproj", "{44D594BA-6C44-449D-B949-32DF63B34A9D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7698D846-69C5-45BC-81CA-D4618CF5A606}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

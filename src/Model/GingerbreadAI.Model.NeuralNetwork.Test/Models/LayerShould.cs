@@ -10,12 +10,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
 {
     public class LayerShould
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public LayerShould(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
 
         [Fact]
         public void ThrowAnExceptionWhenInputIsInvalid()

@@ -33,7 +33,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
         [RunnableInDebugOnly]
         public void PerformanceTestCnnNetwork()
         {
-            var input = new Layer2D((10, 10), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var input = new Layer2D((10, 10), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[] { input }.Add2DConvolutionalLayer(16, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             filters.AddPooling((2, 2));
             var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.Tanh, InitialisationFunctionType.HeUniform);
@@ -58,7 +58,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
                 output.Backpropagate(TriangleAsArray, new[] { 0d, 0d, 1d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
                 _processedImages++;
             }
-            timer.Stop();
+            timer.Dispose();
 
             output.CalculateOutputs(SquareAsArray);
             _testOutputHelper.WriteLine($"Results after training from Square: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle: {output.Nodes[2].Output:0.000}");
@@ -82,7 +82,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             }
         }
 
-        private double[] SquareAsArray => TransformTo1dArray(new double[,]
+        private static double[] SquareAsArray => TransformTo1dArray(new double[,]
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,1,1,1,1,1,1,1,1,0 },
@@ -96,7 +96,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             { 0,0,0,0,0,0,0,0,0,0 },
         }).ToArray();
 
-        private double[] CircleAsArray => TransformTo1dArray(new double[,]
+        private static double[] CircleAsArray => TransformTo1dArray(new double[,]
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,1,1,0,0,0,0 },
@@ -110,7 +110,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             { 0,0,0,0,0,0,0,0,0,0 },
         }).ToArray();
 
-        private double[] TriangleAsArray => TransformTo1dArray(new double[,]
+        private static double[] TriangleAsArray => TransformTo1dArray(new double[,]
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,1,1,0,0,0,0 },

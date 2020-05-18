@@ -15,7 +15,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
 {
     public class Cnn2dLettersUsingBackpropagation
     {
-        private const string ResultsDirectory = nameof(Cnn2dLettersUsingBackpropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
         public Cnn2dLettersUsingBackpropagation(ITestOutputHelper testOutputHelper)
@@ -26,7 +25,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
         [RunnableInDebugOnly]
         public void TrainAgainstHandWrittenNumbers()
         {
-            var input = new Layer2D((28, 28), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var input = new Layer2D((28, 28), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[] { input }.Add2DConvolutionalLayer(32, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             filters.AddPooling((2, 2));
             var stepDownLayer = new Layer(100, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);

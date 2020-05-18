@@ -27,7 +27,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
         [RunnableInDebugOnly]
         public void ApproximateSineCurveUsingBackpropagation()
         {
-            var input = new Layer(1, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var input = new Layer(1, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var inner1 = new Layer(10, new[] { input }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
             var inner2 = new Layer(10, new[] { inner1 }, ActivationFunctionType.Tanh, InitialisationFunctionType.HeEtAl);
             var outputLayer = new Layer(1, new[] { inner2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
