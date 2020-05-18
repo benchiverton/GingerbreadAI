@@ -1,12 +1,11 @@
-﻿using System;
+using System;
 
 namespace GingerbreadAI.NLP.Word2Vec.SimilarityFunctions
 {
     public static class SimilarityFunctionResolver
     {
-        public static Func<double[], double[], double> ResolveSimilarityFunction(SimilarityFunctionType similarityFunctionType)
-        {
-            return similarityFunctionType switch
+        public static Func<double[], double[], double> ResolveSimilarityFunction(SimilarityFunctionType similarityFunctionType) =>
+            similarityFunctionType switch
             {
                 SimilarityFunctionType.Cosine => CalculateCosineSimilarity,
                 _ => throw new ArgumentOutOfRangeException(
@@ -14,7 +13,6 @@ namespace GingerbreadAI.NLP.Word2Vec.SimilarityFunctions
                     similarityFunctionType,
                     "This similarity function type is not yet supported. Please use a different similarity function type.")
             };
-        }
 
         private static double CalculateCosineSimilarity(double[] vectorA, double[] vectorB)
         {

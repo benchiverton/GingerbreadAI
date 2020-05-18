@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
@@ -17,10 +17,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public Cnn2dLettersUsingBackpropagation(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+        public Cnn2dLettersUsingBackpropagation(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         [RunnableInDebugOnly]
         public void TrainAgainstHandWrittenNumbers()
@@ -33,25 +30,25 @@ namespace GingerbreadAI.NeuralNetwork.Test.CNN
             output.AddMomentumRecursively();
             output.Initialise(new Random());
 
-            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers("train-labels-idx1-ubyte.gz", "train-images-idx3-ubyte.gz"))
+            foreach (var (image, label) in TrainingDataManager.GetMNISTHandwrittenNumbers("train-labels-idx1-ubyte.gz", "train-images-idx3-ubyte.gz"))
             {
                 var targetOutputs = new double[10];
-                targetOutputs[trainingData.label] = 1d;
-                output.Backpropagate(trainingData.image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+                targetOutputs[label] = 1d;
+                output.Backpropagate(image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
             }
 
             var correctResults = new double[10];
             var incorrectResults = new double[10];
-            foreach (var trainingData in TrainingDataManager.GetMNISTHandwrittenNumbers("t10k-labels-idx1-ubyte.gz", "t10k-images-idx3-ubyte.gz"))
+            foreach (var (image, label) in TrainingDataManager.GetMNISTHandwrittenNumbers("t10k-labels-idx1-ubyte.gz", "t10k-images-idx3-ubyte.gz"))
             {
-                output.CalculateOutputs(trainingData.image);
-                if (output.Nodes[trainingData.label].Output > 0.5)
+                output.CalculateOutputs(image);
+                if (output.Nodes[label].Output > 0.5)
                 {
-                    correctResults[trainingData.label]++;
+                    correctResults[label]++;
                 }
                 else
                 {
-                    incorrectResults[trainingData.label]++;
+                    incorrectResults[label]++;
                 }
             }
             _testOutputHelper.WriteLine($"Accuracy detecting 0: {correctResults[0] / (correctResults[0] + incorrectResults[0])}");

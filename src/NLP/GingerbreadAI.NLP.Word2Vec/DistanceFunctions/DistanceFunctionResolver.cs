@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GingerbreadAI.NLP.Word2Vec.SimilarityFunctions;
 
 namespace GingerbreadAI.NLP.Word2Vec.DistanceFunctions
@@ -6,9 +6,8 @@ namespace GingerbreadAI.NLP.Word2Vec.DistanceFunctions
     public static class DistanceFunctionResolver
     {
         public static Func<double[], double[], double> ResolveDistanceFunction(
-            DistanceFunctionType distanceFunctionType)
-        {
-            return distanceFunctionType switch
+            DistanceFunctionType distanceFunctionType) =>
+            distanceFunctionType switch
             {
                 DistanceFunctionType.Euclidean => CalculateEuclideanDistance,
                 DistanceFunctionType.Cosine => CalculateCosineDistance,
@@ -17,7 +16,6 @@ namespace GingerbreadAI.NLP.Word2Vec.DistanceFunctions
                     distanceFunctionType,
                     "This distance function type is not yet supported. Please use a different distance function type.")
             };
-        }
 
         private static double CalculateEuclideanDistance(double[] vectorA, double[] vectorB)
         {
@@ -31,10 +29,8 @@ namespace GingerbreadAI.NLP.Word2Vec.DistanceFunctions
             return Math.Sqrt(sumOfSquareDistances);
         }
 
-        private static double CalculateCosineDistance(double[] vectorA, double[] vectorB)
-        {
-            return 1d - SimilarityFunctionResolver.ResolveSimilarityFunction(SimilarityFunctionType.Cosine)
-                       .Invoke(vectorA, vectorB);
-        }
+        private static double CalculateCosineDistance(double[] vectorA, double[] vectorB) =>
+            1d - SimilarityFunctionResolver.ResolveSimilarityFunction(SimilarityFunctionType.Cosine)
+                .Invoke(vectorA, vectorB);
     }
 }

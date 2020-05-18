@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 
@@ -28,7 +28,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
                         var tfidf = article.Contents.CalculateTFIDF(
                             word,
                             articlesList.Select(a => a.Contents).ToList());
-                        embedding = embedding.Zip(wordEmbedding, (x, y) => x + tfidf * y).ToArray();
+                        embedding = embedding.Zip(wordEmbedding, (x, y) => x + (tfidf * y)).ToArray();
                     }
                 }
 

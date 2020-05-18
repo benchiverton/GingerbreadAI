@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,10 +13,7 @@ namespace GingerbreadAI.NLP.Word2Vec
     {
         private readonly string _reportFile;
 
-        public ReportWriter(string reportFile)
-        {
-            _reportFile = reportFile;
-        }
+        public ReportWriter(string reportFile) => _reportFile = reportFile;
 
         /// <summary>
         /// Writes the label of each embedding and the labels of the top n embeddings that it is most similar to.

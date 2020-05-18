@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,9 +31,8 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             var wordEmbeddings = new List<WordEmbedding>();
             wordEmbeddings.PopulateWordEmbeddingsFromFile(embeddingsFileLoc);
 
-            // TODO
-            //var tsne = new TSNE(2, distanceFunctionType: DistanceFunctionType.Cosine);
-            //tsne.ReduceDimensions(wordEmbeddings);
+            var tsne = new TSNE(2, distanceFunctionType: DistanceFunctionType.Cosine);
+            tsne.ReduceDimensions(wordEmbeddings);
 
             var labelClusterIndexMap = DBSCAN.GetLabelClusterIndexMap(
                 wordEmbeddings,
@@ -43,7 +42,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
                 concurrentThreads: 4);
 
             var reportHandler = new ReportWriter(reportFileLoc);
-            reportHandler.WriteLabelsWithClusterIndex(labelClusterIndexMap, wordEmbeddings.Select(we => we.Label));
+            reportHandler.Write2DWordEmbeddingsAndClusterIndexesForExcel(wordEmbeddings, labelClusterIndexMap);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 
@@ -30,7 +30,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions
                 filterWeightMap.Add(prevLayer, pooledWeightMap);
             }
 
-            var prevLayerSize = (filter.PreviousLayers[0] as Layer1D).Size;
+            var prevLayerSize = ((Layer1D)filter.PreviousLayers[0]).Size;
             var nodes = new List<Node>();
             for (var i = 0; i < prevLayerSize - filter.Size - poolingDimension + 2; i += poolingDimension)
             {

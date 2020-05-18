@@ -19,10 +19,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
         private const string ResultsDirectory = nameof(SineCurveUsingBackpropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public SineCurveUsingBackpropagation(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+        public SineCurveUsingBackpropagation(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         [RunnableInDebugOnly]
         public void ApproximateSineCurveUsingBackpropagation()
@@ -85,6 +82,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
             }
         }
 
-        private static double Calculation(double input) => 0.5 * Math.Sin(3 * Math.PI * input) + 0.5;
+        private static double Calculation(double input) => (0.5 * Math.Sin(3 * Math.PI * input)) + 0.5;
     }
 }

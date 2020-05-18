@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,10 +10,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         private readonly Dictionary<string, WordInfo> _words;
         private WordInfo[] _wordPositionLookup;
 
-        public WordCollection()
-        {
-            _words = new Dictionary<string, WordInfo>();
-        }
+        public WordCollection() => _words = new Dictionary<string, WordInfo>();
 
         public long? this[string index] => _words.ContainsKey(index) ? (long?)_words[index].Position : null;
         public WordInfo this[long index] => _wordPositionLookup[index];
@@ -48,7 +45,10 @@ namespace GingerbreadAI.NLP.Word2Vec
         {
             foreach (var word in _words.ToArray())
             {
-                if (word.Value.Count < minCount) _words.Remove(word.Key);
+                if (word.Value.Count < minCount)
+                {
+                    _words.Remove(word.Key);
+                }
             }
             GC.Collect();
         }
@@ -111,8 +111,14 @@ namespace GingerbreadAI.NLP.Word2Vec
 
         private void UpsertWord(string word, Func<long, WordInfo> createWordInfo, long position)
         {
-            if (_words.ContainsKey(word)) _words[word].IncrementCount();
-            else _words.Add(word, createWordInfo(position));
+            if (_words.ContainsKey(word))
+            {
+                _words[word].IncrementCount();
+            }
+            else
+            {
+                _words.Add(word, createWordInfo(position));
+            }
         }
 
         private void PopulateWithWords(IEnumerable<string> words,
@@ -121,7 +127,11 @@ namespace GingerbreadAI.NLP.Word2Vec
             var i = 0;
             foreach (var word in words)
             {
-                if (string.IsNullOrWhiteSpace(word)) continue;
+                if (string.IsNullOrWhiteSpace(word))
+                {
+                    continue;
+                }
+
                 UpsertWord(word, infoCreator, i++);
             }
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions
 {
@@ -10,17 +10,14 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions
         /// </summary>
         /// <param name="errorFunctionType"></param>
         /// <returns></returns>
-        public static Func<double, double, double> ResolveErrorFunctionDifferential(ErrorFunctionType errorFunctionType)
+        public static Func<double, double, double> ResolveErrorFunctionDifferential(ErrorFunctionType errorFunctionType) => errorFunctionType switch
         {
-            return errorFunctionType switch
-            {
-                ErrorFunctionType.MSE => (target, actual) => actual - target,
-                ErrorFunctionType.CrossEntropy => (target, actual) => actual % 1 < 0.0000001 ? 0 : -(target / actual) + (1 - target) / (1 - actual),
-                _ => throw new ArgumentOutOfRangeException(
-                    nameof(errorFunctionType),
-                    errorFunctionType,
-                    "This error function type is not yet supported. Please use a different error function type.")
-            };
-        }
+            ErrorFunctionType.MSE => (target, actual) => actual - target,
+            ErrorFunctionType.CrossEntropy => (target, actual) => actual % 1 < 0.0000001 ? 0 : -(target / actual) + ((1 - target) / (1 - actual)),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(errorFunctionType),
+                errorFunctionType,
+                "This error function type is not yet supported. Please use a different error function type.")
+        };
     }
 }

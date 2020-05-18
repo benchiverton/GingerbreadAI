@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
@@ -20,12 +20,12 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                 concurrentThreads: 1
             );
 
-            foreach (var group in expectedGroups)
+            foreach (var (elements, isNoise) in expectedGroups)
             {
-                var groupLabel = group.isNoise
+                var groupLabel = isNoise
                     ? -1
-                    : labels.First(l => l.Key == group.elements[0]).Value;
-                foreach (var label in labels.Where(l => group.elements.Contains(l.Key)))
+                    : labels.First(l => l.Key == elements[0]).Value;
+                foreach (var label in labels.Where(l => elements.Contains(l.Key)))
                 {
                     Assert.Equal(groupLabel, label.Value);
                 }
@@ -42,12 +42,12 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                 2
             );
 
-            foreach (var group in expectedGroups)
+            foreach (var (elements, isNoise) in expectedGroups)
             {
-                var groupLabel = group.isNoise
+                var groupLabel = isNoise
                     ? -1
-                    : labels.First(l => l.Key == group.elements[0]).Value;
-                foreach (var label in labels.Where(l => group.elements.Contains(l.Key)))
+                    : labels.First(l => l.Key == elements[0]).Value;
+                foreach (var label in labels.Where(l => elements.Contains(l.Key)))
                 {
                     Assert.Equal(groupLabel, label.Value);
                 }

@@ -1,4 +1,4 @@
-﻿using GingerbreadAI.Model.NeuralNetwork.Models;
+using GingerbreadAI.Model.NeuralNetwork.Models;
 
 namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
 {
@@ -25,10 +25,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
 
         public override double Value => _value * _magnitude;
 
-        public override void Adjust(double change)
-        {
-            _value += change * _occurrences;
-        }
+        public override void Adjust(double change) => _value += change * _occurrences;
 
         public void IncreaseOccurrences()
         {
@@ -36,9 +33,6 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
             CalculateMagnitude();
         }
 
-        public void CalculateMagnitude()
-        {
-            _magnitude = (double)_occurrences / _poolSize;
-        }
+        public void CalculateMagnitude() => _magnitude = (double)_occurrences / _poolSize;
     }
 }

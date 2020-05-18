@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -137,7 +137,11 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
 
         private static void Preorder(WordCollection wordCollection, Node root)
         {
-            if (root == null) return;
+            if (root == null)
+            {
+                return;
+            }
+
             if (root.Left != null)
             {
                 root.Left.Code = root.Code + "0";
@@ -186,11 +190,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
             public long Frequency { get; set; }
             public long? IndexOfLeafNodeThisInteriorNodePretendsToBe { get; set; }
 
-            public int CompareTo(Node other)
-            {
-                return Comparer<long>.Default.Compare(Frequency, other.Frequency);
-
-            }
+            public int CompareTo(Node other) => Comparer<long>.Default.Compare(Frequency, other.Frequency);
         }
     }
 }

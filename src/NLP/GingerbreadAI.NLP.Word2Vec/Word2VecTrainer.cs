@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -134,7 +134,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                     {
                         _wordCountActual += wordCount - lastWordCount;
                         lastWordCount = wordCount;
-                        learningRate = startingLearningRate * (1 - _wordCountActual / (float)(numberOfIterations * totalNumberOfWords + 1));
+                        learningRate = startingLearningRate * (1 - (_wordCountActual / (float)((numberOfIterations * totalNumberOfWords) + 1)));
                         if (learningRate < startingLearningRate * (float)0.0001)
                         {
                             learningRate = startingLearningRate * (float)0.0001;
@@ -305,7 +305,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         {
             var randomWindowPosition = (int)(random.Next() % (uint)windowSize);
 
-            for (var offsetWithinWindow = randomWindowPosition; offsetWithinWindow < windowSize * 2 + 1 - randomWindowPosition; offsetWithinWindow++)
+            for (var offsetWithinWindow = randomWindowPosition; offsetWithinWindow < (windowSize * 2) + 1 - randomWindowPosition; offsetWithinWindow++)
             {
                 if (offsetWithinWindow != windowSize)
                 {

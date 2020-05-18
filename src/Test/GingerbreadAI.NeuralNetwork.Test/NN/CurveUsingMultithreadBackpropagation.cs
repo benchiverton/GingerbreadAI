@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,10 +20,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
         private const string ResultsDirectory = nameof(CurveUsingMultiThreadBackpropagation);
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public CurveUsingMultiThreadBackpropagation(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+        public CurveUsingMultiThreadBackpropagation(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         [RunnableInDebugOnly]
         public void ApproximateCurveUsingMultipleThreads()
@@ -80,7 +77,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
                     accuracyResults.Add(AccuracyStatistics.CalculateKolmogorovStatistic(
                         currentResults, inputs.Select(Calculation).ToArray()));
                 }
-                var trial = rand.NextDouble() / 4 + ((double)currentThread + 1) / threadCount;
+                var trial = (rand.NextDouble() / 4) + (((double)currentThread + 1) / threadCount);
                 output.Backpropagate(new[] { trial }, new [] { Calculation(trial) }, ErrorFunctionType.MSE, 0.01, 0.9);
             }
         }

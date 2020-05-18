@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
@@ -24,18 +24,18 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
                 filterWeightMap.Add(prevLayer, filterWeights);
             }
 
-            var prevLayerDimensions = previousLayers[0].Shape;
+            var (height, width) = previousLayers[0].Shape;
             var nodes = new List<Node>();
-            for (var i = 0; i < prevLayerDimensions.height - Shape.height + 1; i++) // down
+            for (var i = 0; i < height - Shape.height + 1; i++) // down
             {
-                for (var j = 0; j < prevLayerDimensions.width - Shape.width + 1; j++) // across
+                for (var j = 0; j < width - Shape.width + 1; j++) // across
                 {
                     var nodeWeights = new Dictionary<Node, Weight>();
                     for (var k = 0; k < Shape.height; k++) // down
                     {
                         for (var l = 0; l < Shape.width; l++) // across
                         {
-                            var nodePosition = j + l + (i + k) * prevLayerDimensions.width;
+                            var nodePosition = j + l + ((i + k) * width);
                             foreach (var prevLayer in previousLayers)
                             {
                                 nodeWeights.Add(prevLayer.Nodes[nodePosition], filterWeightMap[prevLayer][l, k]);

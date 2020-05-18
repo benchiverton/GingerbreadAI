@@ -11,10 +11,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Models
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public Filter2DShould(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+        public Filter2DShould(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         [Fact]
         public void ResolveCorrectNodeReferences()
@@ -40,9 +37,9 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Models
             {
                 for (var j = 0; j < 3; j++)
                 {
-                    Assert.Contains(input1.Nodes[6 * i + j], filter.Nodes[0].Weights.Keys);
-                    Assert.Contains(input2.Nodes[6 * i + j], filter.Nodes[0].Weights.Keys);
-                    Assert.Contains(input3.Nodes[6 * i + j], filter.Nodes[0].Weights.Keys);
+                    Assert.Contains(input1.Nodes[(6 * i) + j], filter.Nodes[0].Weights.Keys);
+                    Assert.Contains(input2.Nodes[(6 * i) + j], filter.Nodes[0].Weights.Keys);
+                    Assert.Contains(input3.Nodes[(6 * i) + j], filter.Nodes[0].Weights.Keys);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
@@ -11,10 +11,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Models
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public Filter1DShould(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+        public Filter1DShould(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         [Fact]
         public void ResolveCorrectNodeReferences()

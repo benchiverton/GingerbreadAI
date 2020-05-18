@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.SimilarityFunctions;
@@ -29,9 +29,6 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// <summary>
         /// Converts a list of embeddings to a dictionary.
         /// </summary>
-        public static Dictionary<string, double[]> ToDictionary(this IEnumerable<IEmbedding> embeddings)
-        {
-            return embeddings.ToDictionary(embedding => embedding.Label, embedding => embedding.Vector);
-        }
+        public static Dictionary<string, double[]> ToDictionary(this IEnumerable<IEmbedding> embeddings) => embeddings.ToDictionary(embedding => embedding.Label, embedding => embedding.Vector);
     }
 }

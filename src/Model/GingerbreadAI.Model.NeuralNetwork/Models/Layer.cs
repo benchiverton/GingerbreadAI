@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
@@ -79,15 +79,9 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
             }
         }
 
-        public void CalculateOutputs(double[] inputs)
-        {
-            CalculateOutputs(inputs, new List<Guid>());
-        }
+        public void CalculateOutputs(double[] inputs) => CalculateOutputs(inputs, new List<Guid>());
 
-        public void CalculateOutputs(Dictionary<Layer, double[]> inputs)
-        {
-            CalculateOutputs(inputs, new List<Guid>());
-        }
+        public void CalculateOutputs(Dictionary<Layer, double[]> inputs) => CalculateOutputs(inputs, new List<Guid>());
 
         /// <summary>
         ///  Note: does not support multiple inputs
@@ -180,7 +174,10 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
             foreach (var prevLayer in PreviousLayers)
             {
                 shouldPopulateAllOutputs |= !prevLayer.CalculateIndexedOutput(inputIndex, inputValue);
-                if (shouldPopulateAllOutputs) continue;
+                if (shouldPopulateAllOutputs)
+                {
+                    continue;
+                }
 
                 var inputNode = prevLayer.Nodes[inputIndex];
                 foreach (var node in Nodes)

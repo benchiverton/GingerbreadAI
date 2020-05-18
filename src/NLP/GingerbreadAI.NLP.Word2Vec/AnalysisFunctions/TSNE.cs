@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation;
@@ -89,16 +89,13 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                     inputs.Add(inputI);
                 }
 
-                neuralNetwork.Backpropagate(inputs.ToArray(), targets, ErrorFunctionType.MSE, 0.05, 0.9);
+                neuralNetwork.Backpropagate(inputs.ToArray(), targets, ErrorFunctionType.CrossEntropy, 0.05, 0.9);
             }
         }
 
         /// <summary>
-        /// Calculates the similarity matrix of i related to j (Qij)
+        /// Calculates the similarity matrix of i and j (Qij)
         /// </summary>
-        /// <param name="probabilityMatrix"></param>
-        /// <param name="neuralNetwork"></param>
-        /// <returns></returns>
         private static Dictionary<string, Dictionary<string, double>> CalculateSimilarityMatrix(
             Dictionary<string, Dictionary<string, double>> probabilityMatrix,
             Layer neuralNetwork
@@ -277,7 +274,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                 sum += distance.Value * (probabilities[distance.Key] *= scalingFactor);
             }
 
-            return Math.Log(probabilitySum) - mBeta * sum;
+            return Math.Log(probabilitySum) - (mBeta * sum);
         }
 
         /// <summary>
@@ -292,7 +289,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
         {
             var sum = distances.Values.Sum(distance => distance * distance);
 
-            return 0.5 / sum * perplexity * (distances.Count - 1);
+            return (perplexity * (distances.Count - 1)) / (2 * sum);
         }
     }
 }

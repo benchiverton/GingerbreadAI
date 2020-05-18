@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 
@@ -46,9 +46,6 @@ namespace GingerbreadAI.NLP.Word2Vec
             return wordCollection;
         }
 
-        public StreamReader GetTrainingFileReader()
-        {
-            return File.OpenText(_file);
-        }
+        public StreamReader GetTrainingFileReader() => File.OpenText(_file);
     }
 }
