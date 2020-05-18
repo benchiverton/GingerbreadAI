@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,10 +26,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
         private int _processedImages;
         private bool _continueProcessing = true;
 
-        public Cnn2dMultiThreadedPerformanceTest(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+        public Cnn2dMultiThreadedPerformanceTest(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         [RunnableInDebugOnly]
         public void PerformanceMultiThreadedTestCnnNetwork()

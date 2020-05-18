@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +7,7 @@ using GingerbreadAI.Model.NeuralNetwork.Models;
 
 namespace GingerbreadAI.Model.NeuralNetwork.Extensions
 {
+
     public static class LayerExtensions
     {
         /// <summary>
@@ -146,9 +147,13 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
         #region Private Methods
 
 
-        private static void Initialise(this Node node, Random rand, Func<Random, int, int, double>  initialisationFunction, int nodeCount)
+        private static void Initialise(this Node node, Random rand, Func<Random, int, int, double> initialisationFunction, int nodeCount)
         {
-            if (node == null) return;
+            if (node == null)
+            {
+                return;
+            }
+
             var feedingNodes = node.Weights.Count;
             foreach (var prevNode in node.Weights.Keys.ToList())
             {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using GingerbreadAI.DeepLearning.Backpropagation;
@@ -14,12 +14,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
     public class CurveFrom2DInputUsingBackpropagation
     {
         private const string ResultsDirectory = nameof(CurveFrom2DInputUsingBackpropagation);
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public CurveFrom2DInputUsingBackpropagation(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
 
         [RunnableInDebugOnly]
         public void PredictResultsFromMultipleInputs()
@@ -84,7 +78,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
             }
 
             var suffix = DateTime.Now.Ticks;
-            System.IO.Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
+            Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
             using (var file = new System.IO.StreamWriter($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/networkResults-{suffix}.csv", false))
             {
                 WriteResultToFile(file, actualResults);
@@ -105,10 +99,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.NN
             }
         }
 
-        private static void ModifyLearningRate(ref double rate)
-        {
-            rate = rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
-        }
+        private static void ModifyLearningRate(ref double rate) => rate = rate * 0.99 < 0.1 ? 0.1 : rate * 0.99;
 
         private static double Calculation(double input1, double input2)
             => (input1 + input2) / 2;
