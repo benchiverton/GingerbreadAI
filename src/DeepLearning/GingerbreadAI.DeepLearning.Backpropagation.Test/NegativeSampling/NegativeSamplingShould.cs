@@ -21,7 +21,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             output.Initialise(new Random());
 
-            var learningRate = 0.1; 
+            var learningRate = 0.1;
             for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
@@ -179,8 +179,8 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         public void TrainNetworksUsingDifferentInputsAndOutputsSortofWell()
         {
             var input = new Layer(10, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
-            var h1 = new Layer(25, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.GlorotUniform);
-            var output = new Layer(10, new [] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var h1 = new Layer(25, new[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.GlorotUniform);
+            var output = new Layer(10, new[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
 
@@ -217,11 +217,11 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         public void OnlyChangeRelatedWeights()
         {
             var input = new Layer(10, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
-            var h1 = new Layer(10, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
-            var h2 = new Layer(10, new [] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
-            var h3 = new Layer(10, new [] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
-            var h4 = new Layer(10, new [] { h2, h3 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
-            var output = new Layer(10, new [] { h4 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
+            var h1 = new Layer(10, new[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h2 = new Layer(10, new[] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h3 = new Layer(10, new[] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var h4 = new Layer(10, new[] { h2, h3 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
+            var output = new Layer(10, new[] { h4 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
             output.Initialise(new Random());
 
