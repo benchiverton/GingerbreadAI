@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,7 @@ using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
+using Xunit;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
@@ -24,7 +25,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}");
 
             var word2Vec = new Word2VecTrainer();
-            word2Vec.Setup(InputFileLoc);
+            word2Vec.Setup(InputFileLoc, minWordOccurrences: 3);
             word2Vec.TrainModel(useCbow: false, numberOfIterations: 20);
             word2Vec.WriteWordEmbeddings(embeddingsFileLoc);
         }
@@ -52,14 +53,14 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 
             var titleClusterMap = DBSCAN.GetLabelClusterIndexMap(
                 articles,
-                epsilon: 2,
-                minimumSamples: 5,
-                distanceFunctionType: DistanceFunctionType.Euclidean,
+                epsilon: 0.1,
+                minimumSamples: 3,
+                distanceFunctionType: DistanceFunctionType.Cosine,
                 concurrentThreads: 4
             );
 
             var reportHandler = new ReportWriter(reportFileLoc);
-            reportHandler.WriteLabelsWithClusterIndex(titleClusterMap, articles.Select(t => t.Label));
+            reportHandler.WriteLabelsWithClusterIndex(titleClusterMap, articles.Select(we => we.Label));
         }
     }
 }

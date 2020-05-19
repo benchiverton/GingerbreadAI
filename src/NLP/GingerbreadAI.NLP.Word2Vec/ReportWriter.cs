@@ -6,6 +6,7 @@ using System.Text;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
+using GingerbreadAI.NLP.Word2Vec.SimilarityFunctions;
 
 namespace GingerbreadAI.NLP.Word2Vec
 {
@@ -18,7 +19,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         /// <summary>
         /// Writes the label of each embedding and the labels of the top n embeddings that it is most similar to.
         /// </summary>
-        public void WriteSimilarEmbeddings(IEnumerable<IEmbedding> embeddings, int topn = 10)
+        public void WriteSimilarEmbeddings(IEnumerable<IEmbedding> embeddings, int topn = 10, SimilarityFunctionType similarityFunction = SimilarityFunctionType.Cosine)
         {
             using (var fs = new FileStream(_reportFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
@@ -28,8 +29,8 @@ namespace GingerbreadAI.NLP.Word2Vec
                     embeddings = embeddings.ToArray();
                     foreach (var word in embeddings)
                     {
-                        var similarEmbeddings = embeddings.GetMostSimilarEmbeddings(word, topn);
-                        writer.WriteLine($"{word},{string.Join(',', similarEmbeddings.Select(sw => $"{sw.embedding.Label},{sw.similarity:0.00000}"))}");
+                        var similarEmbeddings = embeddings.GetMostSimilarEmbeddings(word, topn, similarityFunction);
+                        writer.WriteLine($"{word.Label},{string.Join(',', similarEmbeddings.Select(sw => $"{sw.embedding.Label},{sw.similarity:0.00000}"))}");
                     }
                 }
             }

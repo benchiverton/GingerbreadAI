@@ -11,6 +11,8 @@ namespace GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions
                     => 0d,
                 InitialisationFunctionType.Random => (rand, feedingNodeCount, layerNodeCount)
                     => (rand.NextDouble() * 2) - 1,
+                InitialisationFunctionType.RandomWeighted => (rand, feedingNodeCount, layerNodeCount)
+                    => (rand.NextDouble() - 0.5) / layerNodeCount,
                 InitialisationFunctionType.RandomPositive => (rand, feedingNodeCount, layerNodeCount)
                     => rand.NextDouble(),
                 InitialisationFunctionType.HeUniform => (rand, feedingNodeCount, layerNodeCount)

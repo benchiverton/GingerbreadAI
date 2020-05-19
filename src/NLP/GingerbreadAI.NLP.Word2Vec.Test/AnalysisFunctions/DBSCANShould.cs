@@ -8,7 +8,6 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
 {
     public class DBSCANShould
     {
-
         [Theory]
         [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
         public void CorrectlyGetClusterLabels(List<WordEmbedding> wordEmbeddings, (string[] elements, bool isNoise)[] expectedGroups)
