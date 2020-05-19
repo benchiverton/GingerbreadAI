@@ -17,7 +17,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
         {
             foreach (var node in layer.Nodes)
             {
-                node.Initialise(rand, layer.InitialisationFunction, layer.Nodes.Length);
+                node.Initialise(rand, layer.InitialisationFunction, layer.Nodes.Count);
             }
             foreach (var nodeGroupPrev in layer.PreviousLayers)
             {
@@ -49,60 +49,53 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
         /// </summary>
         public static Layer CloneWithDifferentOutputs(this Layer layer)
         {
-
+            var nodes = new Node[layer.Nodes.Count];
             if (!layer.PreviousLayers.Any())
             {
-                var newInputLayer = new Layer()
+                for (var i = 0; i < layer.Nodes.Count; i++)
                 {
-                    Nodes = new Node[layer.Nodes.Length],
-                    PreviousLayers = new Layer[0],
-                    ActivationFunctionType = layer.ActivationFunctionType,
-                    InitialisationFunctionType = layer.InitialisationFunctionType
-                };
-
-                for (var i = 0; i < layer.Nodes.Length; i++)
-                {
-                    newInputLayer.Nodes[i] = new Node();
+                    nodes[i] = new Node();
                 }
 
+                var newInputLayer = new Layer(
+                    nodes,
+                    Array.Empty<Layer>(),
+                    layer.ActivationFunctionType,
+                    layer.InitialisationFunctionType);
+                
                 return newInputLayer;
             }
-
-            var newLayer = new Layer
+            
+            var previousLayers = layer.PreviousLayers.Select(pl => pl.CloneWithDifferentOutputs()).ToArray();
+            for (var i = 0; i < layer.Nodes.Count; i++)
             {
-                PreviousLayers = layer.PreviousLayers.Select(pl => pl.CloneWithDifferentOutputs()).ToArray(),
-                Nodes = new Node[layer.Nodes.Length],
-                ActivationFunctionType = layer.ActivationFunctionType,
-                InitialisationFunctionType = layer.InitialisationFunctionType
-            };
+                var newNode = new Node();
 
-            for (var i = 0; i < layer.Nodes.Length; i++)
-            {
-                var newNode = new Node()
+                for (var j = 0; j < layer.PreviousLayers.Count; j++)
                 {
-                    Weights = new Dictionary<Node, Weight>(),
-                    BiasWeights = new Dictionary<Layer, Weight>()
-                };
-
-                for (var j = 0; j < layer.PreviousLayers.Length; j++)
-                {
-                    for (var k = 0; k < layer.PreviousLayers[j].Nodes.Length; k++)
+                    for (var k = 0; k < layer.PreviousLayers[j].Nodes.Count; k++)
                     {
                         if (layer.Nodes[i].Weights.TryGetValue(layer.PreviousLayers[j].Nodes[k], out var weight))
                         {
-                            newNode.Weights.Add(newLayer.PreviousLayers[j].Nodes[k], weight);
+                            newNode.Weights.Add(previousLayers[j].Nodes[k], weight);
                         }
                     }
                     if (layer.Nodes[i].BiasWeights.TryGetValue(layer.PreviousLayers[j], out var biasWeight))
                     {
-                        newNode.BiasWeights.Add(newLayer.PreviousLayers[j], biasWeight);
+                        newNode.BiasWeights.Add(previousLayers[j], biasWeight);
                     }
                 }
 
-                newLayer.Nodes[i] = newNode;
+                nodes[i] = newNode;
             }
 
-            return newLayer;
+            return new Layer
+            (
+                nodes,
+                previousLayers,
+                layer.ActivationFunctionType,
+                layer.InitialisationFunctionType
+            );
         }
 
         public static Layer DeepCopy(this Layer layer)

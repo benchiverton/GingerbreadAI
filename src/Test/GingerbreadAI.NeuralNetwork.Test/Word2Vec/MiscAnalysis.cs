@@ -8,7 +8,6 @@ using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
-using Xunit;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {

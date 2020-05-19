@@ -9,7 +9,6 @@ using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
 {
@@ -19,7 +18,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         [Fact]
         public void TrainFilterToFeatureSortOfWell()
         {
-            var inputLayer = new Layer2D((3, 3), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var inputLayer = new Layer2D((3, 3), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filter1 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var filter2 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var filter3 = new Filter2D(new[] { inputLayer }, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
@@ -65,9 +64,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         [Fact]
         public void TrainConvolutionalNetworksSortofWellRgb()
         {
-            var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var r = new Layer2D((4, 4), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var g = new Layer2D((4, 4), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var b = new Layer2D((4, 4), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[]
             {
                 new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
@@ -127,9 +126,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.CNN
         [Fact]
         public void TrainConvolutionalNetworksWithPoolingSortofWellRgb()
         {
-            var r = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var g = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
-            var b = new Layer2D((4, 4), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var r = new Layer2D((4, 4), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var g = new Layer2D((4, 4), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var b = new Layer2D((4, 4), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[]
             {
                 new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),

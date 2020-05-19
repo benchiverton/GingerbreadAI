@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using Xunit;
@@ -22,6 +22,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test
             string[] lastLine = null;
             var reader = new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(input)));
             Word2VecTrainer.SetSentence(wordCollection, reader, sentence, nextRandom, ref sentenceLength, ref lastLine, thresholdForOccurrenceOfWords);
+            reader.Dispose();
 
             Assert.Equal(16, sentenceLength);
             Assert.NotNull(sentence[15]);
@@ -42,6 +43,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test
             string[] lastLine = null;
             var reader = new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(input)));
             Word2VecTrainer.SetSentence(wordCollection, reader, sentence, nextRandom, ref sentenceLength, ref lastLine, thresholdForOccurrenceOfWords);
+            reader.Dispose();
 
             Assert.Equal(4, sentenceLength);
             Assert.NotNull(sentence[3]);
@@ -62,6 +64,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test
             string[] lastLine = null;
             var reader = new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(input)));
             Word2VecTrainer.SetSentence(wordCollection, reader, sentence, nextRandom, ref sentenceLength, ref lastLine, thresholdForOccurrenceOfWords);
+            reader.Dispose();
 
             Assert.Equal(12, sentenceLength);
             Assert.NotNull(sentence[11]);

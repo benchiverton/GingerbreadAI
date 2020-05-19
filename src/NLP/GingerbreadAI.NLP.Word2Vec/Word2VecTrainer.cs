@@ -34,7 +34,7 @@ namespace GingerbreadAI.NLP.Word2Vec
             WordCollection.RemoveWordsWithCountLessThanMinCount(minWordOccurrences);
             _table = WordCollection.GetUnigramTable(TableSize);
 
-            var inputLayer = new Layer(WordCollection.GetNumberOfUniqueWords(), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var inputLayer = new Layer(WordCollection.GetNumberOfUniqueWords(), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var hiddenLayer = new Layer(dimensions, new[] { inputLayer }, ActivationFunctionType.Linear, InitialisationFunctionType.RandomWeighted, false);
             NeuralNetwork = new Layer(WordCollection.GetNumberOfUniqueWords(), new[] { hiddenLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl, false);
             NeuralNetwork.Initialise(new Random());

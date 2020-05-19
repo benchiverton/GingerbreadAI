@@ -30,7 +30,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
             {
                 for (var j = 0; j < width - Shape.width + 1; j++) // across
                 {
-                    var nodeWeights = new Dictionary<Node, Weight>();
+                    var node = new Node();
                     for (var k = 0; k < Shape.height; k++) // down
                     {
                         for (var l = 0; l < Shape.width; l++) // across
@@ -38,14 +38,11 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models
                             var nodePosition = j + l + ((i + k) * width);
                             foreach (var prevLayer in previousLayers)
                             {
-                                nodeWeights.Add(prevLayer.Nodes[nodePosition], filterWeightMap[prevLayer][l, k]);
+                                node.Weights.Add(prevLayer.Nodes[nodePosition], filterWeightMap[prevLayer][l, k]);
                             }
                         }
                     }
-                    nodes.Add(new Node
-                    {
-                        Weights = nodeWeights
-                    });
+                    nodes.Add(node);
                 }
             }
 

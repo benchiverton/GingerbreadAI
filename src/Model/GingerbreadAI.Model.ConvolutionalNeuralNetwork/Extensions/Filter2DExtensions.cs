@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.Models;
@@ -43,7 +42,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions
             {
                 for (var j = 0; j < width - filter.Shape.width - poolingDimensions.width + 2; j += poolingDimensions.width) // across
                 {
-                    var nodeWeights = new Dictionary<Node, Weight>();
+                    var node = new Node();
                     for (var k = 0; k < (filter.Shape.width + poolingDimensions.height) - 1; k++) // down
                     {
                         for (var l = 0; l < filter.Shape.height + poolingDimensions.width - 1; l++) // across
@@ -51,14 +50,11 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions
                             var nodePosition = j + l + ((i + k) * width);
                             foreach (var previousLayer in filter.PreviousLayers)
                             {
-                                nodeWeights.Add(previousLayer.Nodes[nodePosition], filterWeightMap[previousLayer][l, k]);
+                                node.Weights.Add(previousLayer.Nodes[nodePosition], filterWeightMap[previousLayer][l, k]);
                             }
                         }
                     }
-                    nodes.Add(new Node
-                    {
-                        Weights = nodeWeights
-                    });
+                    nodes.Add(node);
                 }
             }
 

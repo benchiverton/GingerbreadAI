@@ -4,7 +4,6 @@ using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
 {
@@ -15,7 +14,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
         public void ThrowAnExceptionWhenInputIsInvalid()
         {
             // Input group
-            var inputGroup = new Layer(10, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            var inputGroup = new Layer(10, Array.Empty<Layer>(), ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             var outputGroup = new Layer(10, new[] { inputGroup }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
 
             var inputs = new double[5];
@@ -26,7 +25,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
         public void CalculateBasicResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer(1, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            var inputLayer = new Layer(1, Array.Empty<Layer>(), ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             // Hidden group
             var innerNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -34,11 +33,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var innerNode = GenerateWeightedNode(innerNodeInfo);
             var innerLayer = new Layer
-            {
-                Nodes = new[] { innerNode },
-                PreviousLayers = new[] { inputLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { innerNode },
+                new[] { inputLayer },
+                ActivationFunctionType.Sigmoid
+            );
             // Output group
             var outputNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -46,11 +45,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var outputNode = GenerateWeightedNode(outputNodeInfo);
             var outputLayer = new Layer
-            {
-                Nodes = new[] { outputNode },
-                PreviousLayers = new[] { innerLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { outputNode },
+                new[] { innerLayer },
+                ActivationFunctionType.Sigmoid
+            );
 
             outputLayer.CalculateOutputs(new[] { 0.5 });
 
@@ -66,7 +65,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
         public void CalculateIndexedResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer(5, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            var inputLayer = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             // Hidden group
             var innerNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -74,11 +73,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var innerNode = GenerateWeightedNode(innerNodeInfo);
             var innerLayer = new Layer
-            {
-                Nodes = new[] { innerNode },
-                PreviousLayers = new[] { inputLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { innerNode },
+                new[] { inputLayer },
+                ActivationFunctionType.Sigmoid
+            );
             // Output group
             var outputNodeInfo1 = new Dictionary<Layer, (double[], double)>
             {
@@ -96,11 +95,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             var outputNode2 = GenerateWeightedNode(outputNodeInfo2);
             var outputNode3 = GenerateWeightedNode(outputNodeInfo3);
             var outputLayer = new Layer
-            {
-                Nodes = new[] { outputNode1, outputNode2, outputNode3 },
-                PreviousLayers = new[] { innerLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { outputNode1, outputNode2, outputNode3 },
+                new[] { innerLayer },
+                ActivationFunctionType.Sigmoid
+            );
 
             outputLayer.CalculateIndexedOutput(2, 1, 0.5);
 
@@ -116,7 +115,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
         public void CalculateMultipleGroupsResultCorrectly()
         {
             // Input group
-            var inputLayer = new Layer(1, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            var inputLayer = new Layer(1, Array.Empty<Layer>(), ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             // Hidden group 1
             // Hidden group
             var innerNodeInfo1 = new Dictionary<Layer, (double[], double)>
@@ -125,11 +124,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var innerNode1 = GenerateWeightedNode(innerNodeInfo1);
             var innerLayer1 = new Layer
-            {
-                Nodes = new[] { innerNode1 },
-                PreviousLayers = new[] { inputLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { innerNode1 },
+                new[] { inputLayer },
+                ActivationFunctionType.Sigmoid
+            );
             // Hidden group 2
             // Hidden group
             var innerNodeInfo2 = new Dictionary<Layer, (double[], double)>
@@ -138,11 +137,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var innerNode2 = GenerateWeightedNode(innerNodeInfo2);
             var innerLayer2 = new Layer
-            {
-                Nodes = new[] { innerNode2 },
-                PreviousLayers = new[] { inputLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { innerNode2 },
+                new[] { inputLayer },
+                ActivationFunctionType.Sigmoid
+            );
             // Output group
             var outputNodeInfo = new Dictionary<Layer, (double[], double)>
             {
@@ -151,11 +150,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var outputNode = GenerateWeightedNode(outputNodeInfo);
             var outputLayer = new Layer
-            {
-                Nodes = new[] { outputNode },
-                PreviousLayers = new[] { innerLayer1, innerLayer2 },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { outputNode },
+                new[] { innerLayer1, innerLayer2 },
+                ActivationFunctionType.Sigmoid
+            );
 
             outputLayer.CalculateOutputs(new[] { 0.5 });
 
@@ -173,7 +172,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
         [Fact]
         public void CalculateMultipleNodesResultCorrectly()
         {
-            var inputLayer = new Layer(2, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
+            var inputLayer = new Layer(2, Array.Empty<Layer>(), ActivationFunctionType.Sigmoid, InitialisationFunctionType.None);
             var innerNode1Info = new Dictionary<Layer, (double[], double)>
             {
                 { inputLayer, (new[] { 0.02, 0.07 }, 0) }
@@ -190,11 +189,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var innerNode3 = GenerateWeightedNode(innerNode3Info);
             var innerLayer = new Layer
-            {
-                Nodes = new[] { innerNode1, innerNode2, innerNode3 },
-                PreviousLayers = new[] { inputLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { innerNode1, innerNode2, innerNode3 },
+                new[] { inputLayer },
+                ActivationFunctionType.Sigmoid
+            );
             var outerNode1Info = new Dictionary<Layer, (double[], double)>
             {
                 { innerLayer, (new[] { 0.17, 0.23, 0.31 }, 0) }
@@ -206,11 +205,11 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
             };
             var outerNode2 = GenerateWeightedNode(outerNode2Info);
             var output = new Layer
-            {
-                Nodes = new[] { outerNode1, outerNode2 },
-                PreviousLayers = new[] { innerLayer },
-                ActivationFunctionType = ActivationFunctionType.Sigmoid
-            };
+            (
+                new[] { outerNode1, outerNode2 },
+                new[] { innerLayer },
+                ActivationFunctionType.Sigmoid
+            );
 
             output.CalculateOutputs(new[] { 41.0, 43.0 });
 
@@ -223,31 +222,26 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test.Models
 
         private Node GenerateWeightedNode(Dictionary<Layer, (double[] layerWeights, double biasWeight)> nodeInformation)
         {
-            var weights = new Dictionary<Node, Weight>();
-            var biasWeights = new Dictionary<Layer, Weight>();
+            var node = new Node();
 
             foreach (var nodeLayer in nodeInformation.Keys)
             {
                 var data = nodeInformation[nodeLayer];
 
-                if (data.layerWeights.Length != nodeLayer.Nodes.Length)
+                if (data.layerWeights.Length != nodeLayer.Nodes.Count)
                 {
                     throw new Exception("Incorrect amount of weights supplied");
                 }
 
                 for (var i = 0; i < data.layerWeights.Length; i++)
                 {
-                    weights.Add(nodeLayer.Nodes[i], new Weight(data.layerWeights[i]));
+                    node.Weights.Add(nodeLayer.Nodes[i], new Weight(data.layerWeights[i]));
                 }
 
-                biasWeights.Add(nodeLayer, new Weight(data.biasWeight));
+                node.BiasWeights.Add(nodeLayer, new Weight(data.biasWeight));
             }
 
-            return new Node
-            {
-                Weights = weights,
-                BiasWeights = biasWeights
-            };
+            return node;
         }
     }
 }

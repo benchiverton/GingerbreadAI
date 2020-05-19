@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,7 +142,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                 var localClusterRelationship = clusterRelationship.ToList();
                 var relatedClusters = clusterRelationships.Where(cr
                     => !processedClusterRelationships.Contains(cr)
-                       && cr.Intersect(localClusterRelationship).Count() != 0).ToList();
+                       && cr.Intersect(localClusterRelationship).Any()).ToList();
                 while (relatedClusters.Any())
                 {
                     foreach (var relatedCluster in relatedClusters)
@@ -152,7 +152,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                     }
                     relatedClusters = clusterRelationships.Where(cr
                         => !processedClusterRelationships.Contains(cr)
-                           && cr.Intersect(localClusterRelationship).Count() != 0).ToList();
+                           && cr.Intersect(localClusterRelationship).Any()).ToList();
                 }
                 completeClusterRelationships.Add(localClusterRelationship);
                 processedClusterRelationships.Add(clusterRelationship);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
@@ -10,13 +11,23 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
     {
         private readonly Guid _id = Guid.NewGuid();
 
+        private IReadOnlyList<Node> _nodesWrapper;
+        private IReadOnlyList<Layer> _previousLayersWrapper;
+
+        private Node[] _nodes;
+        private Layer[] _previousLayers;
+
         private ActivationFunctionType _activationFunctionType;
         private InitialisationFunctionType _initialisationFunctionType;
 
         public Layer(
+            Node[] nodes,
+            Layer[] previousLayers,
             ActivationFunctionType activationFunctionType = ActivationFunctionType.RELU,
             InitialisationFunctionType initialisationFunctionType = InitialisationFunctionType.HeEtAl)
         {
+            Nodes = nodes;
+            PreviousLayers = previousLayers;
             ActivationFunctionType = activationFunctionType;
             InitialisationFunctionType = initialisationFunctionType;
         }
@@ -25,24 +36,41 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         {
             ActivationFunctionType = activationFunctionType;
             InitialisationFunctionType = initialisationFunctionType;
-            Nodes = new Node[nodeCount];
             PreviousLayers = previousGroups;
 
+            var nodes = new Node[nodeCount];
             for (var i = 0; i < nodeCount; i++)
             {
-                Nodes[i] = new Node(previousGroups, addBiasWeights);
+                nodes[i] = new Node(previousGroups, addBiasWeights);
             }
+            Nodes = nodes;
         }
 
         /// <summary>
         /// An array of the nodes within this layer.
         /// </summary>
-        public Node[] Nodes { get; set; }
+        public IReadOnlyList<Node> Nodes
+        {
+            get => _nodesWrapper;
+            set
+            {
+                _nodes = value.ToArray();
+                _nodesWrapper = new ReadOnlyCollection<Node>(_nodes);
+            }
+        }
 
         /// <summary>
         /// An array containing the layers that feed into this one.
         /// </summary>
-        public Layer[] PreviousLayers { get; set; }
+        public IReadOnlyList<Layer> PreviousLayers
+        {
+            get => _previousLayersWrapper;
+            set
+            {
+                _previousLayers = value.ToArray();
+                _previousLayersWrapper = new ReadOnlyCollection<Layer>(_previousLayers);
+            }
+        }
 
         /// <summary>
         /// The function used to calculate the output given the aggregated input.
@@ -150,9 +178,9 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
 
         private void SetOutputs(double[] outputs)
         {
-            if (Nodes.Length != outputs.Length)
+            if (Nodes.Count != outputs.Length)
             {
-                throw new ArgumentException($"Layer length ({Nodes.Length}) not equal to length of your output array ({outputs.Length}).");
+                throw new ArgumentException($"Layer length ({Nodes.Count}) not equal to length of your output array ({outputs.Length}).");
             }
 
             var i = 0;

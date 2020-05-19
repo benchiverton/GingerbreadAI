@@ -15,7 +15,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
             if (wordCollection.GetNumberOfUniqueWords() == 0)
             {
                 // maybe throw?
-                return new int[0];
+                return Array.Empty<int>();
             }
 
             var table = new int[tableSize];

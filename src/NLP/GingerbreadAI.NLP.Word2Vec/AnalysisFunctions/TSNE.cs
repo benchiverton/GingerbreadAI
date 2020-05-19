@@ -47,7 +47,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
             var embeddingsList = embeddings.ToList();
             var probabilityMatrix = CalculateProbabilityMatrix(embeddingsList, _distanceFunctionType, _perplexity);
 
-            var inputLayer = new Layer(embeddingsList.Count, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None, false);
+            var inputLayer = new Layer(embeddingsList.Count, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None, false);
             var outputLayer = new Layer(_dimensions, new [] { inputLayer }, ActivationFunctionType.Linear, InitialisationFunctionType.RandomGuassian, false);
             outputLayer.AddMomentumRecursively();
             outputLayer.Initialise(new Random());
@@ -83,7 +83,10 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                 {
                     var inputI = 0d;
                     foreach (var (labelJ, probabilityIJ) in probabilitiesI.Where(pi => pi.Key != labelI))
+                    {
                         inputI += probabilityIJ * Math.Log(probabilityIJ / similarityMatrix[labelI][labelJ]);
+                    }
+
                     inputs.Add(inputI);
                 }
 

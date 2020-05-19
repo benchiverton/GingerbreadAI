@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace GingerbreadAI.Model.NeuralNetwork.Models
@@ -8,12 +8,12 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         /// <summary>
         /// The weights, with reference to the layer & node the value id being mapped from
         /// </summary>
-        public Dictionary<Node, Weight> Weights { get; set; } = new Dictionary<Node, Weight>();
+        public Dictionary<Node, Weight> Weights { get; } = new Dictionary<Node, Weight>();
 
         /// <summary>
         /// The bias weights, with reference to the layer the value is mapped from
         /// </summary>
-        public Dictionary<Layer, Weight> BiasWeights { get; set; } = new Dictionary<Layer, Weight>();
+        public Dictionary<Layer, Weight> BiasWeights { get; } = new Dictionary<Layer, Weight>();
 
         /// <summary>
         /// The output of the node from the last results calculation.

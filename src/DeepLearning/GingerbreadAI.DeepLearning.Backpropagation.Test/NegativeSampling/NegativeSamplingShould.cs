@@ -15,7 +15,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainBasicNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
@@ -41,7 +41,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainBasicNetworksWithMomentumSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
             output.AddMomentumRecursively();
@@ -68,7 +68,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainComplexNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
@@ -96,7 +96,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainComplexNetworksWithMomentumSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
@@ -125,7 +125,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainNetworksUsingTheSameTargetSortofWell()
         {
-            var input = new Layer(100, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(100, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
@@ -151,7 +151,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainNetworksUsingTheSameInputSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(50, new Layer[] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var output = new Layer(100, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
@@ -178,7 +178,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void TrainNetworksUsingDifferentInputsAndOutputsSortofWell()
         {
-            var input = new Layer(10, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(10, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(25, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.GlorotUniform);
             var output = new Layer(10, new [] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
@@ -216,7 +216,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
         [Fact]
         public void OnlyChangeRelatedWeights()
         {
-            var input = new Layer(10, new Layer[0], ActivationFunctionType.Linear, InitialisationFunctionType.None);
+            var input = new Layer(10, Array.Empty<Layer>(), ActivationFunctionType.Linear, InitialisationFunctionType.None);
             var h1 = new Layer(10, new [] { input }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var h2 = new Layer(10, new [] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
             var h3 = new Layer(10, new [] { h1 }, ActivationFunctionType.Linear, InitialisationFunctionType.HeUniform);
@@ -225,21 +225,21 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             output.Initialise(new Random());
 
-            var initialHiddenWeights = new Dictionary<Node, Weight>[h1.Nodes.Length];
-            var initialOutputWeights = new Dictionary<Node, Weight>[output.Nodes.Length];
-            for (var i = 0; i < h1.Nodes.Length; i++)
+            var initialHiddenWeights = new Dictionary<Node, Weight>[h1.Nodes.Count];
+            var initialOutputWeights = new Dictionary<Node, Weight>[output.Nodes.Count];
+            for (var i = 0; i < h1.Nodes.Count; i++)
             {
                 var dict = new Dictionary<Node, Weight>();
-                for (var j = 0; j < input.Nodes.Length; j++)
+                for (var j = 0; j < input.Nodes.Count; j++)
                 {
                     dict.Add(input.Nodes[j], new Weight(h1.Nodes[i].Weights[input.Nodes[j]].Value));
                 }
                 initialHiddenWeights[i] = dict;
             }
-            for (var i = 0; i < output.Nodes.Length; i++)
+            for (var i = 0; i < output.Nodes.Count; i++)
             {
                 var dict = new Dictionary<Node, Weight>();
-                for (var j = 0; j < h4.Nodes.Length; j++)
+                for (var j = 0; j < h4.Nodes.Count; j++)
                 {
                     dict.Add(h4.Nodes[j], new Weight(output.Nodes[i].Weights[h4.Nodes[j]].Value));
                 }
@@ -252,9 +252,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
                 output.NegativeSample(4, 4, true, ErrorFunctionType.CrossEntropy, learningRate);
             }
 
-            for (var i = 0; i < h1.Nodes.Length; i++)
+            for (var i = 0; i < h1.Nodes.Count; i++)
             {
-                for (var j = 0; j < input.Nodes.Length; j++)
+                for (var j = 0; j < input.Nodes.Count; j++)
                 {
                     if (j != 4)
                     {
@@ -266,9 +266,9 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
                     }
                 }
             }
-            for (var i = 0; i < output.Nodes.Length; i++)
+            for (var i = 0; i < output.Nodes.Count; i++)
             {
-                for (var j = 0; j < h4.Nodes.Length; j++)
+                for (var j = 0; j < h4.Nodes.Count; j++)
                 {
                     if (i != 4)
                     {

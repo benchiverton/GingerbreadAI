@@ -13,7 +13,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NN
         [Fact]
         public void TrainBasicNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var output = new Layer(5, new Layer[] { h1 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
 
@@ -40,7 +40,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NN
         [Fact]
         public void TrainComplexNetworksSortofWell()
         {
-            var input = new Layer(5, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var h1 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var h2 = new Layer(10, new Layer[] { input }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var h3 = new Layer(10, new Layer[] { h1, h2 }, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);

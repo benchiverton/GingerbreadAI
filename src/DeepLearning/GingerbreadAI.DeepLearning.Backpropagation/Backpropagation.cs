@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
 using GingerbreadAI.DeepLearning.Backpropagation.Interfaces;
@@ -69,7 +69,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation
 
             var deltas = new Dictionary<Node, double>();
 
-            for (var i = 0; i < outputLayer.Nodes.Length; i++)
+            for (var i = 0; i < outputLayer.Nodes.Count; i++)
             {
                 var node = outputLayer.Nodes[i];
                 var delta = errorFunctionDifferential.Invoke(targetOutputs[i], node.Output)
