@@ -21,7 +21,7 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Test.NegativeSampling
 
             output.Initialise(new Random());
 
-            var learningRate = 0.1;
+            var learningRate = 0.1; 
             for (var i = 0; i < 1000; i++)
             {
                 output.NegativeSample(0, 0, false, ErrorFunctionType.CrossEntropy, learningRate);
