@@ -83,9 +83,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
                 {
                     var inputI = 0d;
                     foreach (var (labelJ, probabilityIJ) in probabilitiesI.Where(pi => pi.Key != labelI))
-                    {
                         inputI += probabilityIJ * Math.Log(probabilityIJ / similarityMatrix[labelI][labelJ]);
-                    }
                     inputs.Add(inputI);
                 }
 
