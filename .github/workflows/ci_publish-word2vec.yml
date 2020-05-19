@@ -1,0 +1,41 @@
+name: Publish Word2Vec to NuGet
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+    - 'src/NLP/GingerbreadAI.NLP.Word2Vec/**'
+    - '.github/workflows/ci_publish-word2vec.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+    - 'src/NLP/GingerbreadAI.NLP.Word2Vec/**'
+    - '.github/workflows/ci_publish-word2vec.yml'
+
+env:
+  PROJECT_LOCATION: src/NLP/GingerbreadAI.NLP.Word2Vec/
+  PROJECT_FILE: GingerbreadAI.NLP.Word2Vec.csproj
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+        source-url: https://nuget.pkg.github.com/benchiverton/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      # suffix the package with the run number if building from a PR
+    - name: Pack Pre-Release
+      if: github.event_name == 'pull_request' && github.event.action != 'closed'
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols --version-suffix pr${{ github.RUN_NUMBER }} 
+    - name: Pack Release
+      if: github.event_name == 'push'
+      run: dotnet pack ${{ env.PROJECT_LOCATION }}${{ env.PROJECT_FILE }} --configuration Release --include-symbols
+    - name: Publish
+      run: dotnet nuget push ${{ env.PROJECT_LOCATION }}bin/Release/*.nupkg --skip-duplicate

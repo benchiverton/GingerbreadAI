@@ -31,6 +31,13 @@ There is an implementation of [backpropagation](https://en.wikipedia.org/wiki/Ba
 | Mean Squared Error | https://en.wikipedia.org/wiki/Mean_squared_error |
 | Cross Entropy      | https://en.wikipedia.org/wiki/Cross_entropy      |
 
+There is an implementation of [Word2vec](https://en.wikipedia.org/wiki/Word2vec), supporting both Skip Gram and CBOW architectures. To analyse word embeddings, there are implementations of the following algorithms:
+
+| Algorithm                                                    | Links                                                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Density-based spatial clustering of applications with noise (DBSCAN) | https://en.wikipedia.org/wiki/DBSCAN                         |
+| T-distributed Stochastic Neighbor Embedding (t-SNE)          | https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding |
+
 ## Getting Started
 
 Open the [GingerbreadAI.NeuralNetwork.Test](src) solution file.

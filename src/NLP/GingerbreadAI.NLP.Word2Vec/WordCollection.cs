@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GingerbreadAI.NLP.Word2Vec
 {
@@ -9,10 +10,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         private readonly Dictionary<string, WordInfo> _words;
         private WordInfo[] _wordPositionLookup;
 
-        public WordCollection()
-        {
-            _words = new Dictionary<string, WordInfo>();
-        }
+        public WordCollection() => _words = new Dictionary<string, WordInfo>();
 
         public long? this[string index] => _words.ContainsKey(index) ? (long?)_words[index].Position : null;
         public WordInfo this[long index] => _wordPositionLookup[index];
@@ -38,16 +36,19 @@ namespace GingerbreadAI.NLP.Word2Vec
 
         public long GetTotalNumberOfWords() => _words.Sum(x => x.Value.Count);
 
-        public double GetTrainWordsPow(double power)
+        public double GetSumOfOccurenceOfWordsRaisedToPower(double power)
             => _words.Sum(x => Math.Pow(x.Value.Count, power));
 
-        public long GetOccurrenceOfWord(string word) => _words[word].Count;
+        public int GetOccurrenceOfWord(string word) => _words[word].Count;
 
         public void RemoveWordsWithCountLessThanMinCount(int minCount)
         {
             foreach (var word in _words.ToArray())
             {
-                if (word.Value.Count < minCount) _words.Remove(word.Key);
+                if (word.Value.Count < minCount)
+                {
+                    _words.Remove(word.Key);
+                }
             }
             GC.Collect();
         }
@@ -86,25 +87,38 @@ namespace GingerbreadAI.NLP.Word2Vec
             _words[word].CodeLength = index;
         }
 
-        public static string Clean(string input)
-            => input.Replace("\r", " ")
-                    .Replace("\n", " ")
-                    .Replace("\t", " ")
-                    .Replace(",", " ")
-                    .Replace("\"", " ")
-                    .ToLower();
-
         public static IEnumerable<string> ParseWords(string input)
-            => input.Split(new[] { "\r", "\n", "\t", " ", ",", "\"" },
-                StringSplitOptions.RemoveEmptyEntries).Select(y => y.ToLower());
+            => input
+                .Replace("<", " <")
+                .Replace(">", "> ")
+                .Replace(',', ' ')
+                .Replace('.', ' ')
+                .Replace('!', ' ')
+                .Replace('?', ' ')
+                .Replace('\r', ' ')
+                .Replace('\n', ' ')
+                .Replace('\t', ' ')
+                .Replace('"', ' ')
+                .Replace('“', ' ')
+                .Replace('(', ' ')
+                .Replace(')', ' ')
+                .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+                .Select(y => y.ToLower())
+                .Where(i => Regex.IsMatch(i, "[a-z]"));
 
         private static Func<long, WordInfo> GetWordInfoCreator(int length)
             => x => new WordInfo(new char[length], new long[length], x);
 
         private void UpsertWord(string word, Func<long, WordInfo> createWordInfo, long position)
         {
-            if (_words.ContainsKey(word)) _words[word].IncrementCount();
-            else _words.Add(word, createWordInfo(position));
+            if (_words.ContainsKey(word))
+            {
+                _words[word].IncrementCount();
+            }
+            else
+            {
+                _words.Add(word, createWordInfo(position));
+            }
         }
 
         private void PopulateWithWords(IEnumerable<string> words,
@@ -113,11 +127,13 @@ namespace GingerbreadAI.NLP.Word2Vec
             var i = 0;
             foreach (var word in words)
             {
-                if (string.IsNullOrWhiteSpace(word)) continue;
-                UpsertWord(Clean(word), infoCreator, i++);
+                if (string.IsNullOrWhiteSpace(word))
+                {
+                    continue;
+                }
+
+                UpsertWord(word, infoCreator, i++);
             }
         }
-
-
     }
 }

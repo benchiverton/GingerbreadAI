@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation.Models;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.Models;
@@ -33,13 +33,11 @@ namespace GingerbreadAI.DeepLearning.Backpropagation.Extensions
             }
         }
 
-        private static Weight GetWeightWithMomentum(Weight weightWithoutMomentum)
-        {
-            return weightWithoutMomentum switch
+        private static Weight GetWeightWithMomentum(Weight weightWithoutMomentum) =>
+            weightWithoutMomentum switch
             {
                 WeightWithPooling weightWithPooling => new WeightWithPoolingAndMomentum(weightWithPooling),
                 _ => new WeightWithMomentum(weightWithoutMomentum.Value),
             };
-        }
     }
 }

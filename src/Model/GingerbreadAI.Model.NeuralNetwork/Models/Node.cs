@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace GingerbreadAI.Model.NeuralNetwork.Models
@@ -8,12 +8,12 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         /// <summary>
         /// The weights, with reference to the layer & node the value id being mapped from
         /// </summary>
-        public Dictionary<Node, Weight> Weights { get; set; } = new Dictionary<Node, Weight>();
+        public Dictionary<Node, Weight> Weights { get; } = new Dictionary<Node, Weight>();
 
         /// <summary>
         /// The bias weights, with reference to the layer the value is mapped from
         /// </summary>
-        public Dictionary<Layer, Weight> BiasWeights { get; set; } = new Dictionary<Layer, Weight>();
+        public Dictionary<Layer, Weight> BiasWeights { get; } = new Dictionary<Layer, Weight>();
 
         /// <summary>
         /// The output of the node from the last results calculation.
@@ -24,7 +24,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         {
         }
 
-        public Node(IReadOnlyList<Layer> nodeGroupPrev)
+        public Node(IReadOnlyList<Layer> nodeGroupPrev, bool addBiasWeights)
         {
             foreach (var prevNodeLayer in nodeGroupPrev)
             {
@@ -34,9 +34,12 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
                 }
             }
 
-            foreach (var prevNodeLayer in nodeGroupPrev)
+            if (addBiasWeights)
             {
-                BiasWeights.Add(prevNodeLayer, new Weight(0));
+                foreach (var prevNodeLayer in nodeGroupPrev)
+                {
+                    BiasWeights.Add(prevNodeLayer, new Weight(0));
+                }
             }
         }
 
@@ -44,7 +47,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Models
         {
             var output = 0d;
 
-            // TODO: optimise this
             foreach (var weight in Weights)
             {
                 output += weight.Key.Output * weight.Value.Value;

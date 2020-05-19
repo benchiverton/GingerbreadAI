@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +7,7 @@ using GingerbreadAI.Model.NeuralNetwork.Models;
 
 namespace GingerbreadAI.Model.NeuralNetwork.Extensions
 {
+
     public static class LayerExtensions
     {
         /// <summary>
@@ -16,7 +17,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
         {
             foreach (var node in layer.Nodes)
             {
-                node.Initialise(rand, layer.InitialisationFunction, layer.Nodes.Length);
+                node.Initialise(rand, layer.InitialisationFunction, layer.Nodes.Count);
             }
             foreach (var nodeGroupPrev in layer.PreviousLayers)
             {
@@ -42,6 +43,61 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
             return layer.Nodes[outputIndex].Output;
         }
 
+        /// <summary>
+        /// Returns a clone of the network with different outputs.
+        /// This can solve the problem of the same network overwriting its outputs in a multi-threaded scenario
+        /// </summary>
+        public static Layer CloneWithDifferentOutputs(this Layer layer)
+        {
+            var nodes = new Node[layer.Nodes.Count];
+            if (!layer.PreviousLayers.Any())
+            {
+                for (var i = 0; i < layer.Nodes.Count; i++)
+                {
+                    nodes[i] = new Node();
+                }
+
+                var newInputLayer = new Layer(
+                    nodes,
+                    Array.Empty<Layer>(),
+                    layer.ActivationFunctionType,
+                    layer.InitialisationFunctionType);
+                
+                return newInputLayer;
+            }
+            
+            var previousLayers = layer.PreviousLayers.Select(pl => pl.CloneWithDifferentOutputs()).ToArray();
+            for (var i = 0; i < layer.Nodes.Count; i++)
+            {
+                var newNode = new Node();
+
+                for (var j = 0; j < layer.PreviousLayers.Count; j++)
+                {
+                    for (var k = 0; k < layer.PreviousLayers[j].Nodes.Count; k++)
+                    {
+                        if (layer.Nodes[i].Weights.TryGetValue(layer.PreviousLayers[j].Nodes[k], out var weight))
+                        {
+                            newNode.Weights.Add(previousLayers[j].Nodes[k], weight);
+                        }
+                    }
+                    if (layer.Nodes[i].BiasWeights.TryGetValue(layer.PreviousLayers[j], out var biasWeight))
+                    {
+                        newNode.BiasWeights.Add(previousLayers[j], biasWeight);
+                    }
+                }
+
+                nodes[i] = newNode;
+            }
+
+            return new Layer
+            (
+                nodes,
+                previousLayers,
+                layer.ActivationFunctionType,
+                layer.InitialisationFunctionType
+            );
+        }
+
         public static Layer DeepCopy(this Layer layer)
         {
             using (var ms = new MemoryStream())
@@ -51,12 +107,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
                 ms.Position = 0;
                 return (Layer)formatter.Deserialize(ms);
             }
-        }
-
-        // Use this when multi-threading the same network
-        public static Layer CloneWithSameWeightValueReferences(this Layer layer)
-        {
-            return RecurseCloneWithSameWeightValueReferences(layer);
         }
 
         public static void SaveNetwork(this Layer layer, string location)
@@ -90,9 +140,13 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
         #region Private Methods
 
 
-        private static void Initialise(this Node node, Random rand, Func<Random, int, int, double>  initialisationFunction, int nodeCount)
+        private static void Initialise(this Node node, Random rand, Func<Random, int, int, double> initialisationFunction, int nodeCount)
         {
-            if (node == null) return;
+            if (node == null)
+            {
+                return;
+            }
+
             var feedingNodes = node.Weights.Count;
             foreach (var prevNode in node.Weights.Keys.ToList())
             {
@@ -103,73 +157,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
             {
                 node.BiasWeights[biasWeightKey].Adjust(initialisationFunction.Invoke(rand, feedingNodes, nodeCount));
             }
-        }
-
-        private static Layer RecurseCloneWithSameWeightValueReferences(Layer layer)
-        {
-            if (!layer.PreviousLayers.Any())
-            {
-                var newInputLayer = new Layer()
-                {
-                    Nodes = new Node[layer.Nodes.Length],
-                    PreviousLayers = new Layer[0],
-                    ActivationFunctionType = layer.ActivationFunctionType,
-                    InitialisationFunctionType = layer.InitialisationFunctionType
-                };
-
-                for (var i = 0; i < layer.Nodes.Length; i++)
-                {
-                    newInputLayer.Nodes[i] = new Node
-                    {
-                        Weights = new Dictionary<Node, Weight>(),
-                        BiasWeights = new Dictionary<Layer, Weight>()
-                    };
-                }
-
-                return newInputLayer;
-            }
-
-            var clonedPreviousLayers = new List<Layer>();
-            foreach (var previousLayer in layer.PreviousLayers)
-            {
-                clonedPreviousLayers.Add(RecurseCloneWithSameWeightValueReferences(previousLayer));
-            }
-
-            var newLayer = new Layer
-            {
-                PreviousLayers = clonedPreviousLayers.ToArray(),
-                Nodes = new Node[layer.Nodes.Length],
-                ActivationFunctionType = layer.ActivationFunctionType,
-                InitialisationFunctionType = layer.InitialisationFunctionType
-            };
-
-            for (var i = 0; i < layer.Nodes.Length; i++)
-            {
-                var newNode = new Node()
-                {
-                    Weights = new Dictionary<Node, Weight>(),
-                    BiasWeights = new Dictionary<Layer, Weight>()
-                };
-
-                for (var j = 0; j < layer.PreviousLayers.Length; j++)
-                {
-                    for (var k = 0; k < layer.PreviousLayers[j].Nodes.Length; k++)
-                    {
-                        if (layer.Nodes[i].Weights.TryGetValue(layer.PreviousLayers[j].Nodes[k], out var weight))
-                        {
-                            newNode.Weights.Add(newLayer.PreviousLayers[j].Nodes[k], weight);
-                        }
-                    }
-                    if (layer.Nodes[i].BiasWeights.TryGetValue(layer.PreviousLayers[j], out var biasWeight))
-                    {
-                        newNode.BiasWeights.Add(newLayer.PreviousLayers[j], biasWeight);
-                    }
-                }
-
-                newLayer.Nodes[i] = newNode;
-            }
-
-            return newLayer;
         }
 
         #endregion

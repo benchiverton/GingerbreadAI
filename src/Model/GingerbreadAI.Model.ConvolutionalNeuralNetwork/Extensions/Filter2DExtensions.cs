@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 
@@ -36,28 +36,25 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions
                 filterWeightMap.Add(prevLayer, pooledWeightMap);
             }
 
-            var prevLayerDimensions = (filter.PreviousLayers[0] as Layer2D).Shape;
+            var (height, width) = ((Layer2D) filter.PreviousLayers[0]).Shape;
             var nodes = new List<Node>();
-            for (var i = 0; i < prevLayerDimensions.height - filter.Shape.height - poolingDimensions.height + 2; i += poolingDimensions.height) // down
+            for (var i = 0; i < height - filter.Shape.height - poolingDimensions.height + 2; i += poolingDimensions.height) // down
             {
-                for (var j = 0; j < prevLayerDimensions.width - filter.Shape.width - poolingDimensions.width + 2; j += poolingDimensions.width) // across
+                for (var j = 0; j < width - filter.Shape.width - poolingDimensions.width + 2; j += poolingDimensions.width) // across
                 {
-                    var nodeWeights = new Dictionary<Node, Weight>();
-                    for (var k = 0; k < filter.Shape.width + poolingDimensions.height - 1; k++) // down
+                    var node = new Node();
+                    for (var k = 0; k < (filter.Shape.width + poolingDimensions.height) - 1; k++) // down
                     {
                         for (var l = 0; l < filter.Shape.height + poolingDimensions.width - 1; l++) // across
                         {
-                            var nodePosition = j + l + (i + k) * prevLayerDimensions.width;
+                            var nodePosition = j + l + ((i + k) * width);
                             foreach (var previousLayer in filter.PreviousLayers)
                             {
-                                nodeWeights.Add(previousLayer.Nodes[nodePosition], filterWeightMap[previousLayer][l, k]);
+                                node.Weights.Add(previousLayer.Nodes[nodePosition], filterWeightMap[previousLayer][l, k]);
                             }
                         }
                     }
-                    nodes.Add(new Node
-                    {
-                        Weights = nodeWeights
-                    });
+                    nodes.Add(node);
                 }
             }
 

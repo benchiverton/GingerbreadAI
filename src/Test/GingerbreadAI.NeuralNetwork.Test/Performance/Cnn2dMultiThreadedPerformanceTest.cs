@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +12,6 @@ using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Performance
@@ -27,18 +26,15 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
         private int _processedImages;
         private bool _continueProcessing = true;
 
-        public Cnn2dMultiThreadedPerformanceTest(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+        public Cnn2dMultiThreadedPerformanceTest(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         [RunnableInDebugOnly]
         public void PerformanceMultiThreadedTestCnnNetwork()
         {
-            var input = new Layer2D((10, 10), new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.None);
+            var input = new Layer2D((10, 10), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
             var filters = new[] { input }.Add2DConvolutionalLayer(16, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
             filters.AddPooling((2, 2));
-            var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
+            var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.Tanh, InitialisationFunctionType.HeUniform);
             var output = new Layer(3, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
             output.AddMomentumRecursively();
             output.Initialise(new Random());
@@ -54,7 +50,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
 
             Parallel.For(0, 4, i =>
             {
-                var networkToTrainWith = output.CloneWithSameWeightValueReferences();
+                var networkToTrainWith = output.CloneWithDifferentOutputs();
                 while (_continueProcessing)
                 {
                     networkToTrainWith.Backpropagate(SquareAsArray, new[] { 1d, 0d, 0d }, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
@@ -65,14 +61,14 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
                     _processedImages++;
                 }
             });
-            timer.Stop();
+            timer.Dispose();
 
             output.CalculateOutputs(SquareAsArray);
-            _testOutputHelper.WriteLine($"Results after training from Square: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            _testOutputHelper.WriteLine($"Results after training from Square: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle: {output.Nodes[2].Output:0.000}");
             output.CalculateOutputs(CircleAsArray);
-            _testOutputHelper.WriteLine($"Results after training from Circle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            _testOutputHelper.WriteLine($"Results after training from Circle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle: {output.Nodes[2].Output:0.000}");
             output.CalculateOutputs(TriangleAsArray);
-            _testOutputHelper.WriteLine($"Results after training from Triangle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle:{output.Nodes[2].Output:0.000}");
+            _testOutputHelper.WriteLine($"Results after training from Triangle: Square: {output.Nodes[0].Output:0.000}; Circle: {output.Nodes[1].Output:0.000}, Triangle: {output.Nodes[2].Output:0.000}");
         }
 
         private void OnTimerElapsed(object source, ElapsedEventArgs e)
@@ -89,7 +85,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             }
         }
 
-        private double[] SquareAsArray => TransformTo1dArray(new double[,]
+        private static double[] SquareAsArray => TransformTo1dArray(new double[,]
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,1,1,1,1,1,1,1,1,0 },
@@ -103,7 +99,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             { 0,0,0,0,0,0,0,0,0,0 },
         }).ToArray();
 
-        private double[] CircleAsArray => TransformTo1dArray(new double[,]
+        private static double[] CircleAsArray => TransformTo1dArray(new double[,]
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,1,1,0,0,0,0 },
@@ -117,7 +113,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
             { 0,0,0,0,0,0,0,0,0,0 },
         }).ToArray();
 
-        private double[] TriangleAsArray => TransformTo1dArray(new double[,]
+        private static double[] TriangleAsArray => TransformTo1dArray(new double[,]
         {
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,1,1,0,0,0,0 },

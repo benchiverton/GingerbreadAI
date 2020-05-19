@@ -1,12 +1,14 @@
-﻿namespace GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions
+namespace GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions
 {
     public enum InitialisationFunctionType
     {
-        None = 0,
-        Random = 1,
-        RandomPositive = 2,
-        HeUniform = 3,
-        GlorotUniform = 4,
-        HeEtAl = 5,
+        None,
+        Random,
+        RandomWeighted,
+        RandomPositive,
+        HeUniform,
+        GlorotUniform,
+        HeEtAl,
+        RandomGuassian,
     }
 }

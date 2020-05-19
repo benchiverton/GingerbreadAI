@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Statistics
 {
-    public class AccuracyStatistics
+    public static class AccuracyStatistics
     {
         // https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test
         // smaller value returned => values closer to target
@@ -30,7 +30,18 @@ namespace GingerbreadAI.NeuralNetwork.Test.Statistics
             var errorMessage = new StringBuilder();
             var shouldThrowException = false;
 
-            if (values.Length != target.Length)
+            if (values == null)
+            {
+                errorMessage.AppendLine("'values' cannot be null");
+                shouldThrowException = true;
+            }
+            if (target == null)
+            {
+                errorMessage.AppendLine("'target' cannot be null");
+                shouldThrowException = true;
+            }
+
+            if (values?.Length != target?.Length)
             {
                 errorMessage.AppendLine("List 'values' must be the same length as the 'targets'");
                 shouldThrowException = true;

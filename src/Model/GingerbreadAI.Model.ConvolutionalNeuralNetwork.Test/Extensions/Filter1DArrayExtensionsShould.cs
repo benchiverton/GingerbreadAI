@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
 using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
@@ -22,7 +22,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Extensions
             //
             // Pooling:
             // 1,2 + 2,3
-            var input = new Layer1D(3, new Layer[0], ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
+            var input = new Layer1D(3, System.Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             var filter = new Filter1D(new[] { input }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
             // Expected weights after adjusting to 1: 
             // 0.50: 1,3
@@ -38,7 +38,7 @@ namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Test.Extensions
 
             var node = Assert.Single(filter.Nodes);
             Assert.Equal(3, node.Weights.Count);
-            for (var i = 0; i < input.Nodes.Length; i++)
+            for (var i = 0; i < input.Nodes.Count; i++)
             {
                 var (_, weight) = node.Weights.First(w => w.Key == input.Nodes[i]);
                 // set weight so that we can assert the _magnitude is correctly set

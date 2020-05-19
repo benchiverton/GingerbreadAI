@@ -1,21 +1,14 @@
-﻿namespace GingerbreadAI.Model.NeuralNetwork.Models
+namespace GingerbreadAI.Model.NeuralNetwork.Models
 {
     public class Weight
     {
-        public Weight(double value)
-        {
-            Value = value;
-        }
+        public Weight(double value) => Value = value;
 
         public virtual double Value { get; private set; }
 
         /// <summary>
         /// Adjusts the value of the weight by the change provided.
         /// </summary>
-        /// <param name="change"></param>
-        public virtual void Adjust(double change)
-        {
-            Value += change;
-        }
+        public virtual void Adjust(double change) => Value += change;
     }
 }

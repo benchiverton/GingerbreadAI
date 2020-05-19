@@ -1,28 +1,23 @@
-﻿using System;
+using System;
 using System.Linq;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GingerbreadAI.Model.NeuralNetwork.Test
 {
     public class LayerExtensionsShould
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
         private readonly Layer _input;
         private readonly Layer _hidden1;
         private readonly Layer _hidden2;
         private readonly Layer _output;
 
-        public LayerExtensionsShould(ITestOutputHelper testOutputHelper)
+        public LayerExtensionsShould()
         {
-            _testOutputHelper = testOutputHelper;
-
-            _input = new Layer(5, new Layer[0], ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
+            _input = new Layer(5, Array.Empty<Layer>(), ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
             _hidden1 = new Layer(10, new[] { _input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
             _hidden2 = new Layer(15, new[] { _input }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
             _output = new Layer(20, new[] { _hidden1, _hidden2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
@@ -35,17 +30,17 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
             _output.CalculateOutputs(new[] { 0.1, 0.2, 0.3, 0.4, 0.5 });
 
             var copiedOutput = _output.DeepCopy();
-            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
-            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 15);
+            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Count == 10);
+            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Count == 15);
             var copiedInput = copiedHidden1.PreviousLayers.Single();
 
             // input
-            for (var i = 0; i < _input.Nodes.Length; i++)
+            for (var i = 0; i < _input.Nodes.Count; i++)
             {
                 Assert.Equal(_input.Nodes[i].Output, copiedInput.Nodes[i].Output);
             }
             // hidden 1
-            for (var i = 0; i < _hidden1.Nodes.Length; i++)
+            for (var i = 0; i < _hidden1.Nodes.Count; i++)
             {
                 Assert.Equal(_hidden1.Nodes[i].Output, copiedHidden1.Nodes[i].Output);
                 for (var j = 0; j < _hidden1.Nodes[i].Weights.Count; j++)
@@ -58,7 +53,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
                 }
             }
             // hidden 2
-            for (var i = 0; i < _hidden2.Nodes.Length; i++)
+            for (var i = 0; i < _hidden2.Nodes.Count; i++)
             {
                 Assert.Equal(_hidden2.Nodes[i].Output, copiedHidden2.Nodes[i].Output);
                 for (var j = 0; j < _hidden2.Nodes[i].Weights.Count; j++)
@@ -71,7 +66,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
                 }
             }
             // output
-            for (var i = 0; i < _output.Nodes.Length; i++)
+            for (var i = 0; i < _output.Nodes.Count; i++)
             {
                 Assert.Equal(_output.Nodes[i].Output, copiedOutput.Nodes[i].Output);
                 for (var j = 0; j < _output.Nodes[i].Weights.Count; j++)
@@ -94,18 +89,18 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
             _output.Initialise(random);
             _output.CalculateOutputs(inputs);
 
-            var copiedOutput = _output.CloneWithSameWeightValueReferences();
+            var copiedOutput = _output.CloneWithDifferentOutputs();
             copiedOutput.Initialise(random);
             copiedOutput.CalculateOutputs(inputs);
 
-            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 10);
-            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Length == 15);
+            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Count == 10);
+            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Count == 15);
             var copiedInput = copiedHidden1.PreviousLayers.Single();
 
             // input
             Assert.Equal(_input.ActivationFunctionType, copiedInput.ActivationFunctionType);
             Assert.Equal(_input.InitialisationFunctionType, copiedInput.InitialisationFunctionType);
-            for (var i = 0; i < _input.Nodes.Length; i++)
+            for (var i = 0; i < _input.Nodes.Count; i++)
             {
                 // inputs will be equal (as we supply them!)
                 Assert.Equal(_input.Nodes[i].Output, copiedInput.Nodes[i].Output);
@@ -113,7 +108,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
             // hidden 1
             Assert.Equal(_hidden1.ActivationFunctionType, copiedHidden1.ActivationFunctionType);
             Assert.Equal(_hidden1.InitialisationFunctionType, copiedHidden1.InitialisationFunctionType);
-            for (var i = 0; i < _hidden1.Nodes.Length; i++)
+            for (var i = 0; i < _hidden1.Nodes.Count; i++)
             {
                 Assert.NotEqual(_hidden1.Nodes[i].Output, copiedHidden1.Nodes[i].Output);
                 for (var j = 0; j < _hidden1.Nodes[i].Weights.Count; j++)
@@ -130,7 +125,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
             // hidden 2
             Assert.Equal(_hidden2.ActivationFunctionType, copiedHidden2.ActivationFunctionType);
             Assert.Equal(_hidden2.InitialisationFunctionType, copiedHidden2.InitialisationFunctionType);
-            for (var i = 0; i < _hidden2.Nodes.Length; i++)
+            for (var i = 0; i < _hidden2.Nodes.Count; i++)
             {
                 Assert.NotEqual(_hidden2.Nodes[i].Output, copiedHidden2.Nodes[i].Output);
                 for (var j = 0; j < _hidden2.Nodes[i].Weights.Count; j++)
@@ -147,7 +142,7 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
             // output
             Assert.Equal(_output.ActivationFunctionType, copiedOutput.ActivationFunctionType);
             Assert.Equal(_output.InitialisationFunctionType, copiedOutput.InitialisationFunctionType);
-            for (var i = 0; i < _output.Nodes.Length; i++)
+            for (var i = 0; i < _output.Nodes.Count; i++)
             {
                 Assert.NotEqual(_output.Nodes[i].Output, copiedOutput.Nodes[i].Output);
                 for (var j = 0; j < _output.Nodes[i].Weights.Count; j++)
@@ -161,12 +156,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
                     Assert.Equal(_output.Nodes[i].BiasWeights.Values.ToArray()[j].Value, copiedOutput.Nodes[i].BiasWeights.Values.ToArray()[j].Value);
                 }
             }
-        }
-
-        [Fact(Skip = "Debug only")]
-        public void SaveCorrectly()
-        {
-            // TODO
         }
     }
 }
