@@ -44,6 +44,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
 
         public void ReduceDimensions(IEnumerable<IEmbedding> embeddings)
         {
+            // TODO: make this work
             var embeddingsList = embeddings.ToList();
             var probabilityMatrix = CalculateProbabilityMatrix(embeddingsList, _distanceFunctionType, _perplexity);
 
