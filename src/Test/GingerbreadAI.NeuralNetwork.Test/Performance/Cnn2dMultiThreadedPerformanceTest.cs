@@ -12,6 +12,7 @@ using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Extensions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.Models;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Performance
@@ -28,7 +29,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Performance
 
         public Cnn2dMultiThreadedPerformanceTest(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
-        [RunnableInDebugOnly]
+        [Fact]
         public void PerformanceMultiThreadedTestCnnNetwork()
         {
             var input = new Layer2D((10, 10), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);

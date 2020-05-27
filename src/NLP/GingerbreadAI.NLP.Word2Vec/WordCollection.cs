@@ -39,7 +39,7 @@ namespace GingerbreadAI.NLP.Word2Vec
         public double GetSumOfOccurenceOfWordsRaisedToPower(double power)
             => _words.Sum(x => Math.Pow(x.Value.Count, power));
 
-        public int GetOccurrenceOfWord(string word) => _words[word].Count;
+        public int GetOccurrenceOfWord(string word) => _words.TryGetValue(word, out var wordInfo) ? wordInfo.Count : 0;
 
         public void RemoveWordsWithCountLessThanMinCount(int minCount)
         {

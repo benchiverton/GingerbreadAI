@@ -10,7 +10,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// Assigns the vectors for article embeddings given the word embeddings.
         /// Weights each word in the article using TF-IDF.
         /// </summary>
-        public static void AssignWeightedVectorsFromWordEmbeddings(this IEnumerable<ArticleEmbedding> articles, IEnumerable<WordEmbedding> wordEmbeddings)
+        public static void AssignVectorsFromWeightedWordEmbeddings(this IEnumerable<ArticleEmbedding> articles, IEnumerable<WordEmbedding> wordEmbeddings)
         {
             var wordEmbeddingsDictionary = wordEmbeddings.ToDictionary();
             var vectorDimension = wordEmbeddingsDictionary.First().Value.Length;
@@ -32,7 +32,10 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
                     }
                 }
 
-                embedding = embedding.Select(x => x / wordCount).ToArray();
+                if (wordCount > 0)
+                {
+                    embedding = embedding.Select(x => x / wordCount).ToArray();
+                }
                 article.Vector = embedding;
             }
         }

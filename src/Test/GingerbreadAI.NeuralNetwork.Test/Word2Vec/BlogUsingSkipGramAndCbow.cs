@@ -34,7 +34,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             var tsne = new TSNE(2, distanceFunctionType: DistanceFunctionType.Cosine);
             tsne.ReduceDimensions(wordEmbeddings);
 
-            var labelClusterIndexMap = DBSCAN.GetLabelClusterIndexMap(
+            var labelClusterIndexMap = DBSCAN.GetLabelClusterMap(
                 wordEmbeddings,
                 epsilon: 0.1,
                 minimumSamples: 3,

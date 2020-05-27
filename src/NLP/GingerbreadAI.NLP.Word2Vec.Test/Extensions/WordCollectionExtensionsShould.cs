@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Collections.Generic;
+using System.Linq;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
 using Xunit;
 
@@ -6,6 +7,24 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
 {
     public class WordCollectionExtensionsShould
     {
+        [Fact]
+        public void CorrectlyCalculateTFIDFForWordCommonInAAbsentInB()
+        {
+            var wordCollectionA = new WordCollection();
+            wordCollectionA.AddWords("1 1 1 1 1 2", 10);
+            wordCollectionA.InitWordPositions();
+            var wordCollectionB = new WordCollection();
+            wordCollectionB.AddWords("2 3 4 5 6 7", 10);
+            wordCollectionB.InitWordPositions();
+            var documents = new List<WordCollection> { wordCollectionA, wordCollectionB };
+
+            var tfidf1a = wordCollectionA.CalculateTFIDF("1", documents);
+            var tfidf1b = wordCollectionB.CalculateTFIDF("1", documents);
+
+            Assert.Equal(1d, tfidf1a);
+            Assert.Equal(0d, tfidf1b);
+        }
+
         [Fact]
         public void ReturnCorrectUnigramTable()
         {
@@ -76,14 +95,6 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
             VerifyWordInfo(wordCollection, word, expectedCode, expectedPoint, codeLength);
         }
 
-        private static void AddWords(int numberOfCopies, WordCollection wordCollection, string inputCharacter)
-        {
-            for (var i = 0; i < numberOfCopies; i++)
-            {
-                wordCollection.AddWords(inputCharacter, 4);
-            }
-        }
-
         private static void VerifyWordInfo(WordCollection wordCollection, string word, char[] expectedCode, long[] expectedPoints, int expectedCodeLength)
         {
             var position = wordCollection[word].Value;
@@ -93,6 +104,14 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
             Assert.Equal(expectedCode, code);
             Assert.Equal(expectedPoints, points);
             Assert.Equal(expectedCodeLength, codeLength);
+        }
+
+        private static void AddWords(int numberOfCopies, WordCollection wordCollection, string inputCharacter)
+        {
+            for (var i = 0; i < numberOfCopies; i++)
+            {
+                wordCollection.AddWords(inputCharacter, 4);
+            }
         }
     }
 }
