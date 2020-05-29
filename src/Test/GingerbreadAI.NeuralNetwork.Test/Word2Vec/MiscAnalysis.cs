@@ -7,7 +7,6 @@ using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
-using Xunit;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
@@ -29,7 +28,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             word2Vec.WriteWordEmbeddings(embeddingsFileLoc);
         }
 
-        [Fact]
+        [RunnableInDebugOnly]
         public void GenerateDistortionReportForKMeans()
         {
             var embeddingsFile = new DirectoryInfo($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}").EnumerateFiles()
@@ -62,7 +61,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             reportHandler.WriteMisc(distortions);
         }
 
-        [Fact]
+        [RunnableInDebugOnly]
         public void GenerateReportFromLatestEmbeddings()
         {
             var embeddingsFile = new DirectoryInfo($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}").EnumerateFiles()
@@ -83,7 +82,6 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             }
             articleEmbeddings.AssignVectorsFromWeightedWordEmbeddings(wordEmbeddings);
 
-            // 
             var kMeans = new KMeans(articleEmbeddings);
             kMeans.CalculateLabelClusterMap(
                 numberOfClusters: 25
