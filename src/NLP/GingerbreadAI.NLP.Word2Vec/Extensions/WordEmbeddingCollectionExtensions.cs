@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,38 +11,29 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
     public static class WordEmbeddingCollectionExtensions
     {
         /// <summary>
-        /// Writes word embeddings to the embeddings file.
+        /// Writes word embeddings to the stream.
         /// </summary>
-        public static void WriteWordEmbeddingsToFile(this IEnumerable<WordEmbedding> wordEmbeddings, string embeddingsFile)
+        public static void WriteEmbeddingToStream(this IEnumerable<WordEmbedding> wordEmbeddings, StreamWriter streamWriter)
         {
-            using (var fs = new FileStream(embeddingsFile, FileMode.OpenOrCreate, FileAccess.Write))
+            foreach (var wordEmbedding in wordEmbeddings)
             {
-                fs.Seek(0, SeekOrigin.End);
-                using (var writer = new StreamWriter(fs, Encoding.UTF8))
-                {
-                    foreach (var embedding in wordEmbeddings)
-                    {
-                        writer.WriteLine($"{embedding.Label},{string.Join(',', embedding.Vector)}");
-                    }
-                }
+                var content = string.Join(',', wordEmbedding.Vector.Select(p => p.ToString(CultureInfo.CreateSpecificCulture("en-GB"))).ToArray());
+                streamWriter.WriteLine($"{wordEmbedding.Label},{content}");
             }
         }
 
         /// <summary>
-        /// Populates embeddings from the embeddings file.
+        /// Populates embeddings from stream.
         /// </summary>
-        public static void PopulateWordEmbeddingsFromFile(this List<WordEmbedding> wordEmbeddings, string embeddingsFile)
+        public static void PopulateWordEmbeddingsFromStream(this List<WordEmbedding> wordEmbeddings, StreamReader streamReader)
         {
-            using (var streamReader = File.OpenText(embeddingsFile))
+            while (!streamReader.EndOfStream)
             {
-                while (!streamReader.EndOfStream)
-                {
-                    var lineElements = streamReader.ReadLine()?.Split(',') ?? throw new Exception("Could not read an embedding from the file provided.");
-                    wordEmbeddings.Add(new WordEmbedding(
-                        lineElements[0],
-                        lineElements.Skip(1).Select(double.Parse).ToArray()
-                    ));
-                }
+                var lineElements = streamReader.ReadLine()?.Split(',') ?? throw new Exception("Could not read an embedding from the file provided.");
+                wordEmbeddings.Add(new WordEmbedding(
+                    lineElements[0],
+                    lineElements.Skip(1).Select((s, i) => double.Parse(s, CultureInfo.CreateSpecificCulture("en-GB"))).ToArray()
+                ));
             }
         }
     }

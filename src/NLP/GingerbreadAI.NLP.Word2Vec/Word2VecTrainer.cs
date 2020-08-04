@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using GingerbreadAI.DeepLearning.Backpropagation;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
@@ -96,8 +97,10 @@ namespace GingerbreadAI.NLP.Word2Vec
             {
                 wordEmbeddings.Add(new WordEmbedding(words[i], hiddenLayer.Nodes.Select(hiddenNode => hiddenNode.Weights[inputLayer.Nodes[i]].Value).ToArray()));
             }
-
-            wordEmbeddings.WriteWordEmbeddingsToFile(embeddingsFileLocation);
+            using var fileStream = new FileStream(embeddingsFileLocation, FileMode.OpenOrCreate, FileAccess.Write);
+            _ = fileStream.Seek(0, SeekOrigin.End);
+            using var writer = new StreamWriter(fileStream, Encoding.UTF8);
+            wordEmbeddings.WriteEmbeddingToStream(writer);
         }
 
         private void TrainModelThreadStart(

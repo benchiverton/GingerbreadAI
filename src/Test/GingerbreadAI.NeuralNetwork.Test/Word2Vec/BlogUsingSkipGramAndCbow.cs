@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
@@ -28,8 +29,11 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             word2Vec.TrainModel();
             word2Vec.WriteWordEmbeddings(embeddingsFileLoc);
 
+
+            using var fileStream = new FileStream(embeddingsFileLoc, FileMode.OpenOrCreate, FileAccess.Read);
+            using var reader = new StreamReader(fileStream, Encoding.UTF8);
             var wordEmbeddings = new List<WordEmbedding>();
-            wordEmbeddings.PopulateWordEmbeddingsFromFile(embeddingsFileLoc);
+            wordEmbeddings.PopulateWordEmbeddingsFromStream(reader);
 
             var tsne = new TSNE(2, distanceFunctionType: DistanceFunctionType.Cosine);
             tsne.ReduceDimensions(wordEmbeddings);

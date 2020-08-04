@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
@@ -38,9 +39,11 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
                 .Last();
             var reportFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/report-{DateTime.Now.Ticks}.csv";
 
+            using var fileStream = new FileStream(embeddingsFile.FullName, FileMode.OpenOrCreate, FileAccess.Read);
+            using var reader = new StreamReader(fileStream, Encoding.UTF8);
             var wordEmbeddings = new List<WordEmbedding>();
-            wordEmbeddings.PopulateWordEmbeddingsFromFile(embeddingsFile.FullName);
             wordEmbeddings.NormaliseEmbeddings();
+            wordEmbeddings.PopulateWordEmbeddingsFromStream(reader);
 
             var articleEmbeddings = new List<ArticleEmbedding>();
             foreach (var line in File.ReadLines(InputFileLoc))
