@@ -30,7 +30,7 @@ namespace GingerbreadAI.NLP.Word2Vec
                     foreach (var word in embeddings)
                     {
                         var similarEmbeddings = embeddings.GetMostSimilarEmbeddings(word, topn, similarityFunction);
-                        writer.WriteLine($"{word.Label},{string.Join(',', similarEmbeddings.Select(sw => $"{sw.embedding.Label},{sw.similarity:0.00000}"))}");
+                        writer.WriteLine($"\"{word.Label}\",{string.Join(',', similarEmbeddings.Select(sw => $"{sw.embedding.Label},{sw.similarity:0.00000}"))}");
                     }
                 }
             }
@@ -39,16 +39,16 @@ namespace GingerbreadAI.NLP.Word2Vec
         /// <summary>
         /// Writes each embedding and the index of the cluster that it is in.
         /// </summary>
-        public void WriteLabelsWithClusterIndex(Dictionary<string, int> labelClusterIndexMap, IEnumerable<string> labels)
+        public void WriteLabelsWithClusterIndex(Dictionary<string, int> labelClusterIndexMap)
         {
             using (var fs = new FileStream(_reportFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 fs.Seek(0, SeekOrigin.End);
                 using (var writer = new StreamWriter(fs, Encoding.UTF8))
                 {
-                    foreach (var label in labels)
+                    foreach (var (label, clusterIndex) in labelClusterIndexMap)
                     {
-                        writer.WriteLine($"\"{label}\",{labelClusterIndexMap[label]}");
+                        writer.WriteLine($"\"{label}\",{clusterIndex}");
                     }
                 }
             }
@@ -121,6 +121,24 @@ namespace GingerbreadAI.NLP.Word2Vec
                     }
 
                     writer.WriteLine(stringBuilder.ToString());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes misc information.
+        /// </summary>
+        public void WriteMisc(Dictionary<object, object> misc)
+        {
+            using (var fs = new FileStream(_reportFile, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                fs.Seek(0, SeekOrigin.End);
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    foreach (var (x, y) in misc)
+                    {
+                        writer.WriteLine($"\"{x}\",{y}");
+                    }
                 }
             }
         }

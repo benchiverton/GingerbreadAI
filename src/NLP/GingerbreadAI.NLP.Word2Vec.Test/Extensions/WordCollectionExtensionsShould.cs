@@ -10,6 +10,23 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
 {
     public class WordCollectionExtensionsShould
     {
+        [Theory]
+        [MemberData(nameof(CorrectlyCalculateTFIDFTestCases))]
+        public void CorrectlyCalculateTFIDF(string documentA, string documentB, string word, double expectedTfidfOfWordInA)
+        {
+            var wordCollectionA = new WordCollection();
+            wordCollectionA.AddWords(documentA, 10);
+            wordCollectionA.InitWordPositions();
+            var wordCollectionB = new WordCollection();
+            wordCollectionB.AddWords(documentB, 10);
+            wordCollectionB.InitWordPositions();
+            var documents = new List<WordCollection> { wordCollectionA, wordCollectionB };
+
+            var tfidfOfWordInA = wordCollectionA.CalculateTFIDF(word, documents);
+
+            Assert.Equal(expectedTfidfOfWordInA, tfidfOfWordInA, 5);
+        }
+
         [Fact]
         public void ReturnCorrectUnigramTable()
         {
@@ -125,13 +142,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
             VerifyWordInfo(wordCollection, word, expectedCode, expectedPoint, codeLength);
         }
 
-        private static void AddWords(int numberOfCopies, WordCollection wordCollection, string inputCharacter)
-        {
-            for (var i = 0; i < numberOfCopies; i++)
-            {
-                wordCollection.AddWords(inputCharacter, 4);
-            }
-        }
+        #region Helpers
 
         private static void VerifyWordInfo(WordCollection wordCollection, string word, char[] expectedCode, long[] expectedPoints, int expectedCodeLength)
         {
@@ -143,5 +154,28 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
             Assert.Equal(expectedPoints, points);
             Assert.Equal(expectedCodeLength, codeLength);
         }
+
+        private static void AddWords(int numberOfCopies, WordCollection wordCollection, string inputCharacter)
+        {
+            for (var i = 0; i < numberOfCopies; i++)
+            {
+                wordCollection.AddWords(inputCharacter, 4);
+            }
+        }
+
+        #endregion
+
+        #region Test Cases
+
+        public static IEnumerable<object[]> CorrectlyCalculateTFIDFTestCases()
+        {
+            yield return new object[] { "a a a a a b", "b c c c c c", "a", 0.57762 };
+            yield return new object[] { "a a a a a b", "b c c c c c", "b", 0 };
+            yield return new object[] { "a a a a a b", "b c c c c c", "c", 0 };
+            yield return new object[] { "a a a a a b", "b c c c c c", "d", double.NaN };
+            yield return new object[] { "a a a a a a", "b b b b b b", "a", 0.69315 };
+        }
+
+        #endregion
     }
 }

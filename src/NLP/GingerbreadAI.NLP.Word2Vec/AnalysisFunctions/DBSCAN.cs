@@ -14,7 +14,7 @@ namespace GingerbreadAI.NLP.Word2Vec.AnalysisFunctions
     /// </summary>
     public static class DBSCAN
     {
-        public static Dictionary<string, int> GetLabelClusterIndexMap(
+        public static Dictionary<string, int> GetLabelClusterMap(
             IEnumerable<IEmbedding> embeddings,
             double epsilon = 0.5,
             int minimumSamples = 5,

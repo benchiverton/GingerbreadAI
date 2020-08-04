@@ -6,9 +6,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
-using GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
+using Xunit;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
@@ -31,7 +31,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
         }
 
         [RunnableInDebugOnly]
-        public void GenerateReportFromLatestEmbeddings()
+        public void GenerateDistortionReportForKMeans()
         {
             var embeddingsFile = new DirectoryInfo($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}").EnumerateFiles()
                 .Where(f => Regex.IsMatch(f.Name, "^wordEmbeddings-.*$"))
@@ -42,27 +42,59 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             using var fileStream = new FileStream(embeddingsFile.FullName, FileMode.OpenOrCreate, FileAccess.Read);
             using var reader = new StreamReader(fileStream, Encoding.UTF8);
             var wordEmbeddings = new List<WordEmbedding>();
+            wordEmbeddings.NormaliseEmbeddings();
             wordEmbeddings.PopulateWordEmbeddingsFromStream(reader);
 
-            var articles = new List<ArticleEmbedding>();
+            var articleEmbeddings = new List<ArticleEmbedding>();
             foreach (var line in File.ReadLines(InputFileLoc))
             {
                 var splitLine = line.Split(',');
-                articles.Add(new ArticleEmbedding(splitLine[0], string.Join(' ', splitLine.Skip(1))));
+                articleEmbeddings.Add(new ArticleEmbedding(splitLine[0], string.Join(' ', splitLine.Skip(1)), maxContentsLength: 500));
+            }
+            articleEmbeddings.AssignVectorsFromWeightedWordEmbeddings(wordEmbeddings);
+
+            var kMeans = new KMeans(articleEmbeddings);
+            var distortions = new Dictionary<object, object>();
+            for (var i = 2; i <= 25; i++)
+            {
+                kMeans.CalculateLabelClusterMap(numberOfClusters: i);
+                distortions.Add(i, kMeans.CalculateDistortion());
             }
 
-            articles.AssignWeightedVectorsFromWordEmbeddings(wordEmbeddings);
+            var reportHandler = new ReportWriter(reportFileLoc);
+            reportHandler.WriteMisc(distortions);
+        }
 
-            var titleClusterMap = DBSCAN.GetLabelClusterIndexMap(
-                articles,
-                epsilon: 0.1,
-                minimumSamples: 3,
-                distanceFunctionType: DistanceFunctionType.Cosine,
-                concurrentThreads: 4
+        [RunnableInDebugOnly]
+        public void GenerateReportFromLatestEmbeddings()
+        {
+            var embeddingsFile = new DirectoryInfo($@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}").EnumerateFiles()
+                .Where(f => Regex.IsMatch(f.Name, "^wordEmbeddings-.*$"))
+                .OrderBy(f => f.CreationTime)
+                .Last();
+            var reportFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/report-{DateTime.Now.Ticks}.csv";
+
+            var wordEmbeddings = new List<WordEmbedding>();
+            using var fileStream = new FileStream(embeddingsFile.FullName, FileMode.OpenOrCreate, FileAccess.Read);
+            using var reader = new StreamReader(fileStream, Encoding.UTF8);
+            wordEmbeddings.PopulateWordEmbeddingsFromStream(reader);
+            wordEmbeddings.NormaliseEmbeddings();
+
+            var articleEmbeddings = new List<ArticleEmbedding>();
+            foreach (var line in File.ReadLines(InputFileLoc))
+            {
+                var splitLine = line.Split(',');
+                articleEmbeddings.Add(new ArticleEmbedding(splitLine[0], string.Join(' ', splitLine.Skip(1)), maxContentsLength: 500));
+            }
+            articleEmbeddings.AssignVectorsFromWeightedWordEmbeddings(wordEmbeddings);
+
+            var kMeans = new KMeans(articleEmbeddings);
+            kMeans.CalculateLabelClusterMap(
+                numberOfClusters: 25
             );
 
             var reportHandler = new ReportWriter(reportFileLoc);
-            reportHandler.WriteLabelsWithClusterIndex(titleClusterMap, articles.Select(we => we.Label));
+            reportHandler.WriteLabelsWithClusterIndex(kMeans.LabelClusterMap);
         }
     }
 }

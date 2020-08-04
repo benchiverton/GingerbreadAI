@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
@@ -7,6 +8,26 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
 {
     public static class EmbeddingCollectionExtensions
     {
+        /// <summary>
+        /// Normalises the length of each embedding in the collection.
+        /// </summary>
+        public static void NormaliseEmbeddings(this IEnumerable<IEmbedding> embeddings)
+        {
+            foreach (var embedding in embeddings)
+            {
+                var length = 0d;
+                foreach (var v in embedding.Vector)
+                {
+                    length += v * v;
+                }
+                length = Math.Sqrt(length);
+                for(var i = 0; i < embedding.Vector.Length; i++)
+                {
+                    embedding.Vector[i] /= length;
+                }
+            }
+        }
+
         /// <summary>
         /// Returns the top n most similar embeddings to the one given.
         /// </summary>

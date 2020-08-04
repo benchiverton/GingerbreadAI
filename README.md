@@ -35,6 +35,7 @@ There is an implementation of [Word2vec](https://en.wikipedia.org/wiki/Word2vec)
 
 | Algorithm                                                    | Links                                                        |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| *k*-means clustering                                         | https://en.wikipedia.org/wiki/K-means_clustering             |
 | Density-based spatial clustering of applications with noise (DBSCAN) | https://en.wikipedia.org/wiki/DBSCAN                         |
 | T-distributed Stochastic Neighbor Embedding (t-SNE)          | https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding |
 

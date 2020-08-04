@@ -12,7 +12,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
         [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
         public void CorrectlyGetClusterLabels(List<WordEmbedding> wordEmbeddings, (string[] elements, bool isNoise)[] expectedGroups)
         {
-            var labels = DBSCAN.GetLabelClusterIndexMap(
+            var labels = DBSCAN.GetLabelClusterMap(
                 wordEmbeddings,
                 3,
                 2,
@@ -35,7 +35,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
         [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
         public void CorrectlyGetClusterLabelsConcurrently(List<WordEmbedding> wordVectorWeights, (string[] elements, bool isNoise)[] expectedGroups)
         {
-            var labels = DBSCAN.GetLabelClusterIndexMap(
+            var labels = DBSCAN.GetLabelClusterMap(
                 wordVectorWeights,
                 3,
                 2

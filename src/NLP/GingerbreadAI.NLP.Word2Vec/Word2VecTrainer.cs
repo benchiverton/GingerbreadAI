@@ -291,7 +291,7 @@ namespace GingerbreadAI.NLP.Word2Vec
 
         /// <summary>
         /// Iterates through the context window and trains the model from each context word.
-        /// /// </summary>
+        /// </summary>
         private static void TrainModelFromContextWindow(
             Layer neuralNetwork,
             int[] table,
