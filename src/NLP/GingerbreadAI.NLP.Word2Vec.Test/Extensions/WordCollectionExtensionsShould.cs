@@ -7,22 +7,21 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
 {
     public class WordCollectionExtensionsShould
     {
-        [Fact]
-        public void CorrectlyCalculateTFIDFForWordCommonInAAbsentInB()
+        [Theory]
+        [MemberData(nameof(CorrectlyCalculateTFIDFTestCases))]
+        public void CorrectlyCalculateTFIDF(string documentA, string documentB, string word, double expectedTfidfOfWordInA)
         {
             var wordCollectionA = new WordCollection();
-            wordCollectionA.AddWords("1 1 1 1 1 2", 10);
+            wordCollectionA.AddWords(documentA, 10);
             wordCollectionA.InitWordPositions();
             var wordCollectionB = new WordCollection();
-            wordCollectionB.AddWords("2 3 4 5 6 7", 10);
+            wordCollectionB.AddWords(documentB, 10);
             wordCollectionB.InitWordPositions();
             var documents = new List<WordCollection> { wordCollectionA, wordCollectionB };
 
-            var tfidf1a = wordCollectionA.CalculateTFIDF("1", documents);
-            var tfidf1b = wordCollectionB.CalculateTFIDF("1", documents);
+            var tfidfOfWordInA = wordCollectionA.CalculateTFIDF(word, documents);
 
-            Assert.Equal(1d, tfidf1a);
-            Assert.Equal(0d, tfidf1b);
+            Assert.Equal(expectedTfidfOfWordInA, tfidfOfWordInA, 5);
         }
 
         [Fact]
@@ -95,6 +94,8 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
             VerifyWordInfo(wordCollection, word, expectedCode, expectedPoint, codeLength);
         }
 
+        #region Helpers
+
         private static void VerifyWordInfo(WordCollection wordCollection, string word, char[] expectedCode, long[] expectedPoints, int expectedCodeLength)
         {
             var position = wordCollection[word].Value;
@@ -113,5 +114,20 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
                 wordCollection.AddWords(inputCharacter, 4);
             }
         }
+
+        #endregion
+
+        #region Test Cases
+
+        public static IEnumerable<object[]> CorrectlyCalculateTFIDFTestCases()
+        {
+            yield return new object[] { "a a a a a b", "b c c c c c", "a", 0.57762 };
+            yield return new object[] { "a a a a a b", "b c c c c c", "b", 0 };
+            yield return new object[] { "a a a a a b", "b c c c c c", "c", 0 };
+            yield return new object[] { "a a a a a b", "b c c c c c", "d", double.NaN };
+            yield return new object[] { "a a a a a a", "b b b b b b", "a", 0.69315 };
+        }
+
+        #endregion
     }
 }

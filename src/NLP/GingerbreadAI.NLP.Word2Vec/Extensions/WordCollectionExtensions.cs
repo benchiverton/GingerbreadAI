@@ -46,14 +46,14 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
         /// <summary>
         /// Returns the Term Frequency-Inverse Document Frequency (TF-IDF) of a word in a document in relation to a collection of documents.
         /// </summary>
-        public static double CalculateTFIDF(this WordCollection wordCollection, string word, List<WordCollection> allDocuments)
+        public static double CalculateTFIDF(this WordCollection document, string word, List<WordCollection> allDocuments)
         {
-            var termFrequency = wordCollection.GetOccurrenceOfWord(word);
+            var termFrequency = (double)document.GetOccurrenceOfWord(word) / document.GetTotalNumberOfWords();
 
             var totalDocuments = allDocuments.Count;
             var totalDocumentsWithWord = allDocuments.Count(wc => wc.GetWords().Contains(word));
             // adjust denominator to avoid division by 0.
-            var inverseDocumentFrequency = Math.Log((double)totalDocuments / (1 + totalDocumentsWithWord));
+            var inverseDocumentFrequency = Math.Log((double)totalDocuments / totalDocumentsWithWord);
 
             return termFrequency * inverseDocumentFrequency;
         }
@@ -160,7 +160,6 @@ namespace GingerbreadAI.NLP.Word2Vec.Extensions
                 {
                     wordCollection.SetCode(root.Right.Word, root.Right.Code.ToCharArray());
                     SetPoint(wordCollection, root.Right.Word, root.Right.Code.Length, root, 1);
-
                 }
             }
             Preorder(wordCollection, root.Right);

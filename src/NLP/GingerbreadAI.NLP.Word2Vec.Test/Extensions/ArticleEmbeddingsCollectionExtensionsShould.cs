@@ -21,7 +21,7 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.Extensions
             var articleEmbeddings = new List<ArticleEmbedding>
             {
                 new ArticleEmbedding("1", "a b c d e"),
-                new ArticleEmbedding("2", "a"),
+                new ArticleEmbedding("2", "b"), // cannot be a as tf-idf(a) = 0
                 new ArticleEmbedding("3", "a b c"),
                 new ArticleEmbedding("4", "a e"),
                 new ArticleEmbedding("5", "e d c b a")

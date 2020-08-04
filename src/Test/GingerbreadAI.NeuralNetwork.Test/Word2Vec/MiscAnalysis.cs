@@ -7,6 +7,7 @@ using GingerbreadAI.NLP.Word2Vec;
 using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using GingerbreadAI.NLP.Word2Vec.Extensions;
+using Xunit;
 
 namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 {
@@ -51,7 +52,7 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
 
             var kMeans = new KMeans(articleEmbeddings);
             var distortions = new Dictionary<object, object>();
-            for (var i = 2; i <= 50; i++)
+            for (var i = 2; i <= 25; i++)
             {
                 kMeans.CalculateLabelClusterMap(numberOfClusters: i);
                 distortions.Add(i, kMeans.CalculateDistortion());
