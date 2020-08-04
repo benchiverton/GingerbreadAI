@@ -75,7 +75,9 @@ namespace GingerbreadAI.NeuralNetwork.Test.Word2Vec
             var reportFileLoc = $@"{Directory.GetCurrentDirectory()}/{ResultsDirectory}/report-{DateTime.Now.Ticks}.csv";
 
             var wordEmbeddings = new List<WordEmbedding>();
-            wordEmbeddings.PopulateWordEmbeddingsFromFile(embeddingsFile.FullName);
+            using var fileStream = new FileStream(embeddingsFile.FullName, FileMode.OpenOrCreate, FileAccess.Read);
+            using var reader = new StreamReader(fileStream, Encoding.UTF8);
+            wordEmbeddings.PopulateWordEmbeddingsFromStream(reader);
             wordEmbeddings.NormaliseEmbeddings();
 
             var articleEmbeddings = new List<ArticleEmbedding>();
