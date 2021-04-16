@@ -98,45 +98,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Extensions
             );
         }
 
-        public static Layer DeepCopy(this Layer layer)
-        {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, layer);
-                ms.Position = 0;
-                return (Layer)formatter.Deserialize(ms);
-            }
-        }
-
-        public static void SaveNetwork(this Layer layer, string location)
-        {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, layer);
-                using (var fileStream = File.Create(location))
-                {
-                    ms.WriteTo(fileStream);
-                }
-            }
-        }
-
-        public static Layer LoadNetwork(string location)
-        {
-            using (var byteStream = File.OpenRead(location))
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    byteStream.CopyTo(memoryStream);
-                    memoryStream.Position = 0;
-
-                    var formatter = new BinaryFormatter();
-                    return (Layer)formatter.Deserialize(memoryStream);
-                }
-            }
-        }
-
         #region Private Methods
 
 

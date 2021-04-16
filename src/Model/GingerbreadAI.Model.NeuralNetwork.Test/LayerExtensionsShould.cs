@@ -23,63 +23,6 @@ namespace GingerbreadAI.Model.NeuralNetwork.Test
             _output = new Layer(20, new[] { _hidden1, _hidden2 }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.Random);
         }
 
-        //[Fact]
-        public void DeepCopyCorrectly()
-        {
-            _output.Initialise(new Random());
-            _output.CalculateOutputs(new[] { 0.1, 0.2, 0.3, 0.4, 0.5 });
-
-            var copiedOutput = _output.DeepCopy();
-            var copiedHidden1 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Count == 10);
-            var copiedHidden2 = copiedOutput.PreviousLayers.FirstOrDefault(l => l.Nodes.Count == 15);
-            var copiedInput = copiedHidden1.PreviousLayers.Single();
-
-            // input
-            for (var i = 0; i < _input.Nodes.Count; i++)
-            {
-                Assert.Equal(_input.Nodes[i].Output, copiedInput.Nodes[i].Output);
-            }
-            // hidden 1
-            for (var i = 0; i < _hidden1.Nodes.Count; i++)
-            {
-                Assert.Equal(_hidden1.Nodes[i].Output, copiedHidden1.Nodes[i].Output);
-                for (var j = 0; j < _hidden1.Nodes[i].Weights.Count; j++)
-                {
-                    Assert.Equal(_hidden1.Nodes[i].Weights.Values.ToArray()[j].Value, copiedHidden1.Nodes[i].Weights.Values.ToArray()[j].Value);
-                }
-                for (var j = 0; j < _hidden1.Nodes[i].BiasWeights.Count; j++)
-                {
-                    Assert.Equal(_hidden1.Nodes[i].BiasWeights.Values.ToArray()[j].Value, copiedHidden1.Nodes[i].BiasWeights.Values.ToArray()[j].Value);
-                }
-            }
-            // hidden 2
-            for (var i = 0; i < _hidden2.Nodes.Count; i++)
-            {
-                Assert.Equal(_hidden2.Nodes[i].Output, copiedHidden2.Nodes[i].Output);
-                for (var j = 0; j < _hidden2.Nodes[i].Weights.Count; j++)
-                {
-                    Assert.Equal(_hidden2.Nodes[i].Weights.Values.ToArray()[j].Value, copiedHidden2.Nodes[i].Weights.Values.ToArray()[j].Value);
-                }
-                for (var j = 0; j < _hidden2.Nodes[i].BiasWeights.Count; j++)
-                {
-                    Assert.Equal(_hidden2.Nodes[i].BiasWeights.Values.ToArray()[j].Value, copiedHidden2.Nodes[i].BiasWeights.Values.ToArray()[j].Value);
-                }
-            }
-            // output
-            for (var i = 0; i < _output.Nodes.Count; i++)
-            {
-                Assert.Equal(_output.Nodes[i].Output, copiedOutput.Nodes[i].Output);
-                for (var j = 0; j < _output.Nodes[i].Weights.Count; j++)
-                {
-                    Assert.Equal(_output.Nodes[i].Weights.Values.ToArray()[j].Value, copiedOutput.Nodes[i].Weights.Values.ToArray()[j].Value);
-                }
-                for (var j = 0; j < _output.Nodes[i].BiasWeights.Count; j++)
-                {
-                    Assert.Equal(_output.Nodes[i].BiasWeights.Values.ToArray()[j].Value, copiedOutput.Nodes[i].BiasWeights.Values.ToArray()[j].Value);
-                }
-            }
-        }
-
         [Fact]
         public void CloneWithSameWeightValueReferencesCorrectly()
         {
