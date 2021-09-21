@@ -1,5 +1,3 @@
-![Logo](docs/Images/logo.png)
-
 # Gingerbread AI
 
 C# libraries written written to model different neural networks, and deep learning algorithms that train them.
