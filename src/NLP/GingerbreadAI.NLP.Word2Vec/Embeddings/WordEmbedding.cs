@@ -1,6 +1,6 @@
 namespace GingerbreadAI.NLP.Word2Vec.Embeddings;
 
-public class WordEmbedding : IEmbedding
+public record WordEmbedding : IEmbedding
 {
     public WordEmbedding(string word, double[] vector)
     {
@@ -8,6 +8,6 @@ public class WordEmbedding : IEmbedding
         Vector = vector;
     }
 
-    public string Label { get; }
+    public string Label { get; init; }
     public double[] Vector { get; set; }
 }

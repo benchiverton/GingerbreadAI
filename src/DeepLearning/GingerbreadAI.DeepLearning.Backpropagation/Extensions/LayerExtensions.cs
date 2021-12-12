@@ -23,20 +23,13 @@ public static class LayerExtensions
             var prevNodes = node.Weights.Keys.ToArray();
             foreach (var prevNode in prevNodes)
             {
-                node.Weights[prevNode] = GetWeightWithMomentum(node.Weights[prevNode]);
+                node.Weights[prevNode] = new WeightWithMomentum(node.Weights[prevNode].Value);
             }
             var prevLayers = node.BiasWeights.Keys.ToArray();
             foreach (var prevLayer in prevLayers)
             {
-                node.BiasWeights[prevLayer] = GetWeightWithMomentum(node.BiasWeights[prevLayer]);
+                node.BiasWeights[prevLayer] = new WeightWithMomentum(node.BiasWeights[prevLayer].Value);
             }
         }
     }
-
-    private static Weight GetWeightWithMomentum(Weight weightWithoutMomentum) =>
-        weightWithoutMomentum switch
-        {
-            WeightWithPooling weightWithPooling => new WeightWithPoolingAndMomentum(weightWithPooling),
-            _ => new WeightWithMomentum(weightWithoutMomentum.Value),
-        };
 }

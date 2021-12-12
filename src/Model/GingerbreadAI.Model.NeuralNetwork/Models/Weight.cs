@@ -1,6 +1,6 @@
 namespace GingerbreadAI.Model.NeuralNetwork.Models;
 
-public class Weight
+public record Weight
 {
     public Weight(double value) => Value = value;
 

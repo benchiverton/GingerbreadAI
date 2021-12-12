@@ -131,10 +131,10 @@ public class BackpropagatorWith2DNetworkShould
         var b = new Layer2D((4, 4), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
         var filters = new[]
         {
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
-                new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
-            };
+            new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+            new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+            new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
+        };
         filters.AddPooling((2, 2));
         var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
         output.AddMomentumRecursively();

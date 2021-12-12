@@ -127,15 +127,15 @@ public class BackpropagatorWith1DNetworkShould
     [Fact]
     public void TrainNetworkWithPoolingSortOfWellRgb()
     {
-        var r = new Layer1D(4, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
-        var g = new Layer1D(4, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
-        var b = new Layer1D(4, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
+        var r = new Layer1D(5, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
+        var g = new Layer1D(5, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
+        var b = new Layer1D(5, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
         var filters = new[]
         {
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
-                new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
-            };
+            new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+            new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
+            new Filter1D(new[] {r, g, b}, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
+        };
         filters.AddPooling(2);
         var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
         output.AddMomentumRecursively();
@@ -143,14 +143,14 @@ public class BackpropagatorWith1DNetworkShould
         Dictionary<Layer, double[]> ResolveInputs(bool isRed, bool isGreen, bool isBlue)
         {
             var rInput = isRed
-                ? new double[] { 1, 1, 1, 1 }
-                : new double[] { 0, 0, 0, 0 };
+                ? new double[] { 1, 1, 1, 1, 1 }
+                : new double[] { 0, 0, 0, 0, 0 };
             var gInput = isGreen
-                ? new double[] { 1, 1, 1, 1 }
-                : new double[] { 0, 0, 0, 0 };
+                ? new double[] { 1, 1, 1, 1, 1 }
+                : new double[] { 0, 0, 0, 0, 0 };
             var bInput = isBlue
-                ? new double[] { 1, 1, 1, 1 }
-                : new double[] { 0, 0, 0, 0 };
+                ? new double[] { 1, 1, 1, 1, 1 }
+                : new double[] { 0, 0, 0, 0, 0 };
             return new Dictionary<Layer, double[]>
             {
                 [r] = rInput,

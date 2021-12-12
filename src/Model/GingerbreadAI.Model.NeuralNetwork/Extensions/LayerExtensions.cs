@@ -94,28 +94,4 @@ public static class LayerExtensions
             layer.InitialisationFunctionType
         );
     }
-
-    #region Private Methods
-
-
-    private static void Initialise(this Node node, Random rand, Func<Random, int, int, double> initialisationFunction, int nodeCount)
-    {
-        if (node == null)
-        {
-            return;
-        }
-
-        var feedingNodes = node.Weights.Count;
-        foreach (var prevNode in node.Weights.Keys.ToList())
-        {
-            node.Weights[prevNode].Adjust(initialisationFunction.Invoke(rand, feedingNodes, nodeCount));
-        }
-        var biasWeightKeys = new List<Layer>(node.BiasWeights.Keys.ToList());
-        foreach (var biasWeightKey in biasWeightKeys)
-        {
-            node.BiasWeights[biasWeightKey].Adjust(initialisationFunction.Invoke(rand, feedingNodes, nodeCount));
-        }
-    }
-
-    #endregion
 }

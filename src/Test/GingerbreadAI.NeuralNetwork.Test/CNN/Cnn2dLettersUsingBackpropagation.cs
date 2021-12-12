@@ -27,14 +27,14 @@ public class Cnn2dLettersUsingBackpropagation
         filters.AddPooling((2, 2));
         var stepDownLayer = new Layer(100, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
         var output = new Layer(10, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
-        output.AddMomentumRecursively();
+        //output.AddMomentumRecursively();
         output.Initialise(new Random());
 
         foreach (var (image, label) in TrainingDataManager.GetMNISTHandwrittenNumbers("train-labels-idx1-ubyte.gz", "train-images-idx3-ubyte.gz"))
         {
             var targetOutputs = new double[10];
             targetOutputs[label] = 1d;
-            output.Backpropagate(image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01, 0.9);
+            output.Backpropagate(image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01);
         }
 
         var correctResults = new double[10];
@@ -42,7 +42,7 @@ public class Cnn2dLettersUsingBackpropagation
         foreach (var (image, label) in TrainingDataManager.GetMNISTHandwrittenNumbers("t10k-labels-idx1-ubyte.gz", "t10k-images-idx3-ubyte.gz"))
         {
             output.CalculateOutputs(image);
-            if (output.Nodes[label].Output > 0.5)
+            if(output.Nodes.MaxBy(n => n.Output) == output.Nodes[label])
             {
                 correctResults[label]++;
             }
