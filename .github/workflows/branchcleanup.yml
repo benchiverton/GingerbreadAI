@@ -13,4 +13,4 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: jessfraz/branch-cleanup-action@main
+      - uses: jessfraz/branch-cleanup-action@master
