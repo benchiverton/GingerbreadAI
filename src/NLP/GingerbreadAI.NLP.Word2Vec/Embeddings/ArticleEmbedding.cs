@@ -1,18 +1,17 @@
-﻿namespace GingerbreadAI.NLP.Word2Vec.Embeddings
+namespace GingerbreadAI.NLP.Word2Vec.Embeddings;
+
+public class ArticleEmbedding : IEmbedding
 {
-    public class ArticleEmbedding : IEmbedding
+    public ArticleEmbedding(string title, string content, int maxContentsLength = 50)
     {
-        public ArticleEmbedding(string title, string content, int maxContentsLength = 50)
-        {
-            Label = title;
+        Label = title;
 
-            Contents = new WordCollection();
-            Contents.AddWords(content, maxContentsLength);
-        }
-
-        public string Label { get; }
-        public double[] Vector { get; set; }
-
-        public WordCollection Contents { get; }
+        Contents = new WordCollection();
+        Contents.AddWords(content, maxContentsLength);
     }
+
+    public string Label { get; }
+    public double[] Vector { get; set; }
+
+    public WordCollection Contents { get; }
 }

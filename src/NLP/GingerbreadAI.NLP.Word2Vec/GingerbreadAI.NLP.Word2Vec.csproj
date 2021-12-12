@@ -9,7 +9,6 @@
     <Authors>Benjamin Chiverton</Authors>
     <PackageDescription>Implemenation of Word2Vec using GingerbreadAI's Neural Network model.</PackageDescription>
     <RepositoryUrl>https://github.com/benchiverton/GingerbreadAI</RepositoryUrl>
-    <LangVersion>9</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

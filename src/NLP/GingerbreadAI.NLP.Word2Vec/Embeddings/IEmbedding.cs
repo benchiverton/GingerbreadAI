@@ -1,8 +1,7 @@
-﻿namespace GingerbreadAI.NLP.Word2Vec.Embeddings
+namespace GingerbreadAI.NLP.Word2Vec.Embeddings;
+
+public interface IEmbedding
 {
-    public interface IEmbedding
-    {
-        string Label { get; }
-        double[] Vector { get; set; }
-    }
+    string Label { get; }
+    double[] Vector { get; set; }
 }

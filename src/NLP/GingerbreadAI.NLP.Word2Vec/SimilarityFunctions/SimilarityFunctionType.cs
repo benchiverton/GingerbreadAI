@@ -1,7 +1,6 @@
-namespace GingerbreadAI.NLP.Word2Vec.SimilarityFunctions
+namespace GingerbreadAI.NLP.Word2Vec.SimilarityFunctions;
+
+public enum SimilarityFunctionType
 {
-    public enum SimilarityFunctionType
-    {
-        Cosine = 1,
-    }
+    Cosine = 1,
 }

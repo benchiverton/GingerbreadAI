@@ -1,8 +1,7 @@
-﻿namespace GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions
+namespace GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
+
+public enum ErrorFunctionType
 {
-    public enum ErrorFunctionType
-    {
-        MSE = 1,
-        CrossEntropy = 2
-    }
+    MSE = 1,
+    CrossEntropy = 2
 }
