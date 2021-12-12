@@ -135,7 +135,7 @@ public class BackpropagatorWith2DNetworkShould
             new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform),
             new Filter2D(new[] {r, g, b}, (2, 2), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform)
         };
-        filters.AddPooling((2, 2));
+        filters.AddMaxPooling((2, 2));
         var output = new Layer(3, filters, ActivationFunctionType.Sigmoid, InitialisationFunctionType.HeEtAl);
         output.AddMomentumRecursively();
         output.Initialise(new Random());

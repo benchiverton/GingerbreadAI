@@ -24,17 +24,16 @@ public class Cnn2dLettersUsingBackpropagation
     {
         var input = new Layer2D((28, 28), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
         var filters = new[] { input }.Add2DConvolutionalLayer(32, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-        filters.AddPooling((2, 2));
+        filters.AddMaxPooling((2, 2));
         var stepDownLayer = new Layer(100, filters.ToArray(), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
         var output = new Layer(10, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
-        //output.AddMomentumRecursively();
         output.Initialise(new Random());
 
         foreach (var (image, label) in TrainingDataManager.GetMNISTHandwrittenNumbers("train-labels-idx1-ubyte.gz", "train-images-idx3-ubyte.gz"))
         {
             var targetOutputs = new double[10];
             targetOutputs[label] = 1d;
-            output.Backpropagate(image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01);
+            output.Backpropagate(image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.001);
         }
 
         var correctResults = new double[10];

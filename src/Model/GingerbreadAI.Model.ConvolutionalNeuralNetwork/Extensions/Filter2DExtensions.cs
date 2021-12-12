@@ -11,16 +11,16 @@ public static class Filter2DExtensions
         var nodes = new List<Node>();
 
         var dimensions = (filter.PreviousLayers[0] as Layer2D).Shape;
-        for (var i = 0; i < dimensions.height - 2; i += poolingDimensions.height) // down
+        for (var i = 0; i < dimensions.height - filter.Shape.height - poolingDimensions.height + 2; i += poolingDimensions.height) // down
         {
-            for (var j = 0; j < dimensions.width - 2; j += poolingDimensions.width) // across
+            for (var j = 0; j < dimensions.width - filter.Shape.width - poolingDimensions.width + 2; j += poolingDimensions.width) // across
             {
                 var underlyingNodes = new List<Node>();
                 for (var k = 0; k < poolingDimensions.height; k++) // down
                 {
                     for (var l = 0; l < poolingDimensions.width; l++) // across
                     {
-                        underlyingNodes.Add(filter.Nodes[j + l + ((i + k) * poolingDimensions.width)]);
+                        underlyingNodes.Add(filter.Nodes[j + l + ((i + k) * (dimensions.height - filter.Shape.height + 1))]);
                     }
                 }
                 nodes.Add(new PooledNode(underlyingNodes));

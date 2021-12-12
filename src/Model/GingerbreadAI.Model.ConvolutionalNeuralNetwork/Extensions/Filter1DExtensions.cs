@@ -11,7 +11,7 @@ public static class Filter1DExtensions
         var nodes = new List<Node>();
 
         var dimensions = (filter.PreviousLayers[0] as Layer1D).Size;
-        for (var i = 0; i < dimensions - 2; i += poolingDimension)
+        for (var i = 0; i < dimensions - poolingDimension; i += poolingDimension)
         {
             var nodesInPool = new List<Node>();
             for (var j = i; j < i + poolingDimension; j++)

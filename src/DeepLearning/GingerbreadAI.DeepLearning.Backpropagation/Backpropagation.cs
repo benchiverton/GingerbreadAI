@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GingerbreadAI.DeepLearning.Backpropagation.ErrorFunctions;
@@ -72,7 +73,7 @@ public static class Backpropagation
         for (var i = 0; i < outputLayer.Nodes.Count; i++)
         {
             var node = outputLayer.Nodes[i];
-            var delta = errorFunctionDifferential.Invoke(targetOutputs[i], node.Output)
+            var delta = Math.MinMagnitude(errorFunctionDifferential.Invoke(targetOutputs[i], node.Output), 100)
                         * outputLayer.ActivationFunctionDifferential(node.Output)
                         * learningRate;
             deltas.Add(node, delta);

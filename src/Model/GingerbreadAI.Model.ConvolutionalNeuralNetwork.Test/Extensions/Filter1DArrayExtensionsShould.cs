@@ -14,13 +14,13 @@ public class Filter1DArrayExtensionsShould
     public void CorrectlyPoolToSingle()
     {
         // Input:
-        // 1  2  3
+        // 0  1  2
         //
         // Filter:
-        // 1,2 2,3
+        // 0,1 1,2
         //
         // Pooling:
-        // max(1,2; 2,3)
+        // max(0,1; 1,2)
         var input = new Layer1D(3, Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
         var filter = new Filter1D(new[] { input }, 2, ActivationFunctionType.RELU, InitialisationFunctionType.GlorotUniform);
 

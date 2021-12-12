@@ -33,7 +33,7 @@ public class Cnn2dMultiThreadedPerformanceTest
     {
         var input = new Layer2D((10, 10), Array.Empty<Layer>(), ActivationFunctionType.RELU, InitialisationFunctionType.None);
         var filters = new[] { input }.Add2DConvolutionalLayer(16, (3, 3), ActivationFunctionType.RELU, InitialisationFunctionType.HeUniform);
-        filters.AddPooling((2, 2));
+        filters.AddMaxPooling((2, 2));
         var stepDownLayer = new Layer(30, filters.ToArray(), ActivationFunctionType.Tanh, InitialisationFunctionType.HeUniform);
         var output = new Layer(3, new[] { stepDownLayer }, ActivationFunctionType.Sigmoid, InitialisationFunctionType.GlorotUniform);
         output.AddMomentumRecursively();
