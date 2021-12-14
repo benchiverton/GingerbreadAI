@@ -2,12 +2,12 @@ name: Publish Word2Vec to NuGet
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'src/NLP/GingerbreadAI.NLP.Word2Vec/**'
     - '.github/workflows/ci_publish-word2vec.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'src/NLP/GingerbreadAI.NLP.Word2Vec/**'
     - '.github/workflows/ci_publish-word2vec.yml'
@@ -26,7 +26,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.103
+        dotnet-version: 6.0.100
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

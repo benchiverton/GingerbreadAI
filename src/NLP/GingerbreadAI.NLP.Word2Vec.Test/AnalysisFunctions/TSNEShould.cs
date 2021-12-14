@@ -1,6 +1,5 @@
-﻿namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
+namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions;
+
+public class TSNEShould
 {
-    public class TSNEShould
-    {
-    }
 }

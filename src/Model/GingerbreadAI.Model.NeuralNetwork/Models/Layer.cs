@@ -5,233 +5,232 @@ using System.Linq;
 using GingerbreadAI.Model.NeuralNetwork.ActivationFunctions;
 using GingerbreadAI.Model.NeuralNetwork.InitialisationFunctions;
 
-namespace GingerbreadAI.Model.NeuralNetwork.Models
+namespace GingerbreadAI.Model.NeuralNetwork.Models;
+
+public class Layer
 {
-    public class Layer
+    private readonly Guid _id = Guid.NewGuid();
+
+    private IReadOnlyList<Node> _nodesWrapper;
+    private IReadOnlyList<Layer> _previousLayersWrapper;
+
+    private Node[] _nodes;
+    private Layer[] _previousLayers;
+
+    private ActivationFunctionType _activationFunctionType;
+    private InitialisationFunctionType _initialisationFunctionType;
+
+    public Layer(
+        Node[] nodes,
+        Layer[] previousLayers,
+        ActivationFunctionType activationFunctionType = ActivationFunctionType.RELU,
+        InitialisationFunctionType initialisationFunctionType = InitialisationFunctionType.HeEtAl)
     {
-        private readonly Guid _id = Guid.NewGuid();
+        Nodes = nodes;
+        PreviousLayers = previousLayers;
+        ActivationFunctionType = activationFunctionType;
+        InitialisationFunctionType = initialisationFunctionType;
+    }
 
-        private IReadOnlyList<Node> _nodesWrapper;
-        private IReadOnlyList<Layer> _previousLayersWrapper;
+    public Layer(int nodeCount, Layer[] previousGroups, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionType, bool addBiasWeights = true)
+    {
+        ActivationFunctionType = activationFunctionType;
+        InitialisationFunctionType = initialisationFunctionType;
+        PreviousLayers = previousGroups;
 
-        private Node[] _nodes;
-        private Layer[] _previousLayers;
-
-        private ActivationFunctionType _activationFunctionType;
-        private InitialisationFunctionType _initialisationFunctionType;
-
-        public Layer(
-            Node[] nodes,
-            Layer[] previousLayers,
-            ActivationFunctionType activationFunctionType = ActivationFunctionType.RELU,
-            InitialisationFunctionType initialisationFunctionType = InitialisationFunctionType.HeEtAl)
+        var nodes = new Node[nodeCount];
+        for (var i = 0; i < nodeCount; i++)
         {
-            Nodes = nodes;
-            PreviousLayers = previousLayers;
-            ActivationFunctionType = activationFunctionType;
-            InitialisationFunctionType = initialisationFunctionType;
+            nodes[i] = new Node(previousGroups, addBiasWeights);
+        }
+        Nodes = nodes;
+    }
+
+    /// <summary>
+    /// An array of the nodes within this layer.
+    /// </summary>
+    public IReadOnlyList<Node> Nodes
+    {
+        get => _nodesWrapper;
+        set
+        {
+            _nodes = value.ToArray();
+            _nodesWrapper = new ReadOnlyCollection<Node>(_nodes);
+        }
+    }
+
+    /// <summary>
+    /// An array containing the layers that feed into this one.
+    /// </summary>
+    public IReadOnlyList<Layer> PreviousLayers
+    {
+        get => _previousLayersWrapper;
+        set
+        {
+            _previousLayers = value.ToArray();
+            _previousLayersWrapper = new ReadOnlyCollection<Layer>(_previousLayers);
+        }
+    }
+
+    /// <summary>
+    /// The function used to calculate the output given the aggregated input.
+    /// </summary>
+    public Func<double, double> ActivationFunction { get; private set; }
+
+    /// <summary>
+    /// The differential of the function used to calculate the output given the aggregated input.
+    /// </summary>
+    public Func<double, double> ActivationFunctionDifferential { get; private set; }
+
+    /// <summary>
+    /// The function used to calculate the initial weights of the layer.
+    /// </summary>
+    public Func<Random, int, int, double> InitialisationFunction { get; private set; }
+
+    public ActivationFunctionType ActivationFunctionType
+    {
+        get => _activationFunctionType;
+        set
+        {
+            _activationFunctionType = value;
+            (ActivationFunction, ActivationFunctionDifferential) = ActivationFunctionResolver.ResolveActivationFunctions(value);
+        }
+    }
+
+    public InitialisationFunctionType InitialisationFunctionType
+    {
+        get => _initialisationFunctionType;
+        set
+        {
+            _initialisationFunctionType = value;
+            InitialisationFunction = InitialisationFunctionResolver.ResolveInitialisationFunctions(value);
+        }
+    }
+
+    public void CalculateOutputs(double[] inputs) => CalculateOutputs(inputs, new List<Guid>());
+
+    public void CalculateOutputs(Dictionary<Layer, double[]> inputs) => CalculateOutputs(inputs, new List<Guid>());
+
+    /// <summary>
+    ///  Note: does not support multiple inputs
+    /// </summary>
+    public void CalculateIndexedOutput(int inputIndex, int outputIndex, double inputValue)
+    {
+        foreach (var previousLayer in PreviousLayers)
+        {
+            previousLayer.CalculateIndexedOutput(inputIndex, inputValue);
         }
 
-        public Layer(int nodeCount, Layer[] previousGroups, ActivationFunctionType activationFunctionType, InitialisationFunctionType initialisationFunctionType, bool addBiasWeights = true)
-        {
-            ActivationFunctionType = activationFunctionType;
-            InitialisationFunctionType = initialisationFunctionType;
-            PreviousLayers = previousGroups;
+        Nodes[outputIndex].CalculateOutput(ActivationFunction);
+    }
 
-            var nodes = new Node[nodeCount];
-            for (var i = 0; i < nodeCount; i++)
-            {
-                nodes[i] = new Node(previousGroups, addBiasWeights);
-            }
-            Nodes = nodes;
+    #region Private methods
+
+    private void CalculateOutputs(double[] inputs, ICollection<Guid> processedLayers)
+    {
+        if (processedLayers.Contains(_id))
+        {
+            return;
         }
 
-        /// <summary>
-        /// An array of the nodes within this layer.
-        /// </summary>
-        public IReadOnlyList<Node> Nodes
+        processedLayers.Add(_id);
+        if (!PreviousLayers.Any())
         {
-            get => _nodesWrapper;
-            set
-            {
-                _nodes = value.ToArray();
-                _nodesWrapper = new ReadOnlyCollection<Node>(_nodes);
-            }
+            SetOutputs(inputs);
+            return;
         }
 
-        /// <summary>
-        /// An array containing the layers that feed into this one.
-        /// </summary>
-        public IReadOnlyList<Layer> PreviousLayers
+        foreach (var prevLayer in PreviousLayers)
         {
-            get => _previousLayersWrapper;
-            set
-            {
-                _previousLayers = value.ToArray();
-                _previousLayersWrapper = new ReadOnlyCollection<Layer>(_previousLayers);
-            }
+            prevLayer.CalculateOutputs(inputs, processedLayers);
         }
 
-        /// <summary>
-        /// The function used to calculate the output given the aggregated input.
-        /// </summary>
-        public Func<double, double> ActivationFunction { get; private set; }
-
-        /// <summary>
-        /// The differential of the function used to calculate the output given the aggregated input.
-        /// </summary>
-        public Func<double, double> ActivationFunctionDifferential { get; private set; }
-
-        /// <summary>
-        /// The function used to calculate the initial weights of the layer.
-        /// </summary>
-        public Func<Random, int, int, double> InitialisationFunction { get; private set; }
-
-        public ActivationFunctionType ActivationFunctionType
+        foreach (var node in Nodes)
         {
-            get => _activationFunctionType;
-            set
-            {
-                _activationFunctionType = value;
-                (ActivationFunction, ActivationFunctionDifferential) = ActivationFunctionResolver.ResolveActivationFunctions(value);
-            }
+            node.CalculateOutput(ActivationFunction);
+        }
+    }
+
+    private void CalculateOutputs(IReadOnlyDictionary<Layer, double[]> inputs, ICollection<Guid> processedLayers)
+    {
+        if (processedLayers.Contains(_id))
+        {
+            return;
         }
 
-        public InitialisationFunctionType InitialisationFunctionType
+        processedLayers.Add(_id);
+        if (!PreviousLayers.Any())
         {
-            get => _initialisationFunctionType;
-            set
-            {
-                _initialisationFunctionType = value;
-                InitialisationFunction = InitialisationFunctionResolver.ResolveInitialisationFunctions(value);
-            }
+            SetOutputs(inputs[this]);
+            return;
         }
 
-        public void CalculateOutputs(double[] inputs) => CalculateOutputs(inputs, new List<Guid>());
-
-        public void CalculateOutputs(Dictionary<Layer, double[]> inputs) => CalculateOutputs(inputs, new List<Guid>());
-
-        /// <summary>
-        ///  Note: does not support multiple inputs
-        /// </summary>
-        public void CalculateIndexedOutput(int inputIndex, int outputIndex, double inputValue)
+        foreach (var prevLayer in PreviousLayers)
         {
-            foreach (var previousLayer in PreviousLayers)
-            {
-                previousLayer.CalculateIndexedOutput(inputIndex, inputValue);
-            }
-
-            Nodes[outputIndex].CalculateOutput(ActivationFunction);
+            prevLayer.CalculateOutputs(inputs, processedLayers);
         }
 
-        #region Private methods
-
-        private void CalculateOutputs(double[] inputs, ICollection<Guid> processedLayers)
+        foreach (var node in Nodes)
         {
-            if (processedLayers.Contains(_id))
-            {
-                return;
-            }
+            node.CalculateOutput(ActivationFunction);
+        }
+    }
 
-            processedLayers.Add(_id);
-            if (!PreviousLayers.Any())
-            {
-                SetOutputs(inputs);
-                return;
-            }
-
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.CalculateOutputs(inputs, processedLayers);
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.CalculateOutput(ActivationFunction);
-            }
+    private void SetOutputs(double[] outputs)
+    {
+        if (Nodes.Count != outputs.Length)
+        {
+            throw new ArgumentException($"Layer length ({Nodes.Count}) not equal to length of your output array ({outputs.Length}).");
         }
 
-        private void CalculateOutputs(IReadOnlyDictionary<Layer, double[]> inputs, ICollection<Guid> processedLayers)
+        var i = 0;
+        foreach (var node in Nodes)
         {
-            if (processedLayers.Contains(_id))
-            {
-                return;
-            }
+            node.Output = outputs[i++];
+        }
+    }
 
-            processedLayers.Add(_id);
-            if (!PreviousLayers.Any())
-            {
-                SetOutputs(inputs[this]);
-                return;
-            }
-
-            foreach (var prevLayer in PreviousLayers)
-            {
-                prevLayer.CalculateOutputs(inputs, processedLayers);
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.CalculateOutput(ActivationFunction);
-            }
+    private bool CalculateIndexedOutput(int inputIndex, double inputValue)
+    {
+        if (!PreviousLayers.Any())
+        {
+            Nodes[inputIndex].Output = inputValue;
+            return true;
         }
 
-        private void SetOutputs(double[] outputs)
+        var shouldPopulateAllOutputs = false;
+        foreach (var prevLayer in PreviousLayers)
         {
-            if (Nodes.Count != outputs.Length)
-            {
-                throw new ArgumentException($"Layer length ({Nodes.Count}) not equal to length of your output array ({outputs.Length}).");
-            }
-
-            var i = 0;
-            foreach (var node in Nodes)
-            {
-                node.Output = outputs[i++];
-            }
-        }
-
-        private bool CalculateIndexedOutput(int inputIndex, double inputValue)
-        {
-            if (!PreviousLayers.Any())
-            {
-                Nodes[inputIndex].Output = inputValue;
-                return true;
-            }
-
-            var shouldPopulateAllOutputs = false;
-            foreach (var prevLayer in PreviousLayers)
-            {
-                shouldPopulateAllOutputs |= !prevLayer.CalculateIndexedOutput(inputIndex, inputValue);
-                if (shouldPopulateAllOutputs)
-                {
-                    continue;
-                }
-
-                var inputNode = prevLayer.Nodes[inputIndex];
-                foreach (var node in Nodes)
-                {
-                    var output = node.Weights[inputNode].Value * inputNode.Output;
-
-                    if (node.BiasWeights.TryGetValue(prevLayer, out var biasWeight))
-                    {
-                        output += biasWeight.Value;
-                    }
-
-                    node.Output = ActivationFunction(output);
-                }
-            }
-
+            shouldPopulateAllOutputs |= !prevLayer.CalculateIndexedOutput(inputIndex, inputValue);
             if (shouldPopulateAllOutputs)
             {
-                foreach (var node in Nodes)
-                {
-                    node.CalculateOutput(ActivationFunction);
-                }
+                continue;
             }
 
-            return false;
+            var inputNode = prevLayer.Nodes[inputIndex];
+            foreach (var node in Nodes)
+            {
+                var output = node.Weights[inputNode].Value * inputNode.Output;
+
+                if (node.BiasWeights.TryGetValue(prevLayer, out var biasWeight))
+                {
+                    output += biasWeight.Value;
+                }
+
+                node.Output = ActivationFunction(output);
+            }
         }
 
-        #endregion
+        if (shouldPopulateAllOutputs)
+        {
+            foreach (var node in Nodes)
+            {
+                node.CalculateOutput(ActivationFunction);
+            }
+        }
+
+        return false;
     }
+
+    #endregion
 }

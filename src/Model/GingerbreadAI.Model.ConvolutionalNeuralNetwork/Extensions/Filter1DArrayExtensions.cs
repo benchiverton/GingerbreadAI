@@ -1,15 +1,14 @@
-﻿using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
+using GingerbreadAI.Model.ConvolutionalNeuralNetwork.Models;
 
-namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions
+namespace GingerbreadAI.Model.ConvolutionalNeuralNetwork.Extensions;
+
+public static class Filter1DArrayExtensions
 {
-    public static class Filter1DArrayExtensions
+    public static void AddPooling(this Filter1D[] filters, int poolingDimension)
     {
-        public static void AddPooling(this Filter1D[] filters, int poolingDimension)
+        foreach (var filter in filters)
         {
-            foreach (var filter in filters)
-            {
-                filter.AddPooling(poolingDimension);
-            }
+            filter.AddPooling(poolingDimension);
         }
     }
 }

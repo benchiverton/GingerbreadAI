@@ -1,8 +1,7 @@
-﻿namespace GingerbreadAI.NLP.Word2Vec.DistanceFunctions
+namespace GingerbreadAI.NLP.Word2Vec.DistanceFunctions;
+
+public enum DistanceFunctionType
 {
-    public enum DistanceFunctionType
-    {
-        Euclidean = 1,
-        Cosine = 2,
-    }
+    Euclidean = 1,
+    Cosine = 2,
 }

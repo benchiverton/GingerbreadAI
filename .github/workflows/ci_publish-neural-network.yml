@@ -2,12 +2,12 @@ name: Publish Neural Network to NuGet
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
     - '.github/workflows/ci_publish-neural-network.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'src/Model/GingerbreadAI.Model.NeuralNetwork/**'
     - '.github/workflows/ci_publish-neural-network.yml'
@@ -26,7 +26,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.103
+        dotnet-version: 6.0.100
         source-url: https://nuget.pkg.github.com/benchiverton/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

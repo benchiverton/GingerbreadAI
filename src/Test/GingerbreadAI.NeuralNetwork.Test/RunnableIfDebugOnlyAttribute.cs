@@ -1,16 +1,15 @@
 using System.Diagnostics;
 using Xunit;
 
-namespace GingerbreadAI.NeuralNetwork.Test
+namespace GingerbreadAI.NeuralNetwork.Test;
+
+public sealed class RunnableInDebugOnlyAttribute : FactAttribute
 {
-    public sealed class RunnableInDebugOnlyAttribute : FactAttribute
+    public RunnableInDebugOnlyAttribute()
     {
-        public RunnableInDebugOnlyAttribute()
+        if (!Debugger.IsAttached)
         {
-            if (!Debugger.IsAttached)
-            {
-                Skip = "Only running in interactive mode.";
-            }
+            Skip = "Only running in interactive mode.";
         }
     }
 }

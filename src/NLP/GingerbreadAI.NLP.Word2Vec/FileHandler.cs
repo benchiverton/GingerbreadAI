@@ -2,50 +2,49 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace GingerbreadAI.NLP.Word2Vec
+namespace GingerbreadAI.NLP.Word2Vec;
+
+public class FileHandler
 {
-    public class FileHandler
+    private readonly string _file;
+
+    public FileHandler(string file)
     {
-        private readonly string _file;
+        _file = file;
 
-        public FileHandler(string file)
+        FileSize = new FileInfo(_file).Length;
+    }
+
+    public long FileSize { get; }
+
+    public WordCollection GetWordDictionaryFromFile(int maxCodeLength)
+    {
+        var wordCollection = new WordCollection();
+
+        if (!File.Exists(_file))
         {
-            _file = file;
-
-            FileSize = new FileInfo(_file).Length;
+            throw new InvalidOperationException($"Unable to find {_file}");
         }
 
-        public long FileSize { get; }
-
-        public WordCollection GetWordDictionaryFromFile(int maxCodeLength)
+        using (var fileStream = new FileStream(_file, FileMode.OpenOrCreate, FileAccess.Read))
         {
-            var wordCollection = new WordCollection();
-
-            if (!File.Exists(_file))
+            using (var reader = new StreamReader(fileStream, Encoding.UTF8))
             {
-                throw new InvalidOperationException($"Unable to find {_file}");
-            }
-
-            using (var fileStream = new FileStream(_file, FileMode.OpenOrCreate, FileAccess.Read))
-            {
-                using (var reader = new StreamReader(fileStream, Encoding.UTF8))
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        wordCollection.AddWords(line, maxCodeLength);
+                    wordCollection.AddWords(line, maxCodeLength);
 
-                        if (reader.EndOfStream)
-                        {
-                            break;
-                        }
+                    if (reader.EndOfStream)
+                    {
+                        break;
                     }
                 }
             }
-
-            return wordCollection;
         }
 
-        public StreamReader GetTrainingFileReader() => File.OpenText(_file);
+        return wordCollection;
     }
+
+    public StreamReader GetTrainingFileReader() => File.OpenText(_file);
 }

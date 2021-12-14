@@ -4,59 +4,59 @@ using GingerbreadAI.NLP.Word2Vec.AnalysisFunctions;
 using GingerbreadAI.NLP.Word2Vec.Embeddings;
 using Xunit;
 
-namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
+namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions;
+
+public class DBSCANShould
 {
-    public class DBSCANShould
+    [Theory]
+    [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
+    public void CorrectlyGetClusterLabels(List<WordEmbedding> wordEmbeddings, (string[] elements, bool isNoise)[] expectedGroups)
     {
-        [Theory]
-        [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
-        public void CorrectlyGetClusterLabels(List<WordEmbedding> wordEmbeddings, (string[] elements, bool isNoise)[] expectedGroups)
-        {
-            var labels = DBSCAN.GetLabelClusterMap(
-                wordEmbeddings,
-                3,
-                2,
-                concurrentThreads: 1
-            );
+        var labels = DBSCAN.GetLabelClusterMap(
+            wordEmbeddings,
+            3,
+            2,
+            concurrentThreads: 1
+        );
 
-            foreach (var (elements, isNoise) in expectedGroups)
+        foreach (var (elements, isNoise) in expectedGroups)
+        {
+            var groupLabel = isNoise
+                ? -1
+                : labels.First(l => l.Key == elements[0]).Value;
+            foreach (var label in labels.Where(l => elements.Contains(l.Key)))
             {
-                var groupLabel = isNoise
-                    ? -1
-                    : labels.First(l => l.Key == elements[0]).Value;
-                foreach (var label in labels.Where(l => elements.Contains(l.Key)))
-                {
-                    Assert.Equal(groupLabel, label.Value);
-                }
+                Assert.Equal(groupLabel, label.Value);
             }
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
-        public void CorrectlyGetClusterLabelsConcurrently(List<WordEmbedding> wordVectorWeights, (string[] elements, bool isNoise)[] expectedGroups)
+    [Theory]
+    [MemberData(nameof(GetCorrectlyGetClusterLabelsForWordsTestData))]
+    public void CorrectlyGetClusterLabelsConcurrently(List<WordEmbedding> wordVectorWeights, (string[] elements, bool isNoise)[] expectedGroups)
+    {
+        var labels = DBSCAN.GetLabelClusterMap(
+            wordVectorWeights,
+            3,
+            2
+        );
+
+        foreach (var (elements, isNoise) in expectedGroups)
         {
-            var labels = DBSCAN.GetLabelClusterMap(
-                wordVectorWeights,
-                3,
-                2
-            );
-
-            foreach (var (elements, isNoise) in expectedGroups)
+            var groupLabel = isNoise
+                ? -1
+                : labels.First(l => l.Key == elements[0]).Value;
+            foreach (var label in labels.Where(l => elements.Contains(l.Key)))
             {
-                var groupLabel = isNoise
-                    ? -1
-                    : labels.First(l => l.Key == elements[0]).Value;
-                foreach (var label in labels.Where(l => elements.Contains(l.Key)))
-                {
-                    Assert.Equal(groupLabel, label.Value);
-                }
+                Assert.Equal(groupLabel, label.Value);
             }
         }
+    }
 
-        public static IEnumerable<object[]> GetCorrectlyGetClusterLabelsForWordsTestData()
+    public static IEnumerable<object[]> GetCorrectlyGetClusterLabelsForWordsTestData()
+    {
+        yield return new object[]
         {
-            yield return new object[]
-            {
                 new List<WordEmbedding>
                 {
                     new WordEmbedding("a", new[] {1d, 1d}),
@@ -70,9 +70,9 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                 {
                     (new [] {"a", "b", "c", "d", "e", "f"}, false)
                 }
-            };
-            yield return new object[]
-            {
+        };
+        yield return new object[]
+        {
                 new List<WordEmbedding>
                 {
                     new WordEmbedding("a", new[] {1d, 1d}),
@@ -105,9 +105,9 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                     (new [] { "a", "c", "e", "g", "i", "k", "m", "o", "q", "s", "u", "w"}, false),
                     (new [] { "b", "d", "f", "h", "j", "l", "n", "p", "r", "t", "v", "x"}, false)
                 }
-            };
-            yield return new object[]
-            {
+        };
+        yield return new object[]
+        {
                 new List<WordEmbedding>
                 {
                     new WordEmbedding("a", new[] {1d, 2d}),
@@ -123,9 +123,9 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                     (new [] {"d", "e"}, false),
                     (new [] {"f"}, true),
                 }
-            };
-            yield return new object[]
-            {
+        };
+        yield return new object[]
+        {
                 new List<WordEmbedding>
                 {
                     new WordEmbedding("a", new[] {0d, 0d}),
@@ -141,9 +141,9 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                     (new [] {"d", "e"}, false),
                     (new [] {"f"}, true),
                 }
-            };
-            yield return new object[]
-            {
+        };
+        yield return new object[]
+        {
                 new List<WordEmbedding>
                 {
                     new WordEmbedding("a", new[] {25d, 80d}),
@@ -159,7 +159,6 @@ namespace GingerbreadAI.NLP.Word2Vec.Test.AnalysisFunctions
                     (new [] {"b", "c"}, false),
                     (new [] {"d", "e", "f"}, false),
                 }
-            };
-        }
+        };
     }
 }
