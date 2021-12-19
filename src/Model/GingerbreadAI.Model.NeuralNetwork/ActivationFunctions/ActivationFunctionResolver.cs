@@ -20,7 +20,7 @@ public static class ActivationFunctionResolver
                 break;
             case ActivationFunctionType.Sigmoid:
                 activationFunction = input => 1 / (1 + Math.Pow(Math.E, -input));
-                activationFunctionDifferential = output => output * (1 - output);
+                activationFunctionDifferential = output => Math.Max(output * (1 - output), 0.0000001);
                 break;
             case ActivationFunctionType.Tanh:
                 activationFunction = input => (Math.Pow(Math.E, 2 * input) - 1) / (Math.Pow(Math.E, 2 * input) + 1);

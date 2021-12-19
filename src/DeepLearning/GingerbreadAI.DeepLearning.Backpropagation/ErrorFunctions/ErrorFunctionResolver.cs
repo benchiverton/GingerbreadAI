@@ -13,7 +13,7 @@ public static class ErrorFunctionResolver
     public static Func<double, double, double> ResolveErrorFunctionDifferential(ErrorFunctionType errorFunctionType) => errorFunctionType switch
     {
         ErrorFunctionType.MSE => (target, actual) => actual - target,
-        ErrorFunctionType.CrossEntropy => (target, actual) => -(target / actual) + ((1 - target) / (1 - actual)),
+        ErrorFunctionType.CrossEntropy => (target, actual) => (actual - target) * Math.Min(1 / ((1 - actual) * actual), 1000000),
         _ => throw new ArgumentOutOfRangeException(
             nameof(errorFunctionType),
             errorFunctionType,

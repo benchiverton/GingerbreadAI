@@ -73,7 +73,7 @@ public static class Backpropagation
         for (var i = 0; i < outputLayer.Nodes.Count; i++)
         {
             var node = outputLayer.Nodes[i];
-            var delta = Math.MinMagnitude(errorFunctionDifferential.Invoke(targetOutputs[i], node.Output), 100)
+            var delta = errorFunctionDifferential.Invoke(targetOutputs[i], node.Output)
                         * outputLayer.ActivationFunctionDifferential(node.Output)
                         * learningRate;
             deltas.Add(node, delta);

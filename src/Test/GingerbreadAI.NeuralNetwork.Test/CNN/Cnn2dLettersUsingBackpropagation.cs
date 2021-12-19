@@ -33,7 +33,7 @@ public class Cnn2dLettersUsingBackpropagation
         {
             var targetOutputs = new double[10];
             targetOutputs[label] = 1d;
-            output.Backpropagate(image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.001);
+            output.Backpropagate(image, targetOutputs, ErrorFunctionType.CrossEntropy, 0.01);
         }
 
         var correctResults = new double[10];
