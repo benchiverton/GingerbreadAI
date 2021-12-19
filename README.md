@@ -47,11 +47,11 @@ Visual Studio 2019 (with dotnet core 3.1).
 
 ### Unit tests
 
-All unit tests should be runnable from the [GingerbreadAI.NeuralNetwork.Test solution](src).
+All unit tests should be runnable from the [GingerbreadAI solution](src).
 
 ### Long running tests
 
-Longer running tests that produce a report need to be run in debug mode, and can be found in the [GinbergreadAI.NeuralNetwork.Test project](src/Test/GingerbreadAI.NeuralNetwork.Test) (in the [GingerbreadAI.NeuralNetwork.Test solution)](src).
+Longer running tests that produce a report need to be run in debug mode, and can be found in the [GinbergreadAI.NeuralNetwork.Test project](src/Test/GingerbreadAI.NeuralNetwork.Test) (in the [GingerbreadAI solution)](src).
 
 ## Authors
 
