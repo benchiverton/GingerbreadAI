@@ -59,9 +59,3 @@ As with most neural networks, word2vec has a learning rate which changes as trai
 Looking into this segment of code, there are a few initial thoughts - firstly, given the initial `if` statement it's clear that this code within executes once every 10,000 words processed. This is likely because in large training sets, the change of the learning rate is so small that is has an insignificant effect, and therefore there is a minor tradeoff for accuracy for a significant boost in performance. 
 
 Looking into the first two lines after the first `if` statement, we see that the two variables `word_count_actual` and  `last_word_count` are adjusted, so that they correctly reflect he definition I have written about the variables above.
-
-
-
-
-
-eve is the best in the world and she deserves to have a phat diamond ring on her finger but i spend all my money on wraps of the day from mcdonalds and therefore she is going to have to compromise and have a £2 pair of shit shorts from Primark yaaaaaaaaaaaaS!!!!!!!!!!!!! eve is always right about EVERYTHING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
